@@ -92,6 +92,9 @@ void RobotContainer::ConfigureButtonBindings() {
   // m_resetEncodersToAbsoluteButton = m_bill.Button(PS5_BUTTON_CREATE);
   // m_resetEncodersToAbsoluteButton.OnTrue(ResetEncodersToAbsolute(m_swerve).ToPtr());
 
+  m_toggleIntakePistonsButton = m_bill.Button(PS5_BUTTON_LSTICK);
+  m_toggleIntakePistonsButton.OnTrue(ToggleIntakePistons(m_intake).ToPtr());
+  
   frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2, SwerveDriveConstants::kMaxAcceleration / 2};
   config.SetKinematics(SwerveDriveConstants::kinematics);
 

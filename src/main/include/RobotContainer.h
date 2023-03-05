@@ -101,6 +101,7 @@ class RobotContainer {
   frc2::Trigger m_leftAimAssistButton;
   frc2::Trigger m_centerAimAssistButton;
   frc2::Trigger m_rightAimAssistButton;
+  frc2::Trigger m_toggleIntakePistonsButton;
 
   // Very basic individual motor tests
 

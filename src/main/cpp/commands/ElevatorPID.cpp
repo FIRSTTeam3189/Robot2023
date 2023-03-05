@@ -15,6 +15,7 @@ void ElevatorPID::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
 void ElevatorPID::Execute() {
+  // Convert from target in encoder ticks to target in motor rotations
   m_elevator->GoToPosition(m_target);
 }
 

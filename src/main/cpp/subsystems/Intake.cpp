@@ -9,8 +9,10 @@
 Intake::Intake() {
     m_leftPiston = new Piston(INTAKE_PISTON_L, 1, 0);
     m_rightPiston = new Piston(INTAKE_PISTON_R, 1, 0);
-    m_topMotor = new rev::CANSparkMax(INTAKE_MOTOR_L, rev::CANSparkMax::CANSparkMaxLowLevel::MotorType::kBrushless);
-    m_bottomMotor = new rev::CANSparkMax(INTAKE_MOTOR_R, rev::CANSparkMax::CANSparkMaxLowLevel::MotorType::kBrushless);
+    m_rollerMotor = new rev::CANSparkMax(INTAKE_ROLLER_MOTOR_ID, rev::CANSparkMax::CANSparkMaxLowLevel::MotorType::kBrushless);
+    m_conveyorMotor = new rev::CANSparkMax(INTAKE_CONVEYOR_MOTOR_ID, rev::CANSparkMax::CANSparkMaxLowLevel::MotorType::kBrushless);
+    m_leftConeCorrectMotor = new rev::CANSparkMax(INTAKE_L_CONE_CORRECT_MOTOR_ID, rev::CANSparkMax::CANSparkMaxLowLevel::MotorType::kBrushless);
+    m_rightConeCorrectMotor = new rev::CANSparkMax(INTAKE_R_CONE_CORRECT_MOTOR_ID, rev::CANSparkMax::CANSparkMaxLowLevel::MotorType::kBrushless);
 }
 
 // This method will be called once per scheduler run
@@ -21,7 +23,9 @@ void Intake::ToggleIntake() {
     m_rightPiston->TogglePiston();
 }
 
-void Intake::SetPower(double power) {
-    m_topMotor->Set(power);
-    m_bottomMotor->Set(power);
+void Intake::SetPower(double intakePower, double conveyorPower, double coneCorrectPower) {
+    m_rollerMotor->Set(intakePower);
+    m_conveyorMotor->Set(conveyorPower);
+    m_leftConeCorrectMotor->Set(coneCorrectPower);
+    m_rightConeCorrectMotor->Set(coneCorrectPower);
 }

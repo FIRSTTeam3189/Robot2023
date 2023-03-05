@@ -82,7 +82,7 @@ namespace SwerveDriveConstants {
     constexpr double speedP {1.0};
     constexpr double speedI {0.0};
     constexpr double speedD {0.0};
-    constexpr double angleP {0.15};
+    constexpr double angleP {0.3};
     constexpr double angleI {0.0};
     constexpr double angleD {0.0};
     // These are for robot rotation, not wheel rotation
@@ -115,10 +115,10 @@ namespace SwerveDriveConstants {
     constexpr int rightBackCancoderID {12};
 
     // Swerve angle offsets -- difference between actual degrees heading and absolute degree values
-    constexpr double frontLeftOffset {116.0};
-    constexpr double frontRightOffset {76.0};
-    constexpr double backLeftOffset {223.0};
-    constexpr double backRightOffset {129.0};
+    constexpr double frontLeftOffset {291.5};
+    constexpr double frontRightOffset {9.6};
+    constexpr double backLeftOffset {303.4};
+    constexpr double backRightOffset {1.8};
 
     constexpr SwerveInfo kLeftFrontInfo {
         leftFrontSpeedCANID, leftFrontTurningCANID, leftFrontCancoderID, 
@@ -194,9 +194,10 @@ namespace AutoConstants {
 
 #define INTAKE_PISTON_L 0
 #define INTAKE_PISTON_R 1
-#define INTAKE_MOTOR_L 0
-#define INTAKE_MOTOR_R 1
-#define INTAKE_POWER 0.1
+#define INTAKE_ROLLER_MOTOR_ID 2
+#define INTAKE_CONVEYOR_MOTOR_ID 3
+#define INTAKE_L_CONE_CORRECT_MOTOR_ID 4
+#define INTAKE_R_CONE_CORRECT_MOTOR_ID 5
 
 #define ELEVATOR_MOTOR 2
 #define ELEVATOR_P 0

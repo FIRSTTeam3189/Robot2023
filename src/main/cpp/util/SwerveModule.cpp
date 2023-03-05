@@ -253,7 +253,7 @@ SwerveModuleTelemetry SwerveModule::GetTelemetry() {
     double angleCurrent = m_angleMotor.GetOutputCurrent();
     double angleVoltage = m_angleMotor.GetBusVoltage();
     double absoluteAngle = m_absoluteEncoder.GetAbsolutePosition();
-    double relativeAngle = m_absoluteEncoder.GetPosition();
+    double relativeAngle = FalconToDegrees(m_angleMotor.GetSelectedSensorPosition());
 
     // Organizes module data into struct
     SwerveModuleTelemetry SMT{speed, position, 
