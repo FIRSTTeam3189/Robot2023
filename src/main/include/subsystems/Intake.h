@@ -22,8 +22,7 @@ class Intake : public frc2::SubsystemBase {
   void SetPower(double rollerPower, double conveyorPower, double coneCorrectPower);
   
 private:
-  Piston *m_leftPiston;
-  Piston *m_rightPiston;
+  Piston *m_intakePiston;
   rev::CANSparkMax *m_rollerMotor;
   rev::CANSparkMax *m_conveyorMotor;
   rev::CANSparkMax *m_leftConeCorrectMotor;

@@ -8,7 +8,7 @@
 
 class Piston {
 public:
-  Piston(int module, int forwardChannel, int reverseChannel);
+  Piston(int forwardChannel, int reverseChannel);
   void SetExtended(bool extend);
   void TogglePiston();
   bool IsExtended();

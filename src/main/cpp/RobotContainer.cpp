@@ -29,6 +29,7 @@ RobotContainer::RobotContainer() {
   m_chooser.AddOption("One Cargo Pickup + Balance Blue Side", &m_oneCargoPickupBalanceBlue);
   m_chooser.AddOption("One Cargo Pickup One", &m_oneCargoPickupOne);
   m_chooser.AddOption("Two Cargo", &m_twoCargo);
+  m_chooser.AddOption("Two Cargo With Vision", &m_twoPieceWithVision);
 
   frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
   AutoConstants::thetaPIDController.EnableContinuousInput(units::radian_t{-PI}, units::radian_t{PI});

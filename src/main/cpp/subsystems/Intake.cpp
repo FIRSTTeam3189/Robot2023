@@ -7,8 +7,7 @@
 #include "units/current.h"
 
 Intake::Intake() {
-    m_leftPiston = new Piston(INTAKE_PISTON_L, 1, 0);
-    m_rightPiston = new Piston(INTAKE_PISTON_R, 1, 0);
+    m_intakePiston = new Piston(INTAKE_PISTON_IN, INTAKE_PISTON_OUT);
     m_rollerMotor = new rev::CANSparkMax(INTAKE_ROLLER_MOTOR_ID, rev::CANSparkMax::CANSparkMaxLowLevel::MotorType::kBrushless);
     m_conveyorMotor = new rev::CANSparkMax(INTAKE_CONVEYOR_MOTOR_ID, rev::CANSparkMax::CANSparkMaxLowLevel::MotorType::kBrushless);
     m_leftConeCorrectMotor = new rev::CANSparkMax(INTAKE_L_CONE_CORRECT_MOTOR_ID, rev::CANSparkMax::CANSparkMaxLowLevel::MotorType::kBrushless);
@@ -19,8 +18,7 @@ Intake::Intake() {
 void Intake::Periodic() {}
 
 void Intake::ToggleIntake() {
-    m_leftPiston->TogglePiston();
-    m_rightPiston->TogglePiston();
+    m_intakePiston->TogglePiston();
 }
 
 void Intake::SetPower(double intakePower, double conveyorPower, double coneCorrectPower) {

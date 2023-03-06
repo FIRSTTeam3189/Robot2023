@@ -22,6 +22,7 @@
 #include "Autos/OneCargoPickupBalance.h"
 #include "Autos/OneCargoPickupOne.h"
 #include "Autos/TwoCargo.h"
+#include "Autos/TwoPieceWithVision.h"
 
 #include "commands/SingleModTest.h"
 #include "commands/OISwerveDrive.h"
@@ -72,6 +73,7 @@ class RobotContainer {
   OneCargoPickupBalance m_oneCargoPickupBalanceBlue{m_swerve, m_elevator, m_shooter, m_intake, false};
   OneCargoPickupOne m_oneCargoPickupOne{m_swerve, m_elevator, m_shooter, m_intake};
   TwoCargo m_twoCargo{m_swerve, m_elevator, m_shooter, m_intake};
+  TwoPieceWithVision m_twoPieceWithVision{m_swerve, m_elevator, m_shooter, m_intake, m_vision};
 
   frc::SendableChooser<frc2::Command*> m_chooser;
 

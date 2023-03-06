@@ -7,7 +7,8 @@
 // NOTE:  Consider using this command inline, rather than writing a subclass.
 // For more information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-OneCargoBalance::OneCargoBalance(SwerveDrive *swerveDrive, Elevator *elevator, Shooter *shooter) {
+OneCargoBalance::OneCargoBalance(SwerveDrive *swerveDrive, Elevator *elevator, Shooter *shooter) 
+: m_swerve(swerveDrive), m_elevator(elevator), m_shooter(shooter) {
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
   frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2, SwerveDriveConstants::kMaxAcceleration / 2};
@@ -27,8 +28,9 @@ OneCargoBalance::OneCargoBalance(SwerveDrive *swerveDrive, Elevator *elevator, S
 
   AddCommands(
     OneCargo(m_elevator, m_shooter),
-    ResetOdometry(m_swerve, scoringToChargeStationTrajectory.InitialPose()),
+    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
     RotateTo(m_swerve, 180.0),
+    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
     swerveScoringToChargeCommand,
     AutoBalance(m_swerve)
   );
