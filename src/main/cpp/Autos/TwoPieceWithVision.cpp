@@ -7,8 +7,8 @@
 // NOTE:  Consider using this command inline, rather than writing a subclass.
 // For more information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-TwoPieceWithVision::TwoPieceWithVision(SwerveDrive *swerveDrive, Elevator *elevator, Shooter *shooter, Intake *intake, Vision *vision)
-: m_swerve(swerveDrive), m_elevator(elevator), m_shooter(shooter), m_intake(intake), m_vision(vision) {
+TwoPieceWithVision::TwoPieceWithVision(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabber, Intake *intake, Vision *vision)
+: m_swerve(swerveDrive), m_elevator(elevator), m_grabber(grabber), m_intake(intake), m_vision(vision) {
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
   frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2, SwerveDriveConstants::kMaxAcceleration / 2};
@@ -32,14 +32,14 @@ TwoPieceWithVision::TwoPieceWithVision(SwerveDrive *swerveDrive, Elevator *eleva
   frc2::SwerveControllerCommand<4> swerveAimToScoringCommand = m_swerve->CreateSwerveCommand(autoAimToScoringTrajectory);
 
   AddCommands(
-    OneCargoPickupOne(m_swerve, m_elevator, m_shooter, m_intake),
+    OneCargoPickupOne(m_swerve, m_elevator, m_grabber, m_intake),
     RotateTo(m_swerve, 180.0),
     ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
     swerveCargoToAutoAimCommand,
     AimAssist(m_vision, m_swerve, 1.0, 1.0, 0),
     ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
     swerveAimToScoringCommand,
-    ElevatorPID(m_elevator, ELEVATOR_HIGH_CUBE_TARGET),
-    ShootFromCarriage(m_shooter, SHOOTER_HIGH_CUBE_SPEED)
+    ElevatorPID(m_elevator, m_grabber, ELEVATOR_HIGH_TARGET),
+    ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)
   );
 }

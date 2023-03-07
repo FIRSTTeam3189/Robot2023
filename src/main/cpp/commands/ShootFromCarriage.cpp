@@ -4,9 +4,9 @@
 
 #include "commands/ShootFromCarriage.h"
 
-ShootFromCarriage::ShootFromCarriage(Shooter *shooter, double power) {
+ShootFromCarriage::ShootFromCarriage(Grabber *grabber, double power) {
   // Use addRequirements() here to declare subsystem dependencies.
-  AddRequirements(shooter);
+  AddRequirements(grabber);
 }
 
 // Called when the command is initially scheduled.
@@ -14,7 +14,7 @@ void ShootFromCarriage::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
 void ShootFromCarriage::Execute() {
-  m_shooter->SetSpeed(m_power);
+  m_grabber->SetSpeed(m_power);
 }
 
 // Called once the command ends or is interrupted.

@@ -11,7 +11,7 @@
 
 #include "subsystems/Elevator.h"
 #include "subsystems/Intake.h"
-#include "subsystems/Shooter.h"
+#include "subsystems/Grabber.h"
 #include "subsystems/SwerveDrive.h"
 #include "commands/ShootFromCarriage.h"
 #include "commands/RotateTo.h"
@@ -26,12 +26,12 @@ class TwoPieceWithVision
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
                                  TwoPieceWithVision> {
  public:
-  TwoPieceWithVision(SwerveDrive *swerveDrive, Elevator *elevator, Shooter *shooter, Intake *intake, Vision *vision);
+  TwoPieceWithVision(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabber, Intake *intake, Vision *vision);
   
  private:
   SwerveDrive *m_swerve;
   Elevator *m_elevator;
-  Shooter *m_shooter;
+  Grabber *m_grabber;
   Intake *m_intake;
   Vision *m_vision;
 };

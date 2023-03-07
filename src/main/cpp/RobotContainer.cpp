@@ -65,17 +65,17 @@ void RobotContainer::ConfigureButtonBindings() {
   m_rotateTo180Button = m_bill.Button(PS5_BUTTON_X);
   m_rotateTo180Button.OnTrue(RotateTo(m_swerve, 180.0).ToPtr());
 
-  m_frontLeftRotTestButton = m_bill.Button(PS5_BUTTON_LBUMPER);
-  m_frontLeftRotTestButton.WhileTrue(SingleModTest(m_swerve, SwerveModuleLocation::fl, .1, ManualModuleDriveType::turn).ToPtr());
+  // m_frontLeftRotTestButton = m_bill.Button(PS5_BUTTON_LBUMPER);
+  // m_frontLeftRotTestButton.WhileTrue(SingleModTest(m_swerve, SwerveModuleLocation::fl, .1, ManualModuleDriveType::turn).ToPtr());
 
-  m_frontRightRotTestButton = m_bill.Button(PS5_BUTTON_RBUMPER);
-  m_frontRightRotTestButton.WhileTrue(SingleModTest(m_swerve, SwerveModuleLocation::fr, .1, ManualModuleDriveType::turn).ToPtr());
+  // m_frontRightRotTestButton = m_bill.Button(PS5_BUTTON_RBUMPER);
+  // m_frontRightRotTestButton.WhileTrue(SingleModTest(m_swerve, SwerveModuleLocation::fr, .1, ManualModuleDriveType::turn).ToPtr());
 
-  m_backLeftRotTestButton = m_bill.Button(PS5_BUTTON_LTRIGGER);
-  m_backLeftRotTestButton.WhileTrue(SingleModTest(m_swerve, SwerveModuleLocation::bl, .1, ManualModuleDriveType::turn).ToPtr());
+  // m_backLeftRotTestButton = m_bill.Button(PS5_BUTTON_LTRIGGER);
+  // m_backLeftRotTestButton.WhileTrue(SingleModTest(m_swerve, SwerveModuleLocation::bl, .1, ManualModuleDriveType::turn).ToPtr());
 
-  m_backRightRotTestButton = m_bill.Button(PS5_BUTTON_RTRIGGER);
-  m_backRightRotTestButton.WhileTrue(SingleModTest(m_swerve, SwerveModuleLocation::br, .1, ManualModuleDriveType::turn).ToPtr());
+  // m_backRightRotTestButton = m_bill.Button(PS5_BUTTON_RTRIGGER);
+  // m_backRightRotTestButton.WhileTrue(SingleModTest(m_swerve, SwerveModuleLocation::br, .1, ManualModuleDriveType::turn).ToPtr());
 
   m_resetOdometryButton = m_bill.Button(PS5_BUTTON_PS);
   m_resetOdometryButton.OnTrue(ResetOdometry(
@@ -92,9 +92,6 @@ void RobotContainer::ConfigureButtonBindings() {
   
   // m_resetEncodersToAbsoluteButton = m_bill.Button(PS5_BUTTON_CREATE);
   // m_resetEncodersToAbsoluteButton.OnTrue(ResetEncodersToAbsolute(m_swerve).ToPtr());
-
-  m_toggleIntakePistonsButton = m_bill.Button(PS5_BUTTON_LSTICK);
-  m_toggleIntakePistonsButton.OnTrue(ToggleIntakePistons(m_intake).ToPtr());
   
   frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2, SwerveDriveConstants::kMaxAcceleration / 2};
   config.SetKinematics(SwerveDriveConstants::kinematics);
@@ -146,6 +143,37 @@ void RobotContainer::ConfigureButtonBindings() {
       rightTranslateCommand,
       RotateTo(m_swerve, 0)).ToPtr());
 
+  // Ted's controls
+  m_elevator->SetDefaultCommand((frc2::RunCommand([this]{
+    m_elevator->Drive(m_ted.GetRawAxis(PS5_AXIS_LSTICK_Y));
+  },{m_elevator})));
+
+  m_elevatorLowLevelButton = m_ted.Button(PS5_BUTTON_X);
+  m_elevatorLowLevelButton.OnTrue(ElevatorPID(m_elevator, m_grabber, ELEVATOR_LOW_TARGET).ToPtr());
+
+  m_elevatorMidLevelButton = m_ted.Button(PS5_BUTTON_SQR);
+  m_elevatorMidLevelButton.OnTrue(ElevatorPID(m_elevator, m_grabber, ELEVATOR_MID_TARGET).ToPtr());
+
+  m_elevatorHighLevelButton = m_ted.Button(PS5_BUTTON_TRI);
+  m_elevatorHighLevelButton.OnTrue(ElevatorPID(m_elevator, m_grabber, ELEVATOR_HIGH_TARGET).ToPtr());
+
+  m_toggleIntakePistonsButton = m_ted.Button(PS5_BUTTON_LBUMPER);
+  m_toggleIntakePistonsButton.OnTrue(ToggleIntakePistons(m_intake).ToPtr());
+
+  m_grabButton = m_ted.Button(PS5_BUTTON_LTRIGGER);
+  m_grabButton.WhileTrue(ShootFromCarriage(m_grabber, GRABBER_GRAB_SPEED).ToPtr());
+
+  m_shootButton = m_ted.Button(PS5_BUTTON_RTRIGGER);
+  m_shootButton.WhileTrue(ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED).ToPtr());
+
+  // If co-driver pushes right stick forward or backward, intake will run accordingly to reject or pick up piece
+  m_intake->SetDefaultCommand((frc2::RunCommand([this]{
+    if (m_ted.GetRawAxis(PS5_AXIS_RSTICK_Y) > 0.25) {
+      m_intake->SetPower(-INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, -INTAKE_CONE_CORRECT_POWER);
+    } else if (m_ted.GetRawAxis(PS5_AXIS_RSTICK_Y < -0.25)) {
+      m_intake->SetPower(INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER);
+    }
+  },{m_intake})));
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

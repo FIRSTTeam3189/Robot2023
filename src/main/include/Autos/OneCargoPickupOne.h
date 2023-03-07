@@ -11,7 +11,7 @@
 
 #include "subsystems/Elevator.h"
 #include "subsystems/Intake.h"
-#include "subsystems/Shooter.h"
+#include "subsystems/Grabber.h"
 #include "subsystems/SwerveDrive.h"
 #include "commands/ResetOdometry.h"
 #include "commands/ToggleIntakePistons.h"
@@ -27,11 +27,11 @@ class OneCargoPickupOne
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
                                  OneCargoPickupOne> {
  public:
-  OneCargoPickupOne(SwerveDrive *swerveDrive, Elevator *elevator, Shooter *shooter, Intake *intake);
+  OneCargoPickupOne(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabber, Intake *intake);
 
  private:
   SwerveDrive *m_swerve;
   Elevator *m_elevator;
-  Shooter *m_shooter;
+  Grabber *m_grabber;
   Intake *m_intake;
 };

@@ -6,7 +6,8 @@
 
 #include <frc2/command/SubsystemBase.h>
 #include <rev/CANSparkMax.h>
-
+#include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/DigitalInput.h>
 #include "Constants.h"
 
 class Elevator : public frc2::SubsystemBase {
@@ -19,7 +20,7 @@ class Elevator : public frc2::SubsystemBase {
   void Periodic() override;
   double GetPosition();
   void Drive(double power);
-  void GoToPosition(double position);
+  void GoToPosition(double target);
   bool AtSetpoint();
 
  private:
@@ -28,6 +29,9 @@ class Elevator : public frc2::SubsystemBase {
   rev::CANSparkMax m_motor;
   rev::SparkMaxAlternateEncoder m_encoder;
   rev::SparkMaxPIDController m_PIDcontroller;
+  frc::DigitalInput m_lowerLimitSwitch;
+  frc::DigitalInput m_upperLimitSwitch;
   bool m_atSetpoint;
-  double m_position;
+  double m_target;
+  double m_power;
 };

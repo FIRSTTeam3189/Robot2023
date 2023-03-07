@@ -7,8 +7,8 @@
 // NOTE:  Consider using this command inline, rather than writing a subclass.
 // For more information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-OneCargoPickupBalance::OneCargoPickupBalance(SwerveDrive *swerveDrive, Elevator *elevator, Shooter *shooter, Intake *intake, bool isRedSide) 
-: m_swerve(swerveDrive), m_elevator(elevator), m_shooter(shooter), m_intake(intake) {
+OneCargoPickupBalance::OneCargoPickupBalance(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabber, Intake *intake, bool isRedSide) 
+: m_swerve(swerveDrive), m_elevator(elevator), m_grabber(grabber), m_intake(intake) {
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
   frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2, SwerveDriveConstants::kMaxAcceleration / 2};
@@ -38,7 +38,7 @@ OneCargoPickupBalance::OneCargoPickupBalance(SwerveDrive *swerveDrive, Elevator 
   frc2::SwerveControllerCommand<4> swerveCargoToChargeCommand = m_swerve->CreateSwerveCommand(cargoToChargeStationTrajectory);
 
   AddCommands(
-    OneCargoPickupOne(m_swerve, m_elevator, m_shooter, m_intake),
+    OneCargoPickupOne(m_swerve, m_elevator, m_grabber, m_intake),
     RotateTo(m_swerve, 180.0),
     ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
     swerveCargoToChargeCommand,
