@@ -33,6 +33,7 @@
 #include "commands/RotateTo.h"
 #include "commands/SlowTranslate.h"
 #include "commands/AimAssist.h"
+#include "commands/ElevatorRawDrive.h"
 
 #include "subsystems/SwerveDrive.h"
 #include "subsystems/Elevator.h"
@@ -102,9 +103,14 @@ class RobotContainer {
   frc2::Trigger m_toggleATan2RotButton;
   frc2::Trigger m_updatePIDButton;
   frc2::Trigger m_autoBalanceButton;
-  frc2::Trigger m_leftAimAssistButton;
+  // frc2::Trigger m_leftAimAssistButton;
   frc2::Trigger m_centerAimAssistButton;
-  frc2::Trigger m_rightAimAssistButton;
+  // frc2::Trigger m_rightAimAssistButton;
+  frc2::Trigger m_spinIntakeInButton;
+  frc2::Trigger m_spinIntakeOutButton;
+  frc2::Trigger m_toggleIntakePistonsDriver;
+  frc2::Trigger m_leftTranslateTrajectoryButton;
+  frc2::Trigger m_rightTranslateTrajectoryButton;
 
   // Co-driver's controls
   frc2::Trigger m_elevatorLowLevelButton;

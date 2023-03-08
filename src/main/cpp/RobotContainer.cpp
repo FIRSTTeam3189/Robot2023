@@ -38,6 +38,17 @@ RobotContainer::RobotContainer() {
 }
 
 void RobotContainer::ConfigureButtonBindings() {
+  // --------------------Driver controls-----------------------
+  // Both driver and co-driver have intake control
+  m_spinIntakeInButton = m_bill.Button(PS5_BUTTON_RBUMPER);
+  m_spinIntakeInButton.WhileTrue(RunIntake(m_intake, INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER).ToPtr());
+
+  m_spinIntakeOutButton = m_bill.Button(PS5_BUTTON_LBUMPER);
+  m_spinIntakeOutButton.WhileTrue(RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, -INTAKE_CONE_CORRECT_POWER).ToPtr());
+
+  m_toggleIntakePistonsDriver = m_bill.Button(PS5_BUTTON_LTRIGGER);
+  m_toggleIntakePistonsDriver.OnTrue(ToggleIntakePistons(m_intake).ToPtr());
+
   // Individually spin each of 8 motors - most basic test
   // We didn't have enough electrical connections
   
@@ -77,7 +88,7 @@ void RobotContainer::ConfigureButtonBindings() {
   // m_backRightRotTestButton = m_bill.Button(PS5_BUTTON_RTRIGGER);
   // m_backRightRotTestButton.WhileTrue(SingleModTest(m_swerve, SwerveModuleLocation::br, .1, ManualModuleDriveType::turn).ToPtr());
 
-  m_resetOdometryButton = m_bill.Button(PS5_BUTTON_PS);
+  m_resetOdometryButton = m_bill.Button(PS5_BUTTON_TOUCHPAD);
   m_resetOdometryButton.OnTrue(ResetOdometry(
     m_swerve, frc::Pose2d{0.0_m, 0.0_m, {0.0_deg}}).ToPtr());
 
@@ -87,7 +98,8 @@ void RobotContainer::ConfigureButtonBindings() {
   // m_updatePIDButton = m_bill.Button(PS5_BUTTON_MENU);
   // m_updatePIDButton.OnTrue(UpdatePIDValues(m_swerve).ToPtr());
 
-  m_autoBalanceButton = m_bill.Button(PS5_BUTTON_RSTICK);
+  // Change to bumper or trigger
+  m_autoBalanceButton = m_bill.Button(PS5_BUTTON_RTRIGGER);
   m_autoBalanceButton.WhileTrue(AutoBalance(m_swerve).ToPtr());
   
   // m_resetEncodersToAbsoluteButton = m_bill.Button(PS5_BUTTON_CREATE);
@@ -112,41 +124,50 @@ void RobotContainer::ConfigureButtonBindings() {
   auto leftTranslateCommand = m_swerve->CreateSwerveCommand(leftTrajectory);
   auto rightTranslateCommand = m_swerve->CreateSwerveCommand(rightTrajectory);
 
-  m_leftAimAssistButton = m_bill.Button(PS5_BUTTON_CREATE);
+  // REMEMBER TO TEST OUT REDUCING THE AMOUNT OF TIMES
+  // WE CALL RESETODOMETRY WITH 0 AND INSTEAD CALL IT WITH 
+  // THE CURRENT ROBOT ANGLE SO IT RESETS ENCODERS AND NOT THE ROBOT'S ANGLE
+  // THIS WAY THE DRIVER DOESNT HAVE TO TURN AROUND AND PRESS THE BUTTON AS OFTEN
+  // NOW MOST TRAJECTORIES WOULD BE FIELD RELATIVE INSTEAD OF ROBOT RELATIVE
+  // OR COULD RESET GYRO ANGLE BACK TO HOW IT WAS BEFORE EVERY RESET AFTER EVERY RESET
+
+  // m_leftAimAssistButton = m_bill.Button(PS5_BUTTON_CREATE);
   // m_leftAimAssistButton.OnTrue(frc2::SequentialCommandGroup(
   //     RotateTo(m_swerve, 0), ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
   //     frc2::ParallelRaceGroup(frc2::WaitCommand(3.0_s), AimAssist(m_vision, m_swerve, 1.0, 0.0, 0.0)), 
   //     ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}), leftTranslateCommand,
   //     RotateTo(m_swerve, 0)).ToPtr());
-  
-  m_leftAimAssistButton.OnTrue(frc2::SequentialCommandGroup(
+
+  m_leftTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_CREATE);  
+  m_leftTranslateTrajectoryButton.OnTrue(frc2::SequentialCommandGroup(
       RotateTo(m_swerve, 0), ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
       leftTranslateCommand,
       RotateTo(m_swerve, 0)).ToPtr());
 
-  m_centerAimAssistButton = m_bill.Button(PS5_BUTTON_TOUCHPAD);
+  m_centerAimAssistButton = m_bill.Button(PS5_BUTTON_PS);
   m_centerAimAssistButton.OnTrue(frc2::SequentialCommandGroup(
     RotateTo(m_swerve, 0),
     ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
     frc2::ParallelRaceGroup(frc2::WaitCommand(3.0_s), AimAssist(m_vision, m_swerve, 1.0, 0.0, 0.0)),
     RotateTo(m_swerve, 0)).ToPtr());
 
-  m_rightAimAssistButton = m_bill.Button(PS5_BUTTON_MENU);
+  // m_rightTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_MENU);
   // m_rightAimAssistButton.OnTrue(frc2::SequentialCommandGroup(
   //     RotateTo(m_swerve, 0), ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
   //     frc2::ParallelRaceGroup(frc2::WaitCommand(3.0_s), AimAssist(m_vision, m_swerve, 1.0, 0.0, 0.0)),
   //     ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}), rightTranslateCommand,
   //     RotateTo(m_swerve, 0)).ToPtr());
 
-  m_rightAimAssistButton.OnTrue(frc2::SequentialCommandGroup(
+  m_rightTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_MENU);  
+  m_rightTranslateTrajectoryButton.OnTrue(frc2::SequentialCommandGroup(
       RotateTo(m_swerve, 0), ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
       rightTranslateCommand,
       RotateTo(m_swerve, 0)).ToPtr());
 
-  // Ted's controls
-  m_elevator->SetDefaultCommand((frc2::RunCommand([this]{
-    m_elevator->Drive(m_ted.GetRawAxis(PS5_AXIS_LSTICK_Y));
-  },{m_elevator})));
+  // ---------------------Ted's controls----------------------
+  // Co-driver drives the elevator manually and continuously pulls in by default
+  // Can also use PID buttons instead
+  m_elevator->SetDefaultCommand(ElevatorRawDrive(m_elevator, m_grabber, m_ted.GetRawAxis(PS5_AXIS_LSTICK_Y)));
 
   m_elevatorLowLevelButton = m_ted.Button(PS5_BUTTON_X);
   m_elevatorLowLevelButton.OnTrue(ElevatorPID(m_elevator, m_grabber, ELEVATOR_LOW_TARGET).ToPtr());
