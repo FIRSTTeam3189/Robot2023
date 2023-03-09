@@ -20,7 +20,6 @@ m_absoluteEncoder(SI.CANCoderID, "Swerve")
 {
     m_speedMotor.ConfigFactoryDefault();
     m_angleMotor.ConfigFactoryDefault();
-
     m_speedMotor.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor);
     m_speedMotor.ConfigFeedbackNotContinuous(true);
     m_speedMotor.SetNeutralMode(NeutralMode::Brake);
