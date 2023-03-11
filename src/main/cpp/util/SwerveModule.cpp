@@ -20,7 +20,6 @@ m_absoluteEncoder(SI.CANCoderID, "Swerve")
 {
     m_speedMotor.ConfigFactoryDefault();
     m_angleMotor.ConfigFactoryDefault();
-
     m_speedMotor.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor);
     m_speedMotor.ConfigFeedbackNotContinuous(true);
     m_speedMotor.SetNeutralMode(NeutralMode::Brake);
@@ -253,7 +252,7 @@ SwerveModuleTelemetry SwerveModule::GetTelemetry() {
     double angleCurrent = m_angleMotor.GetOutputCurrent();
     double angleVoltage = m_angleMotor.GetBusVoltage();
     double absoluteAngle = m_absoluteEncoder.GetAbsolutePosition();
-    double relativeAngle = m_absoluteEncoder.GetPosition();
+    double relativeAngle = FalconToDegrees(m_angleMotor.GetSelectedSensorPosition());
 
     // Organizes module data into struct
     SwerveModuleTelemetry SMT{speed, position, 

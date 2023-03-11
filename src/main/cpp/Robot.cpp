@@ -16,6 +16,9 @@ void Robot::RobotInit() {
   // deployDirectory = deployDirectory / "paths" / "Special.wpilib.json";
   // m_container.SetPathWeaverTrajectory(frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string()));
   m_container.ResetGyroscope();
+  cs::UsbCamera frontCamera = frc::CameraServer::StartAutomaticCapture(0);
+  cs::UsbCamera interiorCamera = frc::CameraServer::StartAutomaticCapture(1);
+  // cs::UsbCamera camera = frc::CameraServer::StartAutomaticCapture();
   // Setup trajectories
   // m_container.GetAutonomousCommand();
   // std::cout << "Robot initialized\n";

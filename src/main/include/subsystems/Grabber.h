@@ -8,9 +8,9 @@
 #include "ctre/Phoenix.h"
 #include "Constants.h"
 
-class Shooter : public frc2::SubsystemBase {
+class Grabber : public frc2::SubsystemBase {
 public:
-  Shooter();
+  Grabber();
 
   /**
    * Will be called periodically whenever the CommandScheduler runs.

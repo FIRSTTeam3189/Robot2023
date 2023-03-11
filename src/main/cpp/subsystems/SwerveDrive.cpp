@@ -85,9 +85,9 @@ void SwerveDrive::Drive(
      (double)bl.angle.Degrees(), (double)bl.speed,
      (double)br.angle.Degrees(), (double)br.speed};
 
-  frc::SmartDashboard::PutNumber("Front Right PID Error", m_SM.m_frontRight.m_angleMotor.GetClosedLoopError());
-  frc::SmartDashboard::PutNumber("Front Right Current Turn", m_SM.m_frontRight.m_angleMotor.GetSelectedSensorPosition());
-  frc::SmartDashboard::PutNumber("Front Right Turn Target", m_SM.m_frontRight.m_angleMotor.GetClosedLoopTarget());
+  // frc::SmartDashboard::PutNumber("Front Right PID Error", m_SM.m_frontRight.m_angleMotor.GetClosedLoopError());
+  // frc::SmartDashboard::PutNumber("Front Right Current Turn", m_SM.m_frontRight.m_angleMotor.GetSelectedSensorPosition());
+  // frc::SmartDashboard::PutNumber("Front Right Turn Target", m_SM.m_frontRight.m_angleMotor.GetClosedLoopTarget());
   frc::SmartDashboard::PutNumberArray("AdvantageScope Desired States", AdvantageScopeDesiredStates);
   SetModuleStates(states);
 }

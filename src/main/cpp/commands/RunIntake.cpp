@@ -4,8 +4,8 @@
 
 #include "commands/RunIntake.h"
 
-RunIntake::RunIntake(Intake *intake, double power)
-: m_intake(intake), m_power(power) {
+RunIntake::RunIntake(Intake *intake, double rollerPower, double conveyorPower, double coneCorrectPower)
+: m_intake(intake), m_rollerPower(rollerPower), m_conveyorPower(conveyorPower), m_coneCorrectPower(coneCorrectPower)  {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(intake);
 }
@@ -15,7 +15,7 @@ void RunIntake::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
 void RunIntake::Execute() {
-  m_intake->SetPower(m_power);
+  m_intake->SetPower(m_rollerPower, m_conveyorPower, m_coneCorrectPower);
 }
 
 // Called once the command ends or is interrupted.

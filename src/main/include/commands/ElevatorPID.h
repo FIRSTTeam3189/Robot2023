@@ -7,6 +7,7 @@
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 
+#include "subsystems/Grabber.h"
 #include "subsystems/Elevator.h"
 
 /**
@@ -19,7 +20,7 @@
 class ElevatorPID
     : public frc2::CommandHelper<frc2::CommandBase, ElevatorPID> {
  public:
-  ElevatorPID(Elevator *elevator, double target);
+  ElevatorPID(Elevator *elevator, Grabber *grabber, double target, bool interrupt);
 
   void Initialize() override;
 
@@ -31,5 +32,7 @@ class ElevatorPID
 
  private:
   Elevator *m_elevator;
+  Grabber *m_grabber;
   double m_target;
+  bool m_interrupt;
 };

@@ -24,8 +24,8 @@ void OISwerveDrive::Initialize() {
 units::angular_velocity::radians_per_second_t OISwerveDrive::SetDesiredRotationalVelocity() {
   // Get raw (-1.0 to 1.0) joystick positions for x and y axis
   // Left, up are -1.0; right, down are 1.0
-  double joystickX = -frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_RSTICK_Y), 0.05);
-  double joystickY = -frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_RSTICK_X), 0.05);
+  double joystickX = frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_RSTICK_Y), 0.05);
+  double joystickY = frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_RSTICK_X), 0.05);
 
   // Don't rotate if joystick input is near 0 in both axes
   if ((fabs(joystickX) < .05) && (fabs(joystickY) < .05)) 
@@ -52,7 +52,7 @@ units::angular_velocity::radians_per_second_t OISwerveDrive::SetDesiredRotationa
   // Stop rotating if within tolerance
   if (m_rotationPIDController.AtSetpoint())
     rot = units::angular_velocity::radians_per_second_t {0.0};
-  return -rot;
+  return rot;
 }
 
 // Called repeatedly when this Command is scheduled to run

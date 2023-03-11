@@ -4,9 +4,9 @@
 
 #include "util/Piston.h"
 
-Piston::Piston(int module, int forwardChannel, int reverseChannel) {
-    m_solenoid_e = new frc::Solenoid(module, frc::PneumaticsModuleType::CTREPCM, forwardChannel);
-    m_solenoid_r = new frc::Solenoid(module, frc::PneumaticsModuleType::CTREPCM, reverseChannel);
+Piston::Piston(int forwardChannel, int reverseChannel) {
+    m_solenoid_e = new frc::Solenoid(1, frc::PneumaticsModuleType::REVPH, forwardChannel);
+    m_solenoid_r = new frc::Solenoid(1, frc::PneumaticsModuleType::REVPH, reverseChannel);
 
     m_solenoid_r->Set(true);
     m_solenoid_e->Set(false);

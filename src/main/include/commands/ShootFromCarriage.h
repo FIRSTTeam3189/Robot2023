@@ -7,7 +7,7 @@
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 
-#include "subsystems/Shooter.h"
+#include "subsystems/Grabber.h"
 
 /**
  * An example command.
@@ -19,7 +19,7 @@
 class ShootFromCarriage
     : public frc2::CommandHelper<frc2::CommandBase, ShootFromCarriage> {
  public:
-  ShootFromCarriage(Shooter *shooter, double power);
+  ShootFromCarriage(Grabber *grabber, double power);
 
   void Initialize() override;
 
@@ -30,6 +30,6 @@ class ShootFromCarriage
   bool IsFinished() override;
 
  private:
-  Shooter *m_shooter;
+  Grabber *m_grabber;
   double m_power;
 };

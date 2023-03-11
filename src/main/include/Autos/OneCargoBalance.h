@@ -10,7 +10,7 @@
 #include <frc/trajectory/TrajectoryGenerator.h>
 
 #include "subsystems/Elevator.h"
-#include "subsystems/Shooter.h"
+#include "subsystems/Grabber.h"
 #include "subsystems/SwerveDrive.h"
 #include "commands/ResetOdometry.h"
 #include "commands/AutoBalance.h"
@@ -24,10 +24,10 @@ class OneCargoBalance
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
                                  OneCargoBalance> {
  public:
-  OneCargoBalance(SwerveDrive *swerveDrive, Elevator *elevator, Shooter *shooter);
+  OneCargoBalance(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabber);
 
  private:
   SwerveDrive *m_swerve;
   Elevator *m_elevator;
-  Shooter *m_shooter;
+  Grabber *m_grabber;
 };

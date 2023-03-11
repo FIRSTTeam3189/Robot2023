@@ -7,7 +7,9 @@
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 
-#include "subsystems/Intake.h"
+#include "subsystems/Elevator.h"
+#include "subsystems/Grabber.h"
+#include "Constants.h"
 
 /**
  * An example command.
@@ -16,10 +18,10 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class RunIntake
-    : public frc2::CommandHelper<frc2::CommandBase, RunIntake> {
+class ElevatorRawDrive
+    : public frc2::CommandHelper<frc2::CommandBase, ElevatorRawDrive> {
  public:
-  RunIntake(Intake *intake, double rollerPower, double conveyorPower, double coneCorrectPower);
+  ElevatorRawDrive(Elevator *elevator, Grabber *grabber, double power);
 
   void Initialize() override;
 
@@ -30,8 +32,7 @@ class RunIntake
   bool IsFinished() override;
 
  private:
-  Intake *m_intake;
-  double m_rollerPower;
-  double m_conveyorPower;
-  double m_coneCorrectPower;
+  Elevator *m_elevator;
+  Grabber *m_grabber;
+  double m_power;
 };

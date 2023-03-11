@@ -11,7 +11,7 @@
 
 #include "subsystems/Elevator.h"
 #include "subsystems/Intake.h"
-#include "subsystems/Shooter.h"
+#include "subsystems/Grabber.h"
 #include "subsystems/SwerveDrive.h"
 #include "Autos/OneCargoPickupOne.h"
 #include "commands/AutoBalance.h"
@@ -24,11 +24,11 @@ class OneCargoPickupBalance
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
                                  OneCargoPickupBalance> {
  public:
-  OneCargoPickupBalance(SwerveDrive *swerveDrive, Elevator *elevator, Shooter *shooter, Intake *intake, bool isRedSide);
+  OneCargoPickupBalance(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabber, Intake *intake, bool isRedSide);
   
  private:
   SwerveDrive *m_swerve;
   Elevator *m_elevator;
-  Shooter *m_shooter;
+  Grabber *m_grabber;
   Intake *m_intake;
 };

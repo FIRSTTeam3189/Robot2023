@@ -82,7 +82,7 @@ namespace SwerveDriveConstants {
     constexpr double speedP {1.0};
     constexpr double speedI {0.0};
     constexpr double speedD {0.0};
-    constexpr double angleP {0.15};
+    constexpr double angleP {0.3};
     constexpr double angleI {0.0};
     constexpr double angleD {0.0};
     // These are for robot rotation, not wheel rotation
@@ -115,10 +115,10 @@ namespace SwerveDriveConstants {
     constexpr int rightBackCancoderID {12};
 
     // Swerve angle offsets -- difference between actual degrees heading and absolute degree values
-    constexpr double frontLeftOffset {116.0};
-    constexpr double frontRightOffset {76.0};
-    constexpr double backLeftOffset {223.0};
-    constexpr double backRightOffset {129.0};
+    constexpr double frontLeftOffset {291.5};
+    constexpr double frontRightOffset {9.6};
+    constexpr double backLeftOffset {303.4};
+    constexpr double backRightOffset {1.8};
 
     constexpr SwerveInfo kLeftFrontInfo {
         leftFrontSpeedCANID, leftFrontTurningCANID, leftFrontCancoderID, 
@@ -167,6 +167,7 @@ namespace AutoConstants {
 // PS5 Controls
 
 #define PS5_BILL_CONTROLLER_PORT 0
+#define PS5_TED_CONTROLLER_PORT 1
 
 #define PS5_BUTTON_SQR 1
 #define PS5_BUTTON_X 2
@@ -192,23 +193,30 @@ namespace AutoConstants {
 
 // Need to get IDs
 
-#define INTAKE_PISTON_L 0
-#define INTAKE_PISTON_R 1
-#define INTAKE_MOTOR_L 0
-#define INTAKE_MOTOR_R 1
-#define INTAKE_POWER 0.1
+#define INTAKE_PISTON_IN 0
+#define INTAKE_PISTON_OUT 1
+#define INTAKE_ROLLER_MOTOR_ID 13
+#define INTAKE_CONVEYOR_MOTOR_ID 14
+#define INTAKE_L_CONE_CORRECT_MOTOR_ID 15
+#define INTAKE_R_CONE_CORRECT_MOTOR_ID 16
+#define INTAKE_ROLLER_POWER 0.75
+#define INTAKE_CONVEYOR_POWER 0.5
+#define INTAKE_CONE_CORRECT_POWER 0.1
 
-#define ELEVATOR_MOTOR 2
-#define ELEVATOR_P 0
+#define ELEVATOR_MOTOR 17
+#define ELEVATOR_P 0.25
+#define ELEVATOR_SLOW_P 0.05
 #define ELEVATOR_I 0
 #define ELEVATOR_D 0
+// Values in encoder ticks
 #define ELEVATOR_CPR 1024
-#define ELEVATOR_LOW_CUBE_TARGET 0
-#define ELEVATOR_MID_CUBE_TARGET 0
-#define ELEVATOR_HIGH_CUBE_TARGET 0
-#define ELEVATOR_LOW_CONE_TARGET 0
-#define ELEVATOR_MID_CONE_TARGET 0
-#define ELEVATOR_HIGH_CONE_TARGET 0
+#define ELEVATOR_LOW_TARGET 2000
+#define ELEVATOR_MID_TARGET 4000
+#define ELEVATOR_HIGH_TARGET 6000
+#define ELEVATOR_SLOW_DISTANCE 1000
+#define ELEVATOR_STOP_DISTANCE 100
+#define ELEVATOR_LOWER_LIMIT_SWITCH_ID 0 
+#define ELEVATOR_UPPER_LIMIT_SWITCH_ID 1
 
 // Target distances are in meters
 #define AIM_ASSIST_TARGET_X_DISTANCE 1.0
@@ -229,14 +237,17 @@ namespace AutoConstants {
 #define VISION_ROT_KI 0.0
 #define VISION_ROT_KD 0.0
 
-#define SHOOTER_MOTOR_ID 0
-#define SHOOTER_MOTOR_ID 3
-#define SHOOTER_REJECT_SPEED 0
-#define SHOOTER_LOW_CUBE_SPEED 0
-#define SHOOTER_MID_CUBE_SPEED 0
-#define SHOOTER_HIGH_CUBE_SPEED 0
-#define SHOOTER_LOW_CONE_SPEED 0
-#define SHOOTER_MID_CONE_SPEED 0
-#define SHOOTER_HIGH_CONE_SPEED 0
+// #define GRABBER_MOTOR_ID 0
+#define GRABBER_MOTOR_ID 18
+#define GRABBER_DROP_SPEED 0.35
+#define GRABBER_GRAB_SPEED -0.25
+// #define GRABBER_REJECT_SPEED 0
+// #define GRABBER_LOW_CUBE_SPEED 0
+// #define GRABBER_MID_CUBE_SPEED 0
+// #define GRABBER_HIGH_CUBE_SPEED 0
+// #define GRABBER_LOW_CONE_SPEED 0
+// #define GRABBER_MID_CONE_SPEED 0
+// #define GRABBER_HIGH_CONE_SPEED 0
+#define GRABBER_CARRY_SPEED -0.15
 
 #endif

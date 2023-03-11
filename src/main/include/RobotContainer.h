@@ -22,6 +22,7 @@
 #include "Autos/OneCargoPickupBalance.h"
 #include "Autos/OneCargoPickupOne.h"
 #include "Autos/TwoCargo.h"
+#include "Autos/TwoPieceWithVision.h"
 
 #include "commands/SingleModTest.h"
 #include "commands/OISwerveDrive.h"
@@ -32,11 +33,12 @@
 #include "commands/RotateTo.h"
 #include "commands/SlowTranslate.h"
 #include "commands/AimAssist.h"
+#include "commands/ElevatorRawDrive.h"
 
 #include "subsystems/SwerveDrive.h"
 #include "subsystems/Elevator.h"
 #include "subsystems/Intake.h"
-#include "subsystems/Shooter.h"
+#include "subsystems/Grabber.h"
 
 #include <iostream>
 #include "subsystems/Vision.h"
@@ -61,17 +63,18 @@ class RobotContainer {
   Vision *m_vision = new Vision();
   SwerveDrive *m_swerve = new SwerveDrive();
   Elevator *m_elevator = new Elevator();
-  Shooter *m_shooter = new Shooter();
+  Grabber *m_grabber = new Grabber();
   Intake *m_intake = new Intake();
 
   // Add autonomous routines to chooser
   TestAuto m_TestAuto{m_swerve};
-  OneCargo m_oneCargo{m_elevator, m_shooter};
-  OneCargoBalance m_oneCargoBalance{m_swerve, m_elevator, m_shooter};
-  OneCargoPickupBalance m_oneCargoPickupBalanceRed{m_swerve, m_elevator, m_shooter, m_intake, true};
-  OneCargoPickupBalance m_oneCargoPickupBalanceBlue{m_swerve, m_elevator, m_shooter, m_intake, false};
-  OneCargoPickupOne m_oneCargoPickupOne{m_swerve, m_elevator, m_shooter, m_intake};
-  TwoCargo m_twoCargo{m_swerve, m_elevator, m_shooter, m_intake};
+  OneCargo m_oneCargo{m_elevator, m_grabber};
+  OneCargoBalance m_oneCargoBalance{m_swerve, m_elevator, m_grabber};
+  OneCargoPickupBalance m_oneCargoPickupBalanceRed{m_swerve, m_elevator, m_grabber, m_intake, true};
+  OneCargoPickupBalance m_oneCargoPickupBalanceBlue{m_swerve, m_elevator, m_grabber, m_intake, false};
+  OneCargoPickupOne m_oneCargoPickupOne{m_swerve, m_elevator, m_grabber, m_intake};
+  TwoCargo m_twoCargo{m_swerve, m_elevator, m_grabber, m_intake};
+  TwoPieceWithVision m_twoPieceWithVision{m_swerve, m_elevator, m_grabber, m_intake, m_vision};
 
   frc::SendableChooser<frc2::Command*> m_chooser;
 
@@ -80,7 +83,9 @@ class RobotContainer {
   // frc::Joystick m_ted{1};
 
   frc2::CommandJoystick m_bill{PS5_BILL_CONTROLLER_PORT};
+  frc2::CommandJoystick m_ted{PS5_TED_CONTROLLER_PORT};
 
+  // Driver's controls
   // frc2::Trigger m_frontLeftSpeedTestButton;
   // frc2::Trigger m_frontRightSpeedTestButton;
   // frc2::Trigger m_backLeftSpeedTestButton;
@@ -89,20 +94,34 @@ class RobotContainer {
   frc2::Trigger m_rotateTo0Button;
   frc2::Trigger m_translateRightButton;
   frc2::Trigger m_rotateTo180Button;
-  frc2::Trigger m_frontLeftRotTestButton;
-  frc2::Trigger m_frontRightRotTestButton;
-  frc2::Trigger m_backLeftRotTestButton;
-  frc2::Trigger m_backRightRotTestButton;
+  // frc2::Trigger m_frontLeftRotTestButton;
+  // frc2::Trigger m_frontRightRotTestButton;
+  // frc2::Trigger m_backLeftRotTestButton;
+  // frc2::Trigger m_backRightRotTestButton;
   frc2::Trigger m_resetOdometryButton;
   frc2::Trigger m_resetEncodersToAbsoluteButton;
   frc2::Trigger m_toggleATan2RotButton;
   frc2::Trigger m_updatePIDButton;
   frc2::Trigger m_autoBalanceButton;
-  frc2::Trigger m_leftAimAssistButton;
+  // frc2::Trigger m_leftAimAssistButton;
   frc2::Trigger m_centerAimAssistButton;
-  frc2::Trigger m_rightAimAssistButton;
+  // frc2::Trigger m_rightAimAssistButton;
+  frc2::Trigger m_spinIntakeInButton;
+  frc2::Trigger m_spinIntakeOutButton;
+  frc2::Trigger m_toggleIntakePistonsDriver;
+  frc2::Trigger m_leftTranslateTrajectoryButton;
+  frc2::Trigger m_rightTranslateTrajectoryButton;
+  frc2::Trigger m_driverStopButton;
 
-  // Very basic individual motor tests
+  // Co-driver's controls
+  frc2::Trigger m_elevatorLowLevelButton;
+  frc2::Trigger m_elevatorMidLevelButton;
+  frc2::Trigger m_elevatorHighLevelButton;
+  frc2::Trigger m_cancelElevatorPIDControl;
+  frc2::Trigger m_toggleIntakePistonsButton;
+  frc2::Trigger m_shootButton;
+  frc2::Trigger m_grabButton;
+  frc2::Trigger m_codriverStopButton;
 
   void ConfigureButtonBindings();
 };

@@ -22,16 +22,17 @@ void AutoBalance::Execute() {
   auto speed = 0.0_mps;
   auto rot = units::angular_velocity::radians_per_second_t{0.0};
 
-  if (pitch < -4.0) {
+  // Signage depends on Pigeon mount orientation
+  if (pitch > 4.0) {
     speed = 0.75_mps;
-  } else if (pitch > 4.0) {
+  } else if (pitch < -4.0) {
     speed = -0.75_mps;
   }
  
-  if (pitch - m_lastPitch > 0.1) {
+  if (pitch - m_lastPitch < -0.1) {
     speed = -0.25_mps;
     rot = units::angular_velocity::radians_per_second_t{0.25};
-  } else if (pitch - m_lastPitch < -0.1) {
+  } else if (pitch - m_lastPitch > 0.1) {
     speed = 0.25_mps;
     rot = units::angular_velocity::radians_per_second_t{0.25};
   }

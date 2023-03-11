@@ -19,10 +19,12 @@ class Intake : public frc2::SubsystemBase {
   void Periodic() override;
 
   void ToggleIntake();
-  void SetPower(double power);
+  void SetPower(double rollerPower, double conveyorPower, double coneCorrectPower);
+  
 private:
-  Piston *m_leftPiston;
-  Piston *m_rightPiston;
-  rev::CANSparkMax *m_topMotor;
-  rev::CANSparkMax *m_bottomMotor;
+  Piston m_intakePiston;
+  rev::CANSparkMax m_rollerMotor;
+  rev::CANSparkMax m_conveyorMotor;
+  rev::CANSparkMax m_leftConeCorrectMotor;
+  rev::CANSparkMax m_rightConeCorrectMotor;
 };
