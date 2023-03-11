@@ -8,6 +8,7 @@ ShootFromCarriage::ShootFromCarriage(Grabber *grabber, double power)
 : m_grabber(grabber), m_power(power) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(grabber);
+  AddRequirements(grabber);
 }
 
 // Called when the command is initially scheduled.
@@ -15,6 +16,7 @@ void ShootFromCarriage::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
 void ShootFromCarriage::Execute() {
+  m_grabber->SetSpeed(m_power);
   m_grabber->SetSpeed(m_power);
 }
 

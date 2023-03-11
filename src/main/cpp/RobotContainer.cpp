@@ -30,6 +30,7 @@ RobotContainer::RobotContainer() {
   m_chooser.AddOption("One Cargo Pickup One", &m_oneCargoPickupOne);
   m_chooser.AddOption("Two Cargo", &m_twoCargo);
   m_chooser.AddOption("Two Cargo With Vision", &m_twoPieceWithVision);
+  m_chooser.AddOption("Two Cargo With Vision", &m_twoPieceWithVision);
 
   frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
   AutoConstants::thetaPIDController.EnableContinuousInput(units::radian_t{-PI}, units::radian_t{PI});
@@ -38,6 +39,17 @@ RobotContainer::RobotContainer() {
 }
 
 void RobotContainer::ConfigureButtonBindings() {
+  // --------------------Driver controls-----------------------
+  // Both driver and co-driver have intake control
+  m_spinIntakeInButton = m_bill.Button(PS5_BUTTON_RBUMPER);
+  m_spinIntakeInButton.WhileTrue(RunIntake(m_intake, INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER).ToPtr());
+
+  m_spinIntakeOutButton = m_bill.Button(PS5_BUTTON_LBUMPER);
+  m_spinIntakeOutButton.WhileTrue(RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, -INTAKE_CONE_CORRECT_POWER).ToPtr());
+
+  m_toggleIntakePistonsDriver = m_bill.Button(PS5_BUTTON_LTRIGGER);
+  m_toggleIntakePistonsDriver.OnTrue(ToggleIntakePistons(m_intake).ToPtr());
+
   // --------------------Driver controls-----------------------
   // Both driver and co-driver have intake control
   m_spinIntakeInButton = m_bill.Button(PS5_BUTTON_RBUMPER);
@@ -78,16 +90,25 @@ void RobotContainer::ConfigureButtonBindings() {
 
   // m_frontLeftRotTestButton = m_bill.Button(PS5_BUTTON_LBUMPER);
   // m_frontLeftRotTestButton.WhileTrue(SingleModTest(m_swerve, SwerveModuleLocation::fl, .1, ManualModuleDriveType::turn).ToPtr());
+  // m_frontLeftRotTestButton = m_bill.Button(PS5_BUTTON_LBUMPER);
+  // m_frontLeftRotTestButton.WhileTrue(SingleModTest(m_swerve, SwerveModuleLocation::fl, .1, ManualModuleDriveType::turn).ToPtr());
 
+  // m_frontRightRotTestButton = m_bill.Button(PS5_BUTTON_RBUMPER);
+  // m_frontRightRotTestButton.WhileTrue(SingleModTest(m_swerve, SwerveModuleLocation::fr, .1, ManualModuleDriveType::turn).ToPtr());
   // m_frontRightRotTestButton = m_bill.Button(PS5_BUTTON_RBUMPER);
   // m_frontRightRotTestButton.WhileTrue(SingleModTest(m_swerve, SwerveModuleLocation::fr, .1, ManualModuleDriveType::turn).ToPtr());
 
   // m_backLeftRotTestButton = m_bill.Button(PS5_BUTTON_LTRIGGER);
   // m_backLeftRotTestButton.WhileTrue(SingleModTest(m_swerve, SwerveModuleLocation::bl, .1, ManualModuleDriveType::turn).ToPtr());
+  // m_backLeftRotTestButton = m_bill.Button(PS5_BUTTON_LTRIGGER);
+  // m_backLeftRotTestButton.WhileTrue(SingleModTest(m_swerve, SwerveModuleLocation::bl, .1, ManualModuleDriveType::turn).ToPtr());
 
   // m_backRightRotTestButton = m_bill.Button(PS5_BUTTON_RTRIGGER);
   // m_backRightRotTestButton.WhileTrue(SingleModTest(m_swerve, SwerveModuleLocation::br, .1, ManualModuleDriveType::turn).ToPtr());
+  // m_backRightRotTestButton = m_bill.Button(PS5_BUTTON_RTRIGGER);
+  // m_backRightRotTestButton.WhileTrue(SingleModTest(m_swerve, SwerveModuleLocation::br, .1, ManualModuleDriveType::turn).ToPtr());
 
+  m_resetOdometryButton = m_bill.Button(PS5_BUTTON_TOUCHPAD);
   m_resetOdometryButton = m_bill.Button(PS5_BUTTON_TOUCHPAD);
   m_resetOdometryButton.OnTrue(ResetOdometry(
     m_swerve, frc::Pose2d{0.0_m, 0.0_m, {0.0_deg}}).ToPtr());
@@ -100,10 +121,13 @@ void RobotContainer::ConfigureButtonBindings() {
 
   // Change to bumper or trigger
   m_autoBalanceButton = m_bill.Button(PS5_BUTTON_RTRIGGER);
+  // Change to bumper or trigger
+  m_autoBalanceButton = m_bill.Button(PS5_BUTTON_RTRIGGER);
   m_autoBalanceButton.WhileTrue(AutoBalance(m_swerve).ToPtr());
   
   // m_resetEncodersToAbsoluteButton = m_bill.Button(PS5_BUTTON_CREATE);
   // m_resetEncodersToAbsoluteButton.OnTrue(ResetEncodersToAbsolute(m_swerve).ToPtr());
+  
   
   frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2, SwerveDriveConstants::kMaxAcceleration / 2};
   config.SetKinematics(SwerveDriveConstants::kinematics);
@@ -132,6 +156,14 @@ void RobotContainer::ConfigureButtonBindings() {
   // OR COULD RESET GYRO ANGLE BACK TO HOW IT WAS BEFORE EVERY RESET AFTER EVERY RESET
 
   // m_leftAimAssistButton = m_bill.Button(PS5_BUTTON_CREATE);
+  // REMEMBER TO TEST OUT REDUCING THE AMOUNT OF TIMES
+  // WE CALL RESETODOMETRY WITH 0 AND INSTEAD CALL IT WITH 
+  // THE CURRENT ROBOT ANGLE SO IT RESETS ENCODERS AND NOT THE ROBOT'S ANGLE
+  // THIS WAY THE DRIVER DOESNT HAVE TO TURN AROUND AND PRESS THE BUTTON AS OFTEN
+  // NOW MOST TRAJECTORIES WOULD BE FIELD RELATIVE INSTEAD OF ROBOT RELATIVE
+  // OR COULD RESET GYRO ANGLE BACK TO HOW IT WAS BEFORE EVERY RESET AFTER EVERY RESET
+
+  // m_leftAimAssistButton = m_bill.Button(PS5_BUTTON_CREATE);
   // m_leftAimAssistButton.OnTrue(frc2::SequentialCommandGroup(
   //     RotateTo(m_swerve, 0), ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
   //     frc2::ParallelRaceGroup(frc2::WaitCommand(3.0_s), AimAssist(m_vision, m_swerve, 1.0, 0.0, 0.0)), 
@@ -140,10 +172,14 @@ void RobotContainer::ConfigureButtonBindings() {
 
   m_leftTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_CREATE);  
   m_leftTranslateTrajectoryButton.OnTrue(frc2::SequentialCommandGroup(
+
+  m_leftTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_CREATE);  
+  m_leftTranslateTrajectoryButton.OnTrue(frc2::SequentialCommandGroup(
       RotateTo(m_swerve, 0), ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
       leftTranslateCommand,
       RotateTo(m_swerve, 0)).ToPtr());
 
+  m_centerAimAssistButton = m_bill.Button(PS5_BUTTON_PS);
   m_centerAimAssistButton = m_bill.Button(PS5_BUTTON_PS);
   m_centerAimAssistButton.OnTrue(frc2::SequentialCommandGroup(
     RotateTo(m_swerve, 0),
@@ -152,12 +188,15 @@ void RobotContainer::ConfigureButtonBindings() {
     RotateTo(m_swerve, 0)).ToPtr());
 
   // m_rightTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_MENU);
+  // m_rightTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_MENU);
   // m_rightAimAssistButton.OnTrue(frc2::SequentialCommandGroup(
   //     RotateTo(m_swerve, 0), ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
   //     frc2::ParallelRaceGroup(frc2::WaitCommand(3.0_s), AimAssist(m_vision, m_swerve, 1.0, 0.0, 0.0)),
   //     ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}), rightTranslateCommand,
   //     RotateTo(m_swerve, 0)).ToPtr());
 
+  m_rightTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_MENU);  
+  m_rightTranslateTrajectoryButton.OnTrue(frc2::SequentialCommandGroup(
   m_rightTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_MENU);  
   m_rightTranslateTrajectoryButton.OnTrue(frc2::SequentialCommandGroup(
       RotateTo(m_swerve, 0), ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),

@@ -9,15 +9,20 @@ ElevatorPID::ElevatorPID(Elevator *elevator, Grabber *grabber, double target, bo
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(elevator);
   AddRequirements(grabber);
+  AddRequirements(grabber);
 }
 
 // Called when the command is initially scheduled.
 void ElevatorPID::Initialize() {
     m_elevator->GoToPosition(m_target);
 }
+void ElevatorPID::Initialize() {
+    m_elevator->GoToPosition(m_target);
+}
 
 // Called repeatedly when this Command is scheduled to run
 void ElevatorPID::Execute() {
+  m_grabber->SetSpeed(GRABBER_CARRY_SPEED);
   m_grabber->SetSpeed(GRABBER_CARRY_SPEED);
 }
 

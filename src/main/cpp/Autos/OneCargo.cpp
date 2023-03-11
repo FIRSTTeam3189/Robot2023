@@ -9,13 +9,17 @@
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 OneCargo::OneCargo(Elevator *elevator, Grabber *grabber)
 : m_elevator(elevator), m_grabber(grabber) {
+OneCargo::OneCargo(Elevator *elevator, Grabber *grabber)
+: m_elevator(elevator), m_grabber(grabber) {
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
 
   // Sends elevator to target, then runs grabber for 5 seconds
+  // Sends elevator to target, then runs grabber for 5 seconds
   // std::vector<std::unique_ptr<Command>> commands;
 
   // commands.emplace_back(std::make_unique<ElevatorPID>(m_elevator, ELEVATOR_MID_TARGET));
+  // commands.emplace_back(ShootFromCarriage(m_grabber, GRABBER_MID_SPEED).WithTimeout(5.0_s).Unwrap());
   // commands.emplace_back(ShootFromCarriage(m_grabber, GRABBER_MID_SPEED).WithTimeout(5.0_s).Unwrap());
 
   // auto group = SequentialCommandGroup(std::move(commands));
@@ -24,6 +28,7 @@ OneCargo::OneCargo(Elevator *elevator, Grabber *grabber)
   //   group
   // );
 
+  // Sends elevator to target, then runs grabber for 5 seconds
   // Sends elevator to target, then runs grabber for 5 seconds
   AddCommands(
     ElevatorPID(m_elevator, m_grabber, ELEVATOR_MID_TARGET, false),

@@ -83,6 +83,7 @@ namespace SwerveDriveConstants {
     constexpr double speedI {0.0};
     constexpr double speedD {0.0};
     constexpr double angleP {0.3};
+    constexpr double angleP {0.3};
     constexpr double angleI {0.0};
     constexpr double angleD {0.0};
     // These are for robot rotation, not wheel rotation
@@ -115,6 +116,10 @@ namespace SwerveDriveConstants {
     constexpr int rightBackCancoderID {12};
 
     // Swerve angle offsets -- difference between actual degrees heading and absolute degree values
+    constexpr double frontLeftOffset {291.5};
+    constexpr double frontRightOffset {9.6};
+    constexpr double backLeftOffset {303.4};
+    constexpr double backRightOffset {1.8};
     constexpr double frontLeftOffset {291.5};
     constexpr double frontRightOffset {9.6};
     constexpr double backLeftOffset {303.4};
@@ -168,6 +173,7 @@ namespace AutoConstants {
 
 #define PS5_BILL_CONTROLLER_PORT 0
 #define PS5_TED_CONTROLLER_PORT 1
+#define PS5_TED_CONTROLLER_PORT 1
 
 #define PS5_BUTTON_SQR 1
 #define PS5_BUTTON_X 2
@@ -209,7 +215,15 @@ namespace AutoConstants {
 #define ELEVATOR_I 0
 #define ELEVATOR_D 0
 // Values in encoder ticks
+// Values in encoder ticks
 #define ELEVATOR_CPR 1024
+#define ELEVATOR_LOW_TARGET 2000
+#define ELEVATOR_MID_TARGET 4000
+#define ELEVATOR_HIGH_TARGET 6000
+#define ELEVATOR_SLOW_DISTANCE 1000
+#define ELEVATOR_STOP_DISTANCE 100
+#define ELEVATOR_LOWER_LIMIT_SWITCH_ID 0 
+#define ELEVATOR_UPPER_LIMIT_SWITCH_ID 1
 #define ELEVATOR_LOW_TARGET 2000
 #define ELEVATOR_MID_TARGET 4000
 #define ELEVATOR_HIGH_TARGET 6000
