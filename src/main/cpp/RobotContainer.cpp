@@ -184,7 +184,7 @@ void RobotContainer::ConfigureButtonBindings() {
   //   }
   //   },
   //   {m_elevator}).ToPtr());
-  m_elevator->SetDefaultCommand(ElevatorRawDrive(m_elevator, m_grabber, &m_ted));
+  m_elevator->SetDefaultCommand(ElevatorRawDrive(m_elevator, m_grabber, m_intake, &m_ted));
 
   m_elevatorLowLevelButton = m_ted.Button(PS5_BUTTON_X);
   m_elevatorLowLevelButton.OnTrue(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_LOW_TARGET, false).ToPtr());
@@ -204,23 +204,25 @@ void RobotContainer::ConfigureButtonBindings() {
   // m_toggleIntakePistonsButton.OnTrue(ToggleIntakePistons(m_intake).ToPtr());
 
   // Hold down intake buttons to extend pistons and run; retracts when you let go
-  // m_runIntakeInButton = m_ted.Button(PS5_BUTTON_LBUMPER);
-  // m_runIntakeInButton.OnTrue(frc2::InstantCommand([this]{
-  //   m_intake->SetPistonExtension(true);
-  // },{m_intake}).ToPtr());
-  // m_runIntakeInButton.WhileTrue(RunIntake(m_intake, INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER).ToPtr());
-  // m_runIntakeInButton.OnFalse(frc2::InstantCommand([this]{
-  //   m_intake->SetPistonExtension(true);
-  // },{m_intake}).ToPtr());
+  m_runIntakeInButton = m_ted.Button(PS5_BUTTON_LBUMPER);
+  m_runIntakeInButton.OnTrue(frc2::InstantCommand([this]{
+    m_intake->SetPistonExtension(true);
+  },{m_intake}).ToPtr());
+  m_runIntakeInButton.WhileTrue(RunIntake(m_intake, INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER).ToPtr());
+  m_runIntakeInButton.OnFalse(frc2::InstantCommand([this]{
+    m_intake->SetPistonExtension(false);
+    m_intake->SetPower(0, 0, 0);
+  },{m_intake}).ToPtr());
 
-  // m_runIntakeOutButton = m_ted.Button(PS5_BUTTON_RBUMPER);
-  // m_runIntakeOutButton.OnTrue(frc2::InstantCommand([this]{
-  //   m_intake->SetPistonExtension(true);
-  // },{m_intake}).ToPtr());
-  // m_runIntakeOutButton.WhileTrue(RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, -INTAKE_CONE_CORRECT_POWER).ToPtr());
-  // m_runIntakeOutButton.OnFalse(frc2::InstantCommand([this]{
-  //   m_intake->SetPistonExtension(true);
-  // },{m_intake}).ToPtr());
+  m_runIntakeOutButton = m_ted.Button(PS5_BUTTON_RBUMPER);
+  m_runIntakeOutButton.OnTrue(frc2::InstantCommand([this]{
+    m_intake->SetPistonExtension(true);
+  },{m_intake}).ToPtr());
+  m_runIntakeOutButton.WhileTrue(RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, -INTAKE_CONE_CORRECT_POWER).ToPtr());
+  m_runIntakeOutButton.OnFalse(frc2::InstantCommand([this]{
+    m_intake->SetPistonExtension(false);
+    m_intake->SetPower(0, 0, 0);
+  },{m_intake}).ToPtr());
 
   m_grabButton = m_ted.Button(PS5_BUTTON_LTRIGGER);
   m_grabButton.WhileTrue(ShootFromCarriage(m_grabber, GRABBER_GRAB_SPEED).ToPtr());
@@ -238,15 +240,15 @@ void RobotContainer::ConfigureButtonBindings() {
   },{m_intake, m_grabber, m_elevator}).ToPtr()));
 
   // If co-driver pushes right stick forward or backward, intake will run accordingly to reject or pick up piece
-  m_intake->SetDefaultCommand((frc2::RunCommand([this]{
-    if (m_ted.GetRawAxis(PS5_AXIS_RSTICK_Y) > 0.25) {
-      m_intake->SetPower(-INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, -INTAKE_CONE_CORRECT_POWER);
-    } else if (m_ted.GetRawAxis(PS5_AXIS_RSTICK_Y) < -0.25) {
-      m_intake->SetPower(INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER);
-    } else {
-      m_intake->SetPower(0, 0, 0);
-    }
-  },{m_intake})));
+  // m_intake->SetDefaultCommand((frc2::RunCommand([this]{
+  //   if (m_ted.GetRawAxis(PS5_AXIS_RSTICK_Y) > 0.25) {
+  //     m_intake->SetPower(-INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, -INTAKE_CONE_CORRECT_POWER);
+  //   } else if (m_ted.GetRawAxis(PS5_AXIS_RSTICK_Y) < -0.25) {
+  //     m_intake->SetPower(INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER);
+  //   } else {
+  //     m_intake->SetPower(0, 0, 0);
+  //   }
+  // },{m_intake})));
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

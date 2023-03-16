@@ -8,7 +8,7 @@
 
 Intake::Intake()
 :
-m_intakePiston(INTAKE_PISTON_IN, INTAKE_PISTON_OUT),
+m_intakePiston(INTAKE_PISTON_OUT, INTAKE_PISTON_IN),
 m_rollerMotor(INTAKE_ROLLER_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless),
 m_conveyorMotor(INTAKE_CONVEYOR_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless),
 m_leftConeCorrectMotor(INTAKE_L_CONE_CORRECT_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless),

@@ -4,8 +4,8 @@
 
 #include "commands/ElevatorRawDrive.h"
 
-ElevatorRawDrive::ElevatorRawDrive(Elevator *elevator, Grabber *grabber, frc::Joystick *ted)
-: m_elevator(elevator), m_grabber(grabber), m_ted(ted) {
+ElevatorRawDrive::ElevatorRawDrive(Elevator *elevator, Grabber *grabber, Intake *intake, frc::Joystick *ted)
+: m_elevator(elevator), m_grabber(grabber), m_intake(intake), m_ted(ted) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(elevator);
 }
@@ -15,6 +15,11 @@ void ElevatorRawDrive::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
 void ElevatorRawDrive::Execute() {
+  // Extend intake if using elevator fast
+  if(abs(m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y)) > 0.2) {
+    m_intake->SetPistonExtension(true);
+  }
+
   if (-m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y) > 0.05) {
       m_elevator->Drive((-m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y)) / 5.0);
     } else if (-m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y) < -0.05) {
