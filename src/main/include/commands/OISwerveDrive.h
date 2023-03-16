@@ -46,7 +46,7 @@ class OISwerveDrive
 
  bool fieldRelative = true;
  // Limits rate of change of voltage so it doesn't explode
- frc::SlewRateLimiter<units::scalar> m_xspeedLimiter{1 / 10_ms};
- frc::SlewRateLimiter<units::scalar> m_yspeedLimiter{1 / 10_ms};
- frc::SlewRateLimiter<units::scalar> m_rotLimiter{1 / 10_ms};
+//  frc::SlewRateLimiter<units::scalar> m_xspeedLimiter{1 / 5_ms};
+//  frc::SlewRateLimiter<units::scalar> m_yspeedLimiter{1 / 5_ms};
+ frc::SlewRateLimiter<units::scalar> m_rotLimiter{1 / 5_ms};
 };

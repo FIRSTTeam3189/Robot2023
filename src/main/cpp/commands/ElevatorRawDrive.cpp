@@ -4,8 +4,8 @@
 
 #include "commands/ElevatorRawDrive.h"
 
-ElevatorRawDrive::ElevatorRawDrive(Elevator *elevator, Grabber *grabber, double power)
-: m_elevator(elevator), m_grabber(grabber), m_power(power) {
+ElevatorRawDrive::ElevatorRawDrive(Elevator *elevator, Grabber *grabber, frc::Joystick *ted)
+: m_elevator(elevator), m_grabber(grabber), m_ted(ted) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(elevator);
 }
@@ -15,8 +15,13 @@ void ElevatorRawDrive::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
 void ElevatorRawDrive::Execute() {
-  m_elevator->Drive(m_power);
-  m_grabber->SetSpeed(GRABBER_CARRY_SPEED);
+  if (-m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y) > 0.05) {
+      m_elevator->Drive((-m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y)) / 5.0);
+    } else if (-m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y) < -0.05) {
+      m_elevator->Drive((-m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y)) / 10.0);
+  }
+  // m_elevator->Drive(m_power);
+  // m_grabber->SetSpeed(GRABBER_CARRY_SPEED);
 }
 
 // Called once the command ends or is interrupted.

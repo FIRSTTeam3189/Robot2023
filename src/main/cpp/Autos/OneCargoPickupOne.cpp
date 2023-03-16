@@ -9,8 +9,6 @@
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 OneCargoPickupOne::OneCargoPickupOne(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabber, Intake *intake) 
 : m_swerve(swerveDrive), m_elevator(elevator), m_grabber(grabber), m_intake(intake) {
-OneCargoPickupOne::OneCargoPickupOne(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabber, Intake *intake) 
-: m_swerve(swerveDrive), m_elevator(elevator), m_grabber(grabber), m_intake(intake) {
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
   frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2, SwerveDriveConstants::kMaxAcceleration / 2};
@@ -27,17 +25,14 @@ OneCargoPickupOne::OneCargoPickupOne(SwerveDrive *swerveDrive, Elevator *elevato
 
   AddCommands(
     // Consider parallelizimationing the elevator pid and swerve driving
-    OneCargo(m_elevator, m_grabber),
-    ElevatorPID(m_elevator, m_grabber, 0, false),
+    OneCargo(m_elevator, m_grabber, m_intake),
+    ElevatorPID(m_elevator, m_grabber, m_intake, 0, false),
     ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
     RotateTo(m_swerve, 180.0),
     ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
     // Consider paralleliziamationsingiasd the intake and drivetrain
-    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
-    // Consider paralleliziamationsingiasd the intake and drivetrain
     swerveScoringToCargoCommand,
     ToggleIntakePistons(m_intake),
-    frc2::ParallelDeadlineGroup(frc2::WaitCommand(5.0_s), RunIntake(m_intake, INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER)),
     frc2::ParallelDeadlineGroup(frc2::WaitCommand(5.0_s), RunIntake(m_intake, INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER)),
     ToggleIntakePistons(m_intake)
   );

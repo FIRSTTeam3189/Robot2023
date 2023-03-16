@@ -23,6 +23,10 @@ void Intake::ToggleIntake() {
     m_intakePiston.TogglePiston();
 }
 
+void Intake::SetPistonExtension(bool isExtended) {
+    m_intakePiston.SetExtended(isExtended);
+}
+
 void Intake::SetPower(double intakePower, double conveyorPower, double coneCorrectPower) {
     m_rollerMotor.Set(intakePower);
     m_conveyorMotor.Set(conveyorPower);

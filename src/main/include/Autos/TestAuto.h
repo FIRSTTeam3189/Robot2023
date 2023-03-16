@@ -9,12 +9,17 @@
 #include <frc2/command/RepeatCommand.h>
 #include <frc2/command/SwerveControllerCommand.h>
 #include <frc/trajectory/TrajectoryGenerator.h>
+#include <frc2/command/WaitCommand.h>
+#include <frc2/command/ParallelDeadlineGroup.h>
 
 #include "subsystems/SwerveDrive.h"
+#include "subsystems/Intake.h"
 #include "Constants.h"
 #include "commands/ResetOdometry.h"
+#include "commands/RunIntake.h"
 #include "commands/RotateTo.h"
 #include "commands/AutoBalance.h"
+#include "Autos/Balance.h"
 
 #include <iostream>
 
@@ -22,8 +27,9 @@ class TestAuto
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
                                  TestAuto> {
  public:
-  TestAuto(SwerveDrive *swerveDrive);
+  TestAuto(SwerveDrive *swerveDrive, Intake *intake);
 
  private:
   SwerveDrive *m_swerve;
+  Intake *m_intake;
 };

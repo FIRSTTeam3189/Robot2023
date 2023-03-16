@@ -7,8 +7,8 @@
 // NOTE:  Consider using this command inline, rather than writing a subclass.
 // For more information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-OneCargoBalance::OneCargoBalance(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabber) 
-: m_swerve(swerveDrive), m_elevator(elevator), m_grabber(grabber) {
+OneCargoBalance::OneCargoBalance(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabber, Intake *intake) 
+: m_swerve(swerveDrive), m_elevator(elevator), m_grabber(grabber), m_intake(intake) {
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
   frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2, SwerveDriveConstants::kMaxAcceleration / 2};
@@ -24,7 +24,7 @@ OneCargoBalance::OneCargoBalance(SwerveDrive *swerveDrive, Elevator *elevator, G
   frc2::SwerveControllerCommand<4> swerveScoringToChargeCommand = m_swerve->CreateSwerveCommand(scoringToChargeStationTrajectory);
 
   AddCommands(
-    OneCargo(m_elevator, m_grabber),
+    OneCargo(m_elevator, m_grabber, m_intake),
     ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
     RotateTo(m_swerve, 180.0),
     ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),

@@ -11,7 +11,7 @@ Balance::Balance(SwerveDrive *swerve) : m_swerve(swerve) {
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
 
-  frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2, SwerveDriveConstants::kMaxAcceleration / 2};
+  frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed, SwerveDriveConstants::kMaxAcceleration};
   config.SetKinematics(SwerveDriveConstants::kinematics);
 
   auto scoringToChargeStationTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(

@@ -57,7 +57,7 @@ namespace SwerveDriveConstants {
     
     // 0-max ramp time, current limit in amps
     constexpr double loopRampRate {.1};
-    constexpr double ampLimit {20.0};
+    constexpr double ampLimit {40.0};
 
     // SysID robot characterization values -- **varies by robot**
     constexpr auto ks = 0.208_V;
@@ -74,20 +74,19 @@ namespace SwerveDriveConstants {
         (static_cast<double>(cancoderTicksPerRevolution) * encoderTurnGearRatio);
 
     // Robot maxes - approximated and varies by robot
-    constexpr auto kMaxSpeed = 3.0_mps;
-    constexpr auto kMaxAcceleration = 2.0_mps_sq;
+    constexpr auto kMaxSpeed = 10.0_mps;
+    constexpr auto kMaxAcceleration = 5.0_mps_sq;
     constexpr units::radians_per_second_t maxAngularVelocity {PI};
     constexpr units::radians_per_second_squared_t maxAngularAcceleration {PI / 4};
 
-    constexpr double speedP {1.0};
-    constexpr double speedI {0.0};
+    constexpr double speedP {35.0};
+    constexpr double speedI {5.0};
     constexpr double speedD {0.0};
-    constexpr double angleP {0.3};
-    constexpr double angleP {0.3};
+    constexpr double angleP {1.0};
     constexpr double angleI {0.0};
     constexpr double angleD {0.0};
     // These are for robot rotation, not wheel rotation
-    constexpr double rotP {0.02};
+    constexpr double rotP {0.25};
     constexpr double rotI {0.0001};
     constexpr double rotD {0.00009};
 
@@ -116,14 +115,10 @@ namespace SwerveDriveConstants {
     constexpr int rightBackCancoderID {12};
 
     // Swerve angle offsets -- difference between actual degrees heading and absolute degree values
-    constexpr double frontLeftOffset {291.5};
-    constexpr double frontRightOffset {9.6};
-    constexpr double backLeftOffset {303.4};
-    constexpr double backRightOffset {1.8};
-    constexpr double frontLeftOffset {291.5};
-    constexpr double frontRightOffset {9.6};
-    constexpr double backLeftOffset {303.4};
-    constexpr double backRightOffset {1.8};
+    constexpr double frontLeftOffset {289.5};
+    constexpr double frontRightOffset {10.0};
+    constexpr double backLeftOffset {344.0};
+    constexpr double backRightOffset {0.0};
 
     constexpr SwerveInfo kLeftFrontInfo {
         leftFrontSpeedCANID, leftFrontTurningCANID, leftFrontCancoderID, 
@@ -156,9 +151,9 @@ namespace AutoConstants {
     constexpr double autoRotP {-0.5};
     constexpr double autoRotI {0.0};
     constexpr double autoRotD {0.0};
-
+/////
     // PID Controllers for x and y movement in auto mode -- theta controller is part of drive object
-    constexpr double kPXController = 1.0;
+    constexpr double kPXController = 2.0;
     constexpr double kPYController = kPXController;
 
     static frc::TrapezoidProfile<units::radians>::Constraints thetaConstraints{SwerveDriveConstants::maxAngularVelocity,
@@ -172,7 +167,6 @@ namespace AutoConstants {
 // PS5 Controls
 
 #define PS5_BILL_CONTROLLER_PORT 0
-#define PS5_TED_CONTROLLER_PORT 1
 #define PS5_TED_CONTROLLER_PORT 1
 
 #define PS5_BUTTON_SQR 1
@@ -205,8 +199,8 @@ namespace AutoConstants {
 #define INTAKE_CONVEYOR_MOTOR_ID 14
 #define INTAKE_L_CONE_CORRECT_MOTOR_ID 15
 #define INTAKE_R_CONE_CORRECT_MOTOR_ID 16
-#define INTAKE_ROLLER_POWER 0.75
-#define INTAKE_CONVEYOR_POWER 0.5
+#define INTAKE_ROLLER_POWER 1.00
+#define INTAKE_CONVEYOR_POWER 0.25
 #define INTAKE_CONE_CORRECT_POWER 0.1
 
 #define ELEVATOR_MOTOR 17
@@ -215,15 +209,7 @@ namespace AutoConstants {
 #define ELEVATOR_I 0
 #define ELEVATOR_D 0
 // Values in encoder ticks
-// Values in encoder ticks
 #define ELEVATOR_CPR 1024
-#define ELEVATOR_LOW_TARGET 2000
-#define ELEVATOR_MID_TARGET 4000
-#define ELEVATOR_HIGH_TARGET 6000
-#define ELEVATOR_SLOW_DISTANCE 1000
-#define ELEVATOR_STOP_DISTANCE 100
-#define ELEVATOR_LOWER_LIMIT_SWITCH_ID 0 
-#define ELEVATOR_UPPER_LIMIT_SWITCH_ID 1
 #define ELEVATOR_LOW_TARGET 2000
 #define ELEVATOR_MID_TARGET 4000
 #define ELEVATOR_HIGH_TARGET 6000
@@ -253,8 +239,8 @@ namespace AutoConstants {
 
 // #define GRABBER_MOTOR_ID 0
 #define GRABBER_MOTOR_ID 18
-#define GRABBER_DROP_SPEED 0.35
-#define GRABBER_GRAB_SPEED -0.25
+#define GRABBER_DROP_SPEED 1.0
+#define GRABBER_GRAB_SPEED -0.40
 // #define GRABBER_REJECT_SPEED 0
 // #define GRABBER_LOW_CUBE_SPEED 0
 // #define GRABBER_MID_CUBE_SPEED 0

@@ -40,6 +40,13 @@ void SwerveDrive::Periodic() {
   UpdateOdometry();
 }
 
+void SwerveDrive::DriveFast() {
+  m_SM.m_frontLeft.DriveFast();
+  m_SM.m_frontRight.DriveFast();
+  m_SM.m_backLeft.DriveFast();
+  m_SM.m_backRight.DriveFast();
+}
+
 double SwerveDrive::GetRobotYaw() {
   // Returns gyroscope rotation to be used by command
   return m_pigeon.GetYaw();

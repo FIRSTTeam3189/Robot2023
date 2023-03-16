@@ -60,6 +60,7 @@ class SwerveModule {
   double GetVelocity();
   frc::SwerveModulePosition GetSwerveModulePosition();
 
+  void DriveFast();
   void UpdateModulePosition();
   SwerveModuleTelemetry GetTelemetry();
   void ResetSpeedEncoder();

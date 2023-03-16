@@ -4,7 +4,11 @@
 
 #include "subsystems/Grabber.h"
 
-Grabber::Grabber() : m_motor(GRABBER_MOTOR_ID) {}
+Grabber::Grabber() : m_motor(GRABBER_MOTOR_ID) {
+    m_motor.ConfigFactoryDefault();
+    m_motor.ConfigOpenloopRamp(0);
+    m_motor.ConfigClosedloopRamp(0);
+}
 
 // This method will be called once per scheduler run
 void Grabber::Periodic() {}

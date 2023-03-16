@@ -39,7 +39,7 @@ TwoPieceWithVision::TwoPieceWithVision(SwerveDrive *swerveDrive, Elevator *eleva
     AimAssist(m_vision, m_swerve, 1.0, 1.0, 0),
     ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
     swerveAimToScoringCommand,
-    ElevatorPID(m_elevator, m_grabber, ELEVATOR_HIGH_TARGET, false),
+    ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET, false),
     ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)
   );
 }

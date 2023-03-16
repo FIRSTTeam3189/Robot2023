@@ -9,6 +9,7 @@
 
 #include "subsystems/Grabber.h"
 #include "subsystems/Elevator.h"
+#include "subsystems/Intake.h"
 
 /**
  * An example command.
@@ -20,7 +21,7 @@
 class ElevatorPID
     : public frc2::CommandHelper<frc2::CommandBase, ElevatorPID> {
  public:
-  ElevatorPID(Elevator *elevator, Grabber *grabber, double target, bool interrupt);
+  ElevatorPID(Elevator *elevator, Grabber *grabber, Intake *intake, double target, bool interrupt);
 
   void Initialize() override;
 
@@ -33,6 +34,7 @@ class ElevatorPID
  private:
   Elevator *m_elevator;
   Grabber *m_grabber;
+  Intake *m_intake;
   double m_target;
   bool m_interrupt;
 };

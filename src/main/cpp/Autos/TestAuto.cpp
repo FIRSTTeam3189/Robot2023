@@ -7,8 +7,8 @@
 // NOTE:  Consider using this command inline, rather than writing a subclass.
 // For more information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-TestAuto::TestAuto(SwerveDrive *swerveDrive) 
-: m_swerve(swerveDrive) {
+TestAuto::TestAuto(SwerveDrive *swerveDrive, Intake *intake) 
+: m_swerve(swerveDrive), m_intake(intake) {
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
   frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2, SwerveDriveConstants::kMaxAcceleration / 2};
@@ -101,16 +101,25 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive)
   frc2::SwerveControllerCommand<4> figureEightCommand = m_swerve->CreateSwerveCommand(figureEightTrajectory);
   frc2::SwerveControllerCommand<4> line2Command = m_swerve->CreateSwerveCommand(line2Trajectory);
 
-  AddCommands(
-    ResetOdometry(m_swerve, straightLineTrajectory.InitialPose()),
-    swerveLineCommand,
-    swerveSCommand
-  );
-  
   // AddCommands(
-  //   ResetOdometry(m_swerve, straightLineTrajectory.InitialPose()),
-  //   swerveLineCommand,
-  //   AutoBalance(m_swerve)
+  //   ResetOdometry(m_swerve, frc::Pose2d(0.0_m, 0.0_m, 0_deg)),
+  //   frc2::ParallelDeadlineGroup(frc2::WaitCommand(2.5_s), RunIntake(m_intake, INTAKE_ROLLER_POWER - 0.25, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER)),
+  //   RotateTo(m_swerve, 180),
+  //   Balance(m_swerve)
+  // );
+  
+  AddCommands(
+    ResetOdometry(m_swerve, frc::Pose2d(0.0_m, 0.0_m, 0_deg)),
+    frc2::ParallelDeadlineGroup(frc2::WaitCommand(10.0_s), RunIntake(m_intake, INTAKE_ROLLER_POWER - 0.25, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER))
+    // RotateTo(m_swerve, 180),
+    // ResetOdometry(m_swerve, frc::Pose2d(0.0_m, 0.0_m, 0_deg))
+  //   // ResetOdometry(m_swerve, frc::Pose2d(0.0_m, 0.0_m, 0_deg))
+  // //   swerveLineCommand,
+  // //   AutoBalance(m_swerve)
+  );
+
+  // AddCommands(
+  //   Balance(m_swerve)
   // );
 
   // AddCommands(

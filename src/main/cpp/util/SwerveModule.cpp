@@ -26,7 +26,9 @@ m_absoluteEncoder(SI.CANCoderID, "Swerve")
     m_speedMotor.Config_kP(0, speedP, 50);
     m_speedMotor.Config_kI(0, speedI, 50);
     m_speedMotor.Config_kD(0, speedD, 50);
-    m_speedMotor.ConfigClosedloopRamp(SwerveDriveConstants::loopRampRate);
+    // m_speedMotor.ConfigClosedloopRamp(SwerveDriveConstants::loopRampRate);
+    m_speedMotor.ConfigClosedloopRamp(0);
+    m_speedMotor.ConfigOpenloopRamp(0);
     m_speedMotor.ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration{
                                             true, SwerveDriveConstants::ampLimit, SwerveDriveConstants::ampLimit + 10.0, 0.1});
 
@@ -89,6 +91,10 @@ double SwerveModule::FalconToDegrees(double encoderTicks) {
 
 units::meter_t SwerveModule::FalconToMeters(double encoderTicks) {
     return units::meter_t{encoderTicks / 2.0 * (SwerveDriveConstants::wheelCircumferenceMeters / (SwerveDriveConstants::encoderSpeedGearRatio * SwerveDriveConstants::falconEncoderTicksPerRevolution))};
+}
+
+void SwerveModule::DriveFast() {
+    m_speedMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 1.0);
 }
 
 void SwerveModule::SetDesiredState(const frc::SwerveModuleState &input_state) {

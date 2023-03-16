@@ -9,8 +9,6 @@
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 TwoCargo::TwoCargo(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabber, Intake *intake) 
 : m_swerve(swerveDrive), m_elevator(elevator), m_grabber(grabber), m_intake(intake) {
-TwoCargo::TwoCargo(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabber, Intake *intake) 
-: m_swerve(swerveDrive), m_elevator(elevator), m_grabber(grabber), m_intake(intake) {
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
   frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2, SwerveDriveConstants::kMaxAcceleration / 2};
@@ -20,9 +18,7 @@ TwoCargo::TwoCargo(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabbe
   // std::cout << "Cargo to scoring\n";
   auto cargoToScoringTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
     frc::Pose2d{0.0_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
-    frc::Pose2d{0.0_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
     {frc::Translation2d{2.845_m * AutoConstants::TrajectoryScale, 0.0_m}}, 
-    frc::Pose2d{5.69_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
     frc::Pose2d{5.69_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
     config);
 
@@ -30,12 +26,10 @@ TwoCargo::TwoCargo(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabbe
 
   AddCommands(
     OneCargoPickupOne(m_swerve, m_elevator, m_grabber, m_intake),
-    OneCargoPickupOne(m_swerve, m_elevator, m_grabber, m_intake),
     RotateTo(m_swerve, 180.0),
     ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
-    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
     swerveCargoToScoringCommand,
-    ElevatorPID(m_elevator, m_grabber, ELEVATOR_HIGH_TARGET, false),
+    ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET, false),
     ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)
   );
 }

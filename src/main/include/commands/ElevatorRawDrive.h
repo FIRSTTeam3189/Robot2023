@@ -6,6 +6,7 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+#include <frc/Joystick.h>
 
 #include "subsystems/Elevator.h"
 #include "subsystems/Grabber.h"
@@ -21,7 +22,7 @@
 class ElevatorRawDrive
     : public frc2::CommandHelper<frc2::CommandBase, ElevatorRawDrive> {
  public:
-  ElevatorRawDrive(Elevator *elevator, Grabber *grabber, double power);
+  ElevatorRawDrive(Elevator *elevator, Grabber *grabber, frc::Joystick *ted);
 
   void Initialize() override;
 
@@ -34,5 +35,5 @@ class ElevatorRawDrive
  private:
   Elevator *m_elevator;
   Grabber *m_grabber;
-  double m_power;
+  frc::Joystick *m_ted;
 };

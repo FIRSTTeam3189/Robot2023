@@ -10,6 +10,7 @@
 #include <frc2/command/WaitCommand.h>
 
 #include "subsystems/Elevator.h"
+#include "subsystems/Intake.h"
 #include "subsystems/Grabber.h"
 #include "commands/ShootFromCarriage.h"
 #include "commands/ElevatorPID.h"
@@ -21,9 +22,10 @@ class OneCargo
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
                                  OneCargo> {
  public:
-  OneCargo(Elevator *elevator, Grabber *grabber);
+  OneCargo(Elevator *elevator, Grabber *grabber, Intake *intake);
 
  private:
   Elevator *m_elevator;
   Grabber *m_grabber;
+  Intake *m_intake;
 };

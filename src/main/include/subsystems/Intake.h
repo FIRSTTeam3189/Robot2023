@@ -19,6 +19,7 @@ class Intake : public frc2::SubsystemBase {
   void Periodic() override;
 
   void ToggleIntake();
+  void SetPistonExtension(bool isExtended);
   void SetPower(double rollerPower, double conveyorPower, double coneCorrectPower);
   
 private:

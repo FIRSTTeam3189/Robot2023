@@ -12,6 +12,7 @@
 #include "subsystems/Elevator.h"
 #include "subsystems/Grabber.h"
 #include "subsystems/SwerveDrive.h"
+#include "subsystems/Intake.h"
 #include "commands/ResetOdometry.h"
 #include "commands/AutoBalance.h"
 #include "commands/RotateTo.h"
@@ -24,10 +25,11 @@ class OneCargoBalance
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
                                  OneCargoBalance> {
  public:
-  OneCargoBalance(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabber);
+  OneCargoBalance(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabber, Intake *intake);
 
  private:
   SwerveDrive *m_swerve;
   Elevator *m_elevator;
   Grabber *m_grabber;
+  Intake *m_intake;
 };
