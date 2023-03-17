@@ -22,9 +22,12 @@ void ElevatorRawDrive::Execute() {
 
   if (-m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y) > 0.05) {
       m_elevator->Drive((-m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y)) / 5.0);
-    } else if (-m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y) < -0.05) {
+  } else if (-m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y) < -0.05) {
       m_elevator->Drive((-m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y)) / 10.0);
+  } else {
+    m_elevator->Drive(0);
   }
+  
   // m_elevator->Drive(m_power);
   // m_grabber->SetSpeed(GRABBER_CARRY_SPEED);
 }

@@ -12,9 +12,17 @@
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/ParallelRaceGroup.h>
 #include <frc2/command/WaitCommand.h>
+#include <frc2/command/RamseteCommand.h>
+#include <frc/trajectory/Trajectory.h>
+#include <frc/trajectory/TrajectoryConfig.h>
+#include <frc/trajectory/TrajectoryGenerator.h>
+#include <frc2/command/SwerveControllerCommand.h>
+#include <frc2/command/SequentialCommandGroup.h>
+#include <frc2/command/InstantCommand.h>
 #include <frc/trajectory/Trajectory.h>
 #include <frc/trajectory/TrajectoryConfig.h>
 #include <frc/Joystick.h>
+#include <frc/PowerDistribution.h>
 
 #include "Autos/TestAuto.h"
 #include "Autos/OneCargo.h"
@@ -34,6 +42,7 @@
 #include "commands/SlowTranslate.h"
 #include "commands/AimAssist.h"
 #include "commands/ElevatorRawDrive.h"
+#include "commands/UltraShoot.h"
 
 #include "subsystems/SwerveDrive.h"
 #include "subsystems/Elevator.h"
@@ -57,6 +66,7 @@ class RobotContainer {
   frc2::Command* GetAutonomousCommand();
   void Sync();
   void ResetGyroscope();
+  void CheckPOV();
 
  private:
   // The robot's subsystems and commands are defined here...
@@ -113,6 +123,7 @@ class RobotContainer {
   frc2::Trigger m_rightTranslateTrajectoryButton;
   frc2::Trigger m_driverStopButton;
   frc2::Trigger m_driveFastButton;
+  frc2::Trigger m_ultraShootButton;
 
   // Co-driver's controls
   frc2::Trigger m_elevatorLowLevelButton;

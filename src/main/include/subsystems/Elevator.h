@@ -22,13 +22,18 @@ class Elevator : public frc2::SubsystemBase {
   void Drive(double power);
   void GoToPosition(double target);
   bool AtSetpoint();
+  void SetPID(double kP, double kI, double kD);
 
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
-  rev::CANSparkMax m_motor;
+
+  // Remember to switch to correct, Falcon motor
+  // rev::CANSparkMax m_motor;
+  WPI_TalonFX m_motor;
+
   // rev::SparkMaxAbsoluteEncoder m_encoder;
-  rev::SparkMaxPIDController m_PIDcontroller;
+  // rev::SparkMaxPIDController m_PIDcontroller;
   frc::DigitalInput m_lowerLimitSwitch;
   frc::DigitalInput m_upperLimitSwitch;
   bool m_atSetpoint;

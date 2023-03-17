@@ -151,7 +151,7 @@ namespace AutoConstants {
     constexpr double autoRotP {-0.5};
     constexpr double autoRotI {0.0};
     constexpr double autoRotD {0.0};
-/////
+
     // PID Controllers for x and y movement in auto mode -- theta controller is part of drive object
     constexpr double kPXController = 2.0;
     constexpr double kPYController = kPXController;
@@ -204,19 +204,24 @@ namespace AutoConstants {
 #define INTAKE_CONE_CORRECT_POWER 0.1
 
 #define ELEVATOR_MOTOR 17
-#define ELEVATOR_P 0.25
-#define ELEVATOR_SLOW_P 0.05
+#define ELEVATOR_P 0.1
+#define ELEVATOR_SLOW_P 0.025
 #define ELEVATOR_I 0
 #define ELEVATOR_D 0
+#define ELEVATOR_ULTRA_SHOOT_P 0.1
+#define ELEVATOR_ULTRA_SHOOT_POWER 1.0
 // Values in encoder ticks
-#define ELEVATOR_CPR 1024
+// #define ELEVATOR_CPR 1024
+#define ELEVATOR_CPR 4096
 #define ELEVATOR_LOW_TARGET 2000
 #define ELEVATOR_MID_TARGET 4000
 #define ELEVATOR_HIGH_TARGET 6000
 #define ELEVATOR_SLOW_DISTANCE 1000
-#define ELEVATOR_STOP_DISTANCE 100
+#define ELEVATOR_STOP_DISTANCE 250
 #define ELEVATOR_LOWER_LIMIT_SWITCH_ID 0 
 #define ELEVATOR_UPPER_LIMIT_SWITCH_ID 1
+#define ELEVATOR_ULTRA_SHOOT_TARGET 3000
+#define ELEVATOR_ULTRA_SHOOT_RELEASE_POINT 2250
 
 // Target distances are in meters
 #define AIM_ASSIST_TARGET_X_DISTANCE 1.0

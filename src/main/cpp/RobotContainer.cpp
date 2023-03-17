@@ -3,14 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "RobotContainer.h"
-#include <frc2/command/RamseteCommand.h>
-#include <frc/trajectory/Trajectory.h>
-#include <frc/trajectory/TrajectoryConfig.h>
-#include <frc/trajectory/TrajectoryGenerator.h>
-#include <frc2/command/SwerveControllerCommand.h>
-#include <iostream>
-#include <frc2/command/SequentialCommandGroup.h>
-#include <frc2/command/InstantCommand.h>
 
 RobotContainer::RobotContainer() {
   // Initialize all of your commands and subsystems here
@@ -18,6 +10,9 @@ RobotContainer::RobotContainer() {
   // Consider resetting Pigeon 2.0 gyroscope values - look up API
   // Configure the button bindings
   ConfigureButtonBindings();
+  frc::PowerDistribution pdh{1, frc::PowerDistribution::ModuleType::kRev};
+  frc::SmartDashboard::PutNumber("PDH Current", pdh.GetTotalCurrent());
+
   // Joystick operated - real control scheme
   m_swerve->SetDefaultCommand(OISwerveDrive(&m_bill, m_swerve, false));
 
@@ -39,15 +34,14 @@ RobotContainer::RobotContainer() {
 
 void RobotContainer::ConfigureButtonBindings() {
   // --------------------Driver controls-----------------------
-  // Both driver and co-driver have intake control
-  m_spinIntakeInButton = m_bill.Button(PS5_BUTTON_RBUMPER);
-  m_spinIntakeInButton.WhileTrue(RunIntake(m_intake, INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER).ToPtr());
+  // m_spinIntakeInButton = m_bill.Button(PS5_BUTTON_RBUMPER);
+  // m_spinIntakeInButton.WhileTrue(RunIntake(m_intake, INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER).ToPtr());
 
-  m_spinIntakeOutButton = m_bill.Button(PS5_BUTTON_LBUMPER);
-  m_spinIntakeOutButton.WhileTrue(RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, -INTAKE_CONE_CORRECT_POWER).ToPtr());
+  // m_spinIntakeOutButton = m_bill.Button(PS5_BUTTON_LBUMPER);
+  // m_spinIntakeOutButton.WhileTrue(RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, -INTAKE_CONE_CORRECT_POWER).ToPtr());
 
-  m_toggleIntakePistonsDriver = m_bill.Button(PS5_BUTTON_LTRIGGER);
-  m_toggleIntakePistonsDriver.OnTrue(ToggleIntakePistons(m_intake).ToPtr());
+  // m_toggleIntakePistonsDriver = m_bill.Button(PS5_BUTTON_LTRIGGER);
+  // m_toggleIntakePistonsDriver.OnTrue(ToggleIntakePistons(m_intake).ToPtr());
 
   // Individually spin each of 8 motors - most basic test
   // We didn't have enough electrical connections
@@ -64,14 +58,13 @@ void RobotContainer::ConfigureButtonBindings() {
   // m_backRightSpeedTestButton = m_bill.Button(PS5_BUTTON_O);
   // m_backRightSpeedTestButton.WhileTrue(SingleModTest(m_swerve, SwerveModuleLocation::br, .1, ManualModuleDriveType::forward).ToPtr());
 
-  m_driveFastButton = m_bill.Button(PS5_BUTTON_LSTICK);
-  m_driveFastButton.WhileTrue((frc2::RunCommand([this]{
-    m_swerve->DriveFast();
-  },{m_swerve})).ToPtr());
-
-  m_driveFastButton.OnFalse((frc2::InstantCommand([this]{
-    m_swerve->Drive(0.0_mps, 0.0_mps, units::radians_per_second_t{0.0}, false);
-  },{m_swerve})).ToPtr());
+  // m_driveFastButton = m_bill.Button(PS5_BUTTON_LSTICK);
+  // m_driveFastButton.WhileTrue((frc2::RunCommand([this]{
+  //   m_swerve->DriveFast();
+  // },{m_swerve})).ToPtr());
+  // m_driveFastButton.OnFalse((frc2::InstantCommand([this]{
+  //   m_swerve->Drive(0.0_mps, 0.0_mps, units::radians_per_second_t{0.0}, false);
+  // },{m_swerve})).ToPtr());
 
   m_translateLeftButton = m_bill.Button(PS5_BUTTON_SQR);
   m_translateLeftButton.WhileTrue(SlowTranslate(m_swerve, 0.0_mps, -0.5_mps).ToPtr());
@@ -120,7 +113,7 @@ void RobotContainer::ConfigureButtonBindings() {
   auto leftTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
     frc::Pose2d{0.0_m, 0.0_m, 0_deg},
     {frc::Translation2d{0.0_m, -0.20_m}},
-    frc::Pose2d{0.0_m, -0.40_m, 0_deg},
+    frc::Pose2d{0.0_m, -0.40_m, 180_deg},
     config 
   );
   auto rightTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
@@ -133,13 +126,6 @@ void RobotContainer::ConfigureButtonBindings() {
   auto leftTranslateCommand = m_swerve->CreateSwerveCommand(leftTrajectory);
   auto rightTranslateCommand = m_swerve->CreateSwerveCommand(rightTrajectory);
 
-  // REMEMBER TO TEST OUT REDUCING THE AMOUNT OF TIMES
-  // WE CALL RESETODOMETRY WITH 0 AND INSTEAD CALL IT WITH 
-  // THE CURRENT ROBOT ANGLE SO IT RESETS ENCODERS AND NOT THE ROBOT'S ANGLE
-  // THIS WAY THE DRIVER DOESNT HAVE TO TURN AROUND AND PRESS THE BUTTON AS OFTEN
-  // NOW MOST TRAJECTORIES WOULD BE FIELD RELATIVE INSTEAD OF ROBOT RELATIVE
-  // OR COULD RESET GYRO ANGLE BACK TO HOW IT WAS BEFORE EVERY RESET AFTER EVERY RESET
-
   // m_leftAimAssistButton = m_bill.Button(PS5_BUTTON_CREATE);
   // m_leftAimAssistButton.OnTrue(frc2::SequentialCommandGroup(
   //     RotateTo(m_swerve, 0), ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
@@ -147,13 +133,14 @@ void RobotContainer::ConfigureButtonBindings() {
   //     ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}), leftTranslateCommand,
   //     RotateTo(m_swerve, 0)).ToPtr());
 
-  m_leftTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_CREATE);  
+  // m_leftTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_CREATE);
+  m_leftTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_LBUMPER);
   m_leftTranslateTrajectoryButton.OnTrue(frc2::SequentialCommandGroup(
       RotateTo(m_swerve, 0), ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
       leftTranslateCommand,
       RotateTo(m_swerve, 0)).ToPtr());
 
-  m_centerAimAssistButton = m_bill.Button(PS5_BUTTON_PS);
+  // m_centerAimAssistButton = m_bill.Button(PS5_BUTTON_PS);
   m_centerAimAssistButton.OnTrue(frc2::SequentialCommandGroup(
     RotateTo(m_swerve, 0),
     ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
@@ -167,7 +154,8 @@ void RobotContainer::ConfigureButtonBindings() {
   //     ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}), rightTranslateCommand,
   //     RotateTo(m_swerve, 0)).ToPtr());
 
-  m_rightTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_MENU);  
+  // m_rightTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_MENU);  
+  m_rightTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_RBUMPER);
   m_rightTranslateTrajectoryButton.OnTrue(frc2::SequentialCommandGroup(
       RotateTo(m_swerve, 0), ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
       rightTranslateCommand,
@@ -186,19 +174,29 @@ void RobotContainer::ConfigureButtonBindings() {
   //   {m_elevator}).ToPtr());
   m_elevator->SetDefaultCommand(ElevatorRawDrive(m_elevator, m_grabber, m_intake, &m_ted));
 
-  m_elevatorLowLevelButton = m_ted.Button(PS5_BUTTON_X);
+  // When codriver buttons are pressed, elevator will go to corresponding position
+  // When codriver releases button (i.e. they should hold it down until they want this to happen),
+  // the shooter will shoot for a specified amount of time
+  auto timedShoot = frc2::ParallelDeadlineGroup(
+                      frc2::WaitCommand(3.0_s), 
+                      ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED));
+
+  m_elevatorLowLevelButton = m_ted.Button(PS5_BUTTON_X);  
   m_elevatorLowLevelButton.OnTrue(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_LOW_TARGET, false).ToPtr());
+  m_elevatorLowLevelButton.OnFalse(&timedShoot);
   // m_elevatorLowLevelButton.WhileTrue(frc2::RunCommand([this]{m_elevator->Drive(0.25);}, {m_elevator}).ToPtr());
   // m_elevatorLowLevelButton.OnFalse(frc2::InstantCommand([this]{m_elevator->Drive(0);}, {m_elevator}).ToPtr());
   
   m_elevatorMidLevelButton = m_ted.Button(PS5_BUTTON_SQR);
   m_elevatorMidLevelButton.OnTrue(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET, false).ToPtr());
+  m_elevatorMidLevelButton.OnFalse(&timedShoot);
 
   m_elevatorHighLevelButton = m_ted.Button(PS5_BUTTON_TRI);
   m_elevatorHighLevelButton.OnTrue(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET, false).ToPtr());
+  m_elevatorHighLevelButton.OnFalse(&timedShoot);
 
   m_cancelElevatorPIDControl = m_ted.Button(PS5_BUTTON_LSTICK);
-  m_cancelElevatorPIDControl.OnTrue(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_LOW_TARGET, true).ToPtr());
+  m_cancelElevatorPIDControl.OnTrue(ElevatorPID(m_elevator, m_grabber, m_intake, 0, true).ToPtr());
 
   // m_toggleIntakePistonsButton = m_ted.Button(PS5_BUTTON_LBUMPER);
   // m_toggleIntakePistonsButton.OnTrue(ToggleIntakePistons(m_intake).ToPtr());
@@ -232,12 +230,15 @@ void RobotContainer::ConfigureButtonBindings() {
   m_shootButton.WhileTrue(ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED).ToPtr());
   m_shootButton.OnFalse(ShootFromCarriage(m_grabber, 0).ToPtr());
 
-  m_codriverStopButton = m_ted.Button(PS5_BUTTON_O);
+  m_codriverStopButton = m_ted.Button(PS5_BUTTON_PS);
   m_codriverStopButton.OnTrue((frc2::InstantCommand([this]{
     m_intake->SetPower(0, 0, 0);
     m_elevator->Drive(0);
     m_grabber->SetSpeed(0);
   },{m_intake, m_grabber, m_elevator}).ToPtr()));
+
+  m_ultraShootButton = m_ted.Button(PS5_BUTTON_TOUCHPAD);
+  m_ultraShootButton.OnTrue(UltraShoot(m_elevator, m_grabber).ToPtr());
 
   // If co-driver pushes right stick forward or backward, intake will run accordingly to reject or pick up piece
   // m_intake->SetDefaultCommand((frc2::RunCommand([this]{
@@ -263,4 +264,45 @@ void RobotContainer::Sync() {
 
 void RobotContainer::ResetGyroscope() {
   m_swerve->ResetGyro();
+}
+
+void RobotContainer::CheckPOV() {
+  // Checks POV constantly on controllers
+  // USES ONLY 4 CARDINAL DIRECTIONS -- MUST BE PRESSED PRECISELY
+  if (m_bill.GetPOV() != -1) {
+    int driverPOV = m_bill.GetPOV();
+
+    switch (driverPOV) {
+      case 0: 
+        break;
+      case 90:
+        break;
+      case 180:
+        break;
+      case 270:
+        break;
+      default:
+        break;
+    }
+  }
+
+  if (m_ted.GetPOV() != -1) {
+    int codriverPOV = m_ted.GetPOV();
+
+    switch (codriverPOV) {
+      case 0:
+        ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET, false).Schedule();
+        break;
+      case 90:
+        ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET, false).Schedule();
+        break;
+      case 180:
+        ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_LOW_TARGET, false).Schedule();
+        break;
+      case 270:
+        break;
+      default:
+        break;
+    }
+  }
 }

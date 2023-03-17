@@ -22,6 +22,12 @@ void ElevatorPID::Initialize() {
 void ElevatorPID::Execute() {
   // Maybe run grabber inwards during PID so the piece doesn't fall out
   // m_grabber->SetSpeed(GRABBER_CARRY_SPEED);
+
+  if (m_elevator->AtSetpoint()) {
+    m_interrupt = true;
+    // Maybe retract intake when PID command is done -- test first
+    // m_intake->SetPistonExtension(false);
+  }
 }
 
 // Called once the command ends or is interrupted.

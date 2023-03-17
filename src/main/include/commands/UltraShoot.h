@@ -6,14 +6,9 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
-#include <frc/controller/PIDController.h>
-#include "subsystems/Vision.h"
+
 #include "subsystems/Elevator.h"
 #include "subsystems/Grabber.h"
-#include "subsystems/SwerveDrive.h"
-#include "Constants.h"
-
-#include <iostream>
 
 /**
  * An example command.
@@ -22,11 +17,10 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-
-class AimAssist
-    : public frc2::CommandHelper<frc2::CommandBase, AimAssist> {
+class UltraShoot
+    : public frc2::CommandHelper<frc2::CommandBase, UltraShoot> {
  public:
-  AimAssist(Vision *vision, SwerveDrive *swerve, double targetXDistance, double targetYDistance, double targetRotAngle);
+  UltraShoot(Elevator *elevator, Grabber *grabber);
 
   void Initialize() override;
 
@@ -36,17 +30,7 @@ class AimAssist
 
   bool IsFinished() override;
 
-private:
-  Vision *m_vision;
-  SwerveDrive *m_swerve;
-  frc::PIDController m_xController;
-  frc::PIDController m_yController;
-  frc::PIDController m_rotationController;
-  VisionData m_visionData;
-  double xOutput{0.0};
-  double yOutput{0.0};
-  double rotOutput{0.0};
-  double m_targetXDistance;
-  double m_targetYDistance;
-  double m_targetRotAngle;
+ private:
+  Elevator *m_elevator;
+  Grabber *m_grabber;
 };

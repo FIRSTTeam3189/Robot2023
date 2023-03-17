@@ -14,7 +14,7 @@ AimAssist::AimAssist(Vision *vision, SwerveDrive *swerve, double targetXDistance
   m_targetYDistance(targetYDistance),
   m_targetRotAngle(targetRotAngle) {
   // Use addRequirements() here to declare subsystem dependencies.
-  std::cout << "Constructing aim assist\n";
+  // std::cout << "Constructing aim assist\n";
   AddRequirements(vision);
   AddRequirements(swerve);
   // m_vision->Toggle();
