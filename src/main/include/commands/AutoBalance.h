@@ -32,4 +32,5 @@ class AutoBalance
  private:
   SwerveDrive *m_swerve;
   double m_lastPitch;
+  units::meter_t m_lastXPosition;
 };

@@ -122,6 +122,10 @@ double SwerveDrive::GetNormalizedYaw() {
   return normalizedYaw;
 }
 
+void SwerveDrive::SetRobotYaw(double yaw) {
+  m_pigeon.SetYaw(yaw);
+}
+
 double SwerveDrive::GetPitch() {
   return m_pigeon.GetPitch();
 }
@@ -347,10 +351,10 @@ void SwerveDrive::Log2DField() {
 void SwerveDrive::LogModuleStates(SwerveModuleTelemetry telemetryArray[]) {
 // Measured states to be logged in AdvantageScope (requires different format)
   double AdvantageScopeMeasuredStates[] = 
-    {telemetryArray[0].relativeAngle, (telemetryArray[0].speed / SwerveDriveConstants::MPSToRPM),
-     telemetryArray[1].relativeAngle, (telemetryArray[1].speed / SwerveDriveConstants::MPSToRPM),
-     telemetryArray[2].relativeAngle, (telemetryArray[2].speed / SwerveDriveConstants::MPSToRPM),
-     telemetryArray[3].relativeAngle, (telemetryArray[3].speed / SwerveDriveConstants::MPSToRPM)};
+    {telemetryArray[0].relativeAngle, ((double)m_SM.m_frontLeft.FalconToMeters(telemetryArray[0].speed)),
+     telemetryArray[1].relativeAngle, ((double)m_SM.m_frontLeft.FalconToMeters(telemetryArray[1].speed)),
+     telemetryArray[2].relativeAngle, ((double)m_SM.m_frontLeft.FalconToMeters(telemetryArray[2].speed)),
+     telemetryArray[3].relativeAngle, ((double)m_SM.m_frontLeft.FalconToMeters(telemetryArray[3].speed))};
   frc::SmartDashboard::PutNumberArray("AdvantageScope Measured States", AdvantageScopeMeasuredStates);
 }
 

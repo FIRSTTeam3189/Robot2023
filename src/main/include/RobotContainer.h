@@ -31,6 +31,7 @@
 #include "Autos/OneCargoPickupOne.h"
 #include "Autos/TwoCargo.h"
 #include "Autos/TwoPieceWithVision.h"
+#include "Autos/TwoCargoUltrashootBalance.h"
 
 #include "commands/SingleModTest.h"
 #include "commands/OISwerveDrive.h"
@@ -78,13 +79,14 @@ class RobotContainer {
 
   // Add autonomous routines to chooser
   TestAuto m_TestAuto{m_swerve, m_intake};
-  OneCargo m_oneCargo{m_elevator, m_grabber, m_intake};
+  OneCargo m_oneCargo{m_swerve, m_elevator, m_grabber, m_intake};
   OneCargoBalance m_oneCargoBalance{m_swerve, m_elevator, m_grabber, m_intake};
   OneCargoPickupBalance m_oneCargoPickupBalanceRed{m_swerve, m_elevator, m_grabber, m_intake, true};
   OneCargoPickupBalance m_oneCargoPickupBalanceBlue{m_swerve, m_elevator, m_grabber, m_intake, false};
   OneCargoPickupOne m_oneCargoPickupOne{m_swerve, m_elevator, m_grabber, m_intake};
   TwoCargo m_twoCargo{m_swerve, m_elevator, m_grabber, m_intake};
   TwoPieceWithVision m_twoPieceWithVision{m_swerve, m_elevator, m_grabber, m_intake, m_vision};
+  TwoCargoUltrashootBalance m_twoCargoUltrashoot{m_swerve, m_elevator, m_grabber, m_intake};
 
   frc::SendableChooser<frc2::Command*> m_chooser;
 

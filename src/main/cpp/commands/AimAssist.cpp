@@ -26,7 +26,21 @@ AimAssist::AimAssist(Vision *vision, SwerveDrive *swerve, double targetXDistance
 
 // Called when the command is initially scheduled.
 void AimAssist::Initialize() {
-  
+  // m_visionData = m_vision->GetData();
+  // frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed, SwerveDriveConstants::kMaxAcceleration};
+  // config.SetKinematics(SwerveDriveConstants::kinematics);
+
+  // units::meter_t xEndpoint = units::meter_t{m_visionData.translationMatrix[0] - m_targetXDistance};
+  // units::meter_t yEndpoint = units::meter_t{m_visionData.translationMatrix[1] - m_targetYDistance};
+  // frc::Trajectory visionTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+  //   frc::Pose2d{0.0_m, 0.0_m, 0_deg},
+  //   {frc::Translation2d{xEndpoint / 2, yEndpoint / 2}}, 
+  //   frc::Pose2d{xEndpoint, yEndpoint, 0_deg},
+  //   config);
+
+  // visionTrajectory.TransformBy(frc::Transform2d{frc::Pose2d{0_m, 0_m, 0_deg}, m_swerve->GetPose()});
+  // frc2::SwerveControllerCommand<4> visionCommand = m_swerve->CreateSwerveCommand(visionTrajectory);
+  // visionCommand.Schedule();
 }
 
 // Called repeatedly when this Command is scheduled to run

@@ -7,8 +7,8 @@
 // NOTE:  Consider using this command inline, rather than writing a subclass.
 // For more information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-OneCargo::OneCargo(Elevator *elevator, Grabber *grabber, Intake *intake)
-: m_elevator(elevator), m_grabber(grabber), m_intake(intake) {
+OneCargo::OneCargo(SwerveDrive *swerve, Elevator *elevator, Grabber *grabber, Intake *intake)
+: m_swerve(swerve), m_elevator(elevator), m_grabber(grabber), m_intake(intake) {
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
 
@@ -26,6 +26,7 @@ OneCargo::OneCargo(Elevator *elevator, Grabber *grabber, Intake *intake)
 
   // Sends elevator to target, then runs grabber for 5 seconds
   AddCommands(
+    frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
     ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET, false),
     frc2::ParallelDeadlineGroup(frc2::WaitCommand(5.0_s), ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED))
   );

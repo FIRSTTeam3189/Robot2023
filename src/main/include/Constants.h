@@ -29,10 +29,10 @@ namespace SwerveDriveConstants {
     // PID, sensor IDs passed in via structs in namespace
     constexpr double MPSToRPM {600.0};
     constexpr double DEGToRAD {57.2957795131};
-    constexpr double wheelRadius = 4;
-    constexpr double wheelRadiusMeters = 0.1016;
+    constexpr double wheelRadius = 2;
+    constexpr double wheelRadiusMeters = 0.0508;
     constexpr double wheelCircumferenceMeters = 2.0 * PI * wheelRadiusMeters;
-    constexpr double encoderSpeedGearRatio = 6.55;
+    constexpr double encoderSpeedGearRatio = 8.1;
     constexpr double encoderTurnGearRatio = 10.29;
     constexpr int falconEncoderTicksPerRevolution = 2048;
     constexpr int cancoderTicksPerRevolution = 4096;
@@ -65,13 +65,13 @@ namespace SwerveDriveConstants {
     constexpr auto ka = 0.409 * 1_V * 1_s * 1_s / 1_m;
 
     // Distance traveled by robot per encoder tick
-    constexpr double driveEncoderDistancePerPulse = 
-        (wheelRadiusMeters * PI) / 
-        (static_cast<double>(falconEncoderTicksPerRevolution) * encoderSpeedGearRatio);
+    // constexpr double driveEncoderDistancePerPulse = 
+    //     (wheelRadiusMeters * PI) / 
+    //     (static_cast<double>(falconEncoderTicksPerRevolution) * encoderSpeedGearRatio);
 
-    constexpr double turnEncoderDistancePerPulse = 
-        (2 * PI) / 
-        (static_cast<double>(cancoderTicksPerRevolution) * encoderTurnGearRatio);
+    // constexpr double turnEncoderDistancePerPulse = 
+    //     (2 * PI) / 
+    //     (static_cast<double>(cancoderTicksPerRevolution) * encoderTurnGearRatio);
 
     // Robot maxes - approximated and varies by robot
     constexpr auto kMaxSpeed = 10.0_mps;

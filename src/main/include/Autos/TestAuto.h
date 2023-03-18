@@ -8,6 +8,7 @@
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/RepeatCommand.h>
 #include <frc2/command/SwerveControllerCommand.h>
+#include <frc2/command/InstantCommand.h>
 #include <frc/trajectory/TrajectoryGenerator.h>
 #include <frc2/command/WaitCommand.h>
 #include <frc2/command/ParallelDeadlineGroup.h>

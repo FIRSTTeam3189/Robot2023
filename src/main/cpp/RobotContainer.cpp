@@ -25,6 +25,7 @@ RobotContainer::RobotContainer() {
   m_chooser.AddOption("One Cargo Pickup One", &m_oneCargoPickupOne);
   m_chooser.AddOption("Two Cargo", &m_twoCargo);
   m_chooser.AddOption("Two Cargo With Vision", &m_twoPieceWithVision);
+  m_chooser.AddOption("Two Cargo + Balance + Ultrashoot", &m_twoCargoUltrashoot);
 
   frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
   AutoConstants::thetaPIDController.EnableContinuousInput(units::radian_t{-PI}, units::radian_t{PI});
@@ -110,19 +111,32 @@ void RobotContainer::ConfigureButtonBindings() {
   frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2, SwerveDriveConstants::kMaxAcceleration / 2};
   config.SetKinematics(SwerveDriveConstants::kinematics);
 
-  auto leftTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+  frc::Trajectory leftTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
     frc::Pose2d{0.0_m, 0.0_m, 0_deg},
     {frc::Translation2d{0.0_m, -0.20_m}},
-    frc::Pose2d{0.0_m, -0.40_m, 180_deg},
+    frc::Pose2d{0.0_m, -0.40_m, 0_deg},
     config 
   );
-  auto rightTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+  frc::Trajectory rightTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
     frc::Pose2d{0.0_m, 0.0_m, 0_deg},
     {frc::Translation2d{0.0_m, 0.20_m}},
     frc::Pose2d{0.0_m, 0.40_m, 0_deg},
     config 
   );
 
+  // frc2::SequentialCommandGroup leftTranslateCommand = frc2::SequentialCommandGroup(
+  //   frc2::InstantCommand([&]{
+  //     leftTrajectory.TransformBy(frc::Transform2d{frc::Pose2d{0_m, 0_m, 0_deg}, m_swerve->GetPose()});
+  //   },{m_swerve}),
+  //   leftTranslateCommand
+  // );
+  // frc2::SequentialCommandGroup rightTranslateCommand = frc2::SequentialCommandGroup(
+  //   frc2::InstantCommand([&]{
+  //     rightTrajectory.TransformBy(frc::Transform2d{frc::Pose2d{0_m, 0_m, 0_deg}, m_swerve->GetPose()});
+  //   },{m_swerve}),
+  //   rightTranslateCommand
+  // );
+  
   auto leftTranslateCommand = m_swerve->CreateSwerveCommand(leftTrajectory);
   auto rightTranslateCommand = m_swerve->CreateSwerveCommand(rightTrajectory);
 
@@ -139,13 +153,7 @@ void RobotContainer::ConfigureButtonBindings() {
       RotateTo(m_swerve, 0), ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
       leftTranslateCommand,
       RotateTo(m_swerve, 0)).ToPtr());
-
-  // m_centerAimAssistButton = m_bill.Button(PS5_BUTTON_PS);
-  m_centerAimAssistButton.OnTrue(frc2::SequentialCommandGroup(
-    RotateTo(m_swerve, 0),
-    ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
-    frc2::ParallelRaceGroup(frc2::WaitCommand(3.0_s), AimAssist(m_vision, m_swerve, 1.0, 0.0, 0.0)),
-    RotateTo(m_swerve, 0)).ToPtr());
+  // m_leftTranslateTrajectoryButton.OnTrue(&leftTranslateCommand);
 
   // m_rightTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_MENU);
   // m_rightAimAssistButton.OnTrue(frc2::SequentialCommandGroup(
@@ -160,6 +168,14 @@ void RobotContainer::ConfigureButtonBindings() {
       RotateTo(m_swerve, 0), ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
       rightTranslateCommand,
       RotateTo(m_swerve, 0)).ToPtr());
+  // m_rightTranslateTrajectoryButton.OnTrue(&rightTranslateCommand);
+
+  // m_centerAimAssistButton = m_bill.Button(PS5_BUTTON_PS);
+  m_centerAimAssistButton.OnTrue(frc2::SequentialCommandGroup(
+    RotateTo(m_swerve, 0),
+    ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
+    frc2::ParallelRaceGroup(frc2::WaitCommand(3.0_s), AimAssist(m_vision, m_swerve, 1.0, 0.0, 0.0)),
+    RotateTo(m_swerve, 0)).ToPtr());
 
   // ---------------------Ted's controls----------------------
   // Co-driver drives the elevator manually and continuously pulls in by default

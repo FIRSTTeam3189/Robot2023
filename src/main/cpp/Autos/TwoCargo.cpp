@@ -22,7 +22,16 @@ TwoCargo::TwoCargo(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabbe
     frc::Pose2d{5.69_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
     config);
 
+  // cargoToScoringTrajectory.TransformBy(frc::Transform2d{frc::Pose2d{0_m, 0_m, 0_deg}, m_swerve->GetPose()});
   frc2::SwerveControllerCommand<4> swerveCargoToScoringCommand = m_swerve->CreateSwerveCommand(cargoToScoringTrajectory);
+
+  // AddCommands(
+  //   OneCargoPickupOne(m_swerve, m_elevator, m_grabber, m_intake),
+  //   RotateTo(m_swerve, 180.0),
+  //   swerveCargoToScoringCommand,
+  //   ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET, false),
+  //   ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)
+  // );
 
   AddCommands(
     OneCargoPickupOne(m_swerve, m_elevator, m_grabber, m_intake),

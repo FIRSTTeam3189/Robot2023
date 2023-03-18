@@ -35,7 +35,15 @@ OneCargoPickupBalance::OneCargoPickupBalance(SwerveDrive *swerveDrive, Elevator 
     config);
   }
 
+  // cargoToChargeStationTrajectory.TransformBy(frc::Transform2d{frc::Pose2d{0_m, 0_m, 0_deg}, m_swerve->GetPose()});
   frc2::SwerveControllerCommand<4> swerveCargoToChargeCommand = m_swerve->CreateSwerveCommand(cargoToChargeStationTrajectory);
+
+  // AddCommands(
+  //   OneCargoPickupOne(m_swerve, m_elevator, m_grabber, m_intake),
+  //   RotateTo(m_swerve, 180.0),
+  //   swerveCargoToChargeCommand,
+  //   AutoBalance(m_swerve)
+  // );
 
   AddCommands(
     OneCargoPickupOne(m_swerve, m_elevator, m_grabber, m_intake),

@@ -81,6 +81,7 @@ class SwerveDrive : public frc2::SubsystemBase {
   void SetActiveTrajectory(frc::Trajectory trajectory);
 
   double GetRobotYaw();
+  void SetRobotYaw(double yaw);
   double GetPitch();
   double GetRoll();
   void ResetGyro();

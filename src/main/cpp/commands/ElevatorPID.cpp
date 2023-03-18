@@ -28,6 +28,10 @@ void ElevatorPID::Execute() {
     // Maybe retract intake when PID command is done -- test first
     // m_intake->SetPistonExtension(false);
   }
+
+  if(m_elevator->GetPosition() == 0) {
+    // m_intake->SetPistonExtension(false);
+  }
 }
 
 // Called once the command ends or is interrupted.

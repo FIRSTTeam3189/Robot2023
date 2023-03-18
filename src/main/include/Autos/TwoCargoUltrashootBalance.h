@@ -6,26 +6,28 @@
 
 #include <frc2/command/CommandHelper.h>
 #include <frc2/command/SequentialCommandGroup.h>
-#include <frc2/command/ParallelDeadlineGroup.h>
-#include <frc2/command/WaitCommand.h>
-#include <frc2/command/InstantCommand.h>
+#include <frc2/command/SwerveControllerCommand.h>
+#include <frc/trajectory/TrajectoryGenerator.h>
 
 #include "subsystems/Elevator.h"
 #include "subsystems/Intake.h"
 #include "subsystems/Grabber.h"
 #include "subsystems/SwerveDrive.h"
 #include "commands/ShootFromCarriage.h"
+#include "commands/RotateTo.h"
 #include "commands/ElevatorPID.h"
+#include "commands/UltraShoot.h"
+#include "Autos/OneCargoPickupBalance.h"
 #include "Constants.h"
 
 #include <iostream>
 
-class OneCargo
+class TwoCargoUltrashootBalance
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
-                                 OneCargo> {
+                                 TwoCargoUltrashootBalance> {
  public:
-  OneCargo(SwerveDrive *swerve, Elevator *elevator, Grabber *grabber, Intake *intake);
-
+  TwoCargoUltrashootBalance(SwerveDrive *swerve, Elevator *elevator, Grabber *grabber, Intake *intake);
+  
  private:
   SwerveDrive *m_swerve;
   Elevator *m_elevator;
