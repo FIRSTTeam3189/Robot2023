@@ -24,19 +24,19 @@ OneCargoBalance::OneCargoBalance(SwerveDrive *swerveDrive, Elevator *elevator, G
   // scoringToChargeStationTrajectory.TransformBy(frc::Transform2d{frc::Pose2d{0_m, 0_m, 0_deg}, m_swerve->GetPose()});
   frc2::SwerveControllerCommand<4> swerveScoringToChargeCommand = m_swerve->CreateSwerveCommand(scoringToChargeStationTrajectory);
 
-  // AddCommands(
-  //   OneCargo(m_elevator, m_grabber, m_intake),
-  //   RotateTo(m_swerve, 180.0),
-  //   swerveScoringToChargeCommand,
-  //   AutoBalance(m_swerve)
-  // );
-
   AddCommands(
     OneCargo(m_swerve, m_elevator, m_grabber, m_intake),
-    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
-    RotateTo(m_swerve, 180.0),
-    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
+    RotateTo(m_swerve, 0.0),
     swerveScoringToChargeCommand,
     AutoBalance(m_swerve)
   );
+
+  // AddCommands(
+  //   OneCargo(m_swerve, m_elevator, m_grabber, m_intake),
+  //   ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
+  //   RotateTo(m_swerve, 180.0),
+  //   ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
+  //   swerveScoringToChargeCommand,
+  //   AutoBalance(m_swerve)
+  // );
 }

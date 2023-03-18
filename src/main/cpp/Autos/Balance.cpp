@@ -23,14 +23,14 @@ Balance::Balance(SwerveDrive *swerve) : m_swerve(swerve) {
   // scoringToChargeStationTrajectory.TransformBy(frc::Transform2d{frc::Pose2d{0_m, 0_m, 0_deg}, m_swerve->GetPose()});
   frc2::SwerveControllerCommand<4> swerveScoringToChargeCommand = m_swerve->CreateSwerveCommand(scoringToChargeStationTrajectory);
 
-  // AddCommands(
-  //   swerveScoringToChargeCommand,
-  //   AutoBalance(m_swerve)
-  // );
-
   AddCommands(
-    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
     swerveScoringToChargeCommand,
     AutoBalance(m_swerve)
   );
+
+  // AddCommands(
+  //   ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
+  //   swerveScoringToChargeCommand,
+  //   AutoBalance(m_swerve)
+  // );
 }

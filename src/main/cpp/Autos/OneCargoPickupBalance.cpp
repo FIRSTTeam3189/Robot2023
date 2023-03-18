@@ -19,37 +19,37 @@ OneCargoPickupBalance::OneCargoPickupBalance(SwerveDrive *swerveDrive, Elevator 
   if (isRedSide) {
     // std::cout << "Red\n";
     cargoToChargeStationTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-    frc::Pose2d{0.0_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
-    {frc::Translation2d{0.2_m * AutoConstants::TrajectoryScale, 1.25_m * AutoConstants::TrajectoryScale},
-     frc::Translation2d{0.4_m * AutoConstants::TrajectoryScale, 1.5_m * AutoConstants::TrajectoryScale}}, 
-    frc::Pose2d{1.25_m * AutoConstants::TrajectoryScale, 1.829_m * AutoConstants::TrajectoryScale, 0_deg},
+    frc::Pose2d{5.69_m * AutoConstants::TrajectoryScale, 0.0_m, 180_deg},
+    {frc::Translation2d{5.49_m * AutoConstants::TrajectoryScale, -1.25_m * AutoConstants::TrajectoryScale},
+     frc::Translation2d{5.29_m * AutoConstants::TrajectoryScale, -1.5_m * AutoConstants::TrajectoryScale}}, 
+    frc::Pose2d{4.44_m * AutoConstants::TrajectoryScale, -1.829_m * AutoConstants::TrajectoryScale, 180_deg},
     config);
   } 
   else {
     // std::cout << "Blue\n";
     cargoToChargeStationTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-    frc::Pose2d{0.0_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
-    {frc::Translation2d{0.2_m * AutoConstants::TrajectoryScale, -1.25_m * AutoConstants::TrajectoryScale},
-     frc::Translation2d{0.4_m * AutoConstants::TrajectoryScale, -1.5_m * AutoConstants::TrajectoryScale}}, 
-    frc::Pose2d{1.25_m * AutoConstants::TrajectoryScale, -1.829_m * AutoConstants::TrajectoryScale, 0_deg},
+    frc::Pose2d{5.69_m * AutoConstants::TrajectoryScale, 0.0_m, 180_deg},
+    {frc::Translation2d{5.49_m * AutoConstants::TrajectoryScale, 1.25_m * AutoConstants::TrajectoryScale},
+     frc::Translation2d{5.29_m * AutoConstants::TrajectoryScale, 1.5_m * AutoConstants::TrajectoryScale}}, 
+    frc::Pose2d{4.44_m * AutoConstants::TrajectoryScale, 1.829_m * AutoConstants::TrajectoryScale, 180_deg},
     config);
   }
 
   // cargoToChargeStationTrajectory.TransformBy(frc::Transform2d{frc::Pose2d{0_m, 0_m, 0_deg}, m_swerve->GetPose()});
   frc2::SwerveControllerCommand<4> swerveCargoToChargeCommand = m_swerve->CreateSwerveCommand(cargoToChargeStationTrajectory);
 
-  // AddCommands(
-  //   OneCargoPickupOne(m_swerve, m_elevator, m_grabber, m_intake),
-  //   RotateTo(m_swerve, 180.0),
-  //   swerveCargoToChargeCommand,
-  //   AutoBalance(m_swerve)
-  // );
-
   AddCommands(
     OneCargoPickupOne(m_swerve, m_elevator, m_grabber, m_intake),
     RotateTo(m_swerve, 180.0),
-    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
     swerveCargoToChargeCommand,
     AutoBalance(m_swerve)
   );
+
+  // AddCommands(
+  //   OneCargoPickupOne(m_swerve, m_elevator, m_grabber, m_intake),
+  //   RotateTo(m_swerve, 180.0),
+  //   ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
+  //   swerveCargoToChargeCommand,
+  //   AutoBalance(m_swerve)
+  // );
 }

@@ -29,11 +29,11 @@ class Elevator : public frc2::SubsystemBase {
   // declared private and exposed only through public methods.
 
   // Remember to switch to correct, Falcon motor
-  // rev::CANSparkMax m_motor;
-  WPI_TalonFX m_motor;
+  rev::CANSparkMax m_motor;
+  // WPI_TalonFX m_motor;
 
-  // rev::SparkMaxAbsoluteEncoder m_encoder;
-  // rev::SparkMaxPIDController m_PIDcontroller;
+  rev::SparkMaxAbsoluteEncoder m_encoder;
+  rev::SparkMaxPIDController m_PIDcontroller;
   frc::DigitalInput m_lowerLimitSwitch;
   frc::DigitalInput m_upperLimitSwitch;
   bool m_atSetpoint;

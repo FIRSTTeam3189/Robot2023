@@ -124,15 +124,30 @@ void RobotContainer::ConfigureButtonBindings() {
     config 
   );
 
+  // frc::Trajectory leftTrajectory, rightTrajectory;
   // frc2::SequentialCommandGroup leftTranslateCommand = frc2::SequentialCommandGroup(
   //   frc2::InstantCommand([&]{
-  //     leftTrajectory.TransformBy(frc::Transform2d{frc::Pose2d{0_m, 0_m, 0_deg}, m_swerve->GetPose()});
+  //     auto m_pose = m_swerve->GetPose();
+  //     leftTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+  //     m_pose,
+  //     {frc::Translation2d{m_pose.X(), m_pose.Y() - 0.20_m}},
+  //     frc::Pose2d{m_pose.X(), m_pose.Y() - 0.40_m, m_pose.Rotation().Degrees()},
+  //     config 
+  //     );
+  //     // leftTrajectory.TransformBy(frc::Transform2d{frc::Pose2d{0_m, 0_m, 0_deg}, m_swerve->GetPose()});
   //   },{m_swerve}),
   //   leftTranslateCommand
   // );
   // frc2::SequentialCommandGroup rightTranslateCommand = frc2::SequentialCommandGroup(
   //   frc2::InstantCommand([&]{
-  //     rightTrajectory.TransformBy(frc::Transform2d{frc::Pose2d{0_m, 0_m, 0_deg}, m_swerve->GetPose()});
+  //     auto m_pose = m_swerve->GetPose();
+  //     rightTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+  //     m_pose,
+  //     {frc::Translation2d{m_pose.X(), m_pose.Y() + 0.20_m}},
+  //     frc::Pose2d{m_pose.X(), m_pose.Y() + 0.40_m, m_pose.Rotation().Degrees()},
+  //     config 
+  //     );
+  //     // rightTrajectory.TransformBy(frc::Transform2d{frc::Pose2d{0_m, 0_m, 0_deg}, m_swerve->GetPose()});
   //   },{m_swerve}),
   //   rightTranslateCommand
   // );

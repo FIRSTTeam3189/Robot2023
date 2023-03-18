@@ -109,12 +109,12 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Intake *intake)
   // );
   
   AddCommands(
-    ResetOdometry(m_swerve, frc::Pose2d(0.0_m, 0.0_m, 0_deg)),
-    frc2::ParallelDeadlineGroup(frc2::WaitCommand(10.0_s), RunIntake(m_intake, INTAKE_ROLLER_POWER - 0.25, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER))
+  //   ResetOdometry(m_swerve, frc::Pose2d(0.0_m, 0.0_m, 0_deg)),
+  //   frc2::ParallelDeadlineGroup(frc2::WaitCommand(10.0_s), RunIntake(m_intake, INTAKE_ROLLER_POWER - 0.25, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER))
     // RotateTo(m_swerve, 180),
     // ResetOdometry(m_swerve, frc::Pose2d(0.0_m, 0.0_m, 0_deg))
   //   // ResetOdometry(m_swerve, frc::Pose2d(0.0_m, 0.0_m, 0_deg))
-  // //   swerveLineCommand,
+    swerveLineCommand
   // //   AutoBalance(m_swerve)
   );
 

@@ -24,27 +24,27 @@ OneCargoPickupOne::OneCargoPickupOne(SwerveDrive *swerveDrive, Elevator *elevato
   // scoringToCargoTrajectory.TransformBy(frc::Transform2d{frc::Pose2d{0_m, 0_m, 0_deg}, m_swerve->GetPose()});
   frc2::SwerveControllerCommand<4> swerveScoringToCargoCommand = m_swerve->CreateSwerveCommand(scoringToCargoTrajectory);
 
-  // AddCommands(
-  //   OneCargo(m_elevator, m_grabber, m_intake),
-  //   ElevatorPID(m_elevator, m_grabber, m_intake, 0, false),
-  //   RotateTo(m_swerve, 180.0),
-  //   swerveScoringToCargoCommand,
-  //   ToggleIntakePistons(m_intake),
-  //   frc2::ParallelDeadlineGroup(frc2::WaitCommand(5.0_s), RunIntake(m_intake, INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER)),
-  //   ToggleIntakePistons(m_intake)
-  // );
-
   AddCommands(
-    // Consider parallelizimationing the elevator pid and swerve driving
     OneCargo(m_swerve, m_elevator, m_grabber, m_intake),
     ElevatorPID(m_elevator, m_grabber, m_intake, 0, false),
-    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
     RotateTo(m_swerve, 180.0),
-    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
-    // Consider paralleliziamationsingiasd the intake and drivetrain
     swerveScoringToCargoCommand,
     ToggleIntakePistons(m_intake),
     frc2::ParallelDeadlineGroup(frc2::WaitCommand(5.0_s), RunIntake(m_intake, INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER)),
     ToggleIntakePistons(m_intake)
   );
+
+  // AddCommands(
+  //   // Consider parallelizimationing the elevator pid and swerve driving
+  //   OneCargo(m_swerve, m_elevator, m_grabber, m_intake),
+  //   ElevatorPID(m_elevator, m_grabber, m_intake, 0, false),
+  //   ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
+  //   RotateTo(m_swerve, 180.0),
+  //   ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
+  //   // Consider paralleliziamationsingiasd the intake and drivetrain
+  //   swerveScoringToCargoCommand,
+  //   ToggleIntakePistons(m_intake),
+  //   frc2::ParallelDeadlineGroup(frc2::WaitCommand(5.0_s), RunIntake(m_intake, INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER)),
+  //   ToggleIntakePistons(m_intake)
+  // );
 }
