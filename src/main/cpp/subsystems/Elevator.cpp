@@ -7,10 +7,11 @@
 Elevator::Elevator() :
 // m_motor(ELEVATOR_MOTOR),
 m_motor(ELEVATOR_MOTOR, rev::CANSparkMaxLowLevel::MotorType::kBrushless), 
-m_encoder(m_motor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)), 
-m_PIDcontroller(m_motor.GetPIDController()),
-m_lowerLimitSwitch(ELEVATOR_LOWER_LIMIT_SWITCH_ID),
-m_upperLimitSwitch(ELEVATOR_UPPER_LIMIT_SWITCH_ID)
+// m_encoder(m_motor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)), 
+m_encoder(m_motor.GetAlternateEncoder(ELEVATOR_THROUGHBORE_CPR)),
+m_PIDcontroller(m_motor.GetPIDController())
+// m_lowerLimitSwitch(ELEVATOR_LOWER_LIMIT_SWITCH_ID),
+// m_upperLimitSwitch(ELEVATOR_UPPER_LIMIT_SWITCH_ID)
 {   
     // Configure falcon PID and miscellaneous settings
     // m_motor.ConfigFactoryDefault();
@@ -24,12 +25,12 @@ m_upperLimitSwitch(ELEVATOR_UPPER_LIMIT_SWITCH_ID)
     // m_motor.ConfigOpenloopRamp(0);
     // m_motor.SetNeutralMode(ctre::phoenix::motorcontrol::Brake);
 
-    m_encoder.SetPositionConversionFactor(ELEVATOR_CPR);
-    m_PIDcontroller.SetP(ELEVATOR_P);
-    m_PIDcontroller.SetI(ELEVATOR_I);
-    m_PIDcontroller.SetD(ELEVATOR_D);
-    m_PIDcontroller.SetFeedbackDevice(m_encoder);
-    m_PIDcontroller.SetSmartMotionAllowedClosedLoopError(.01);
+    // m_encoder.SetPositionConversionFactor(ELEVATOR_INTEGRATED_CPR);
+    m_encoder.SetPositionConversionFactor(ELEVATOR_THROUGHBORE_CPR);
+    // m_PIDcontroller.SetP(ELEVATOR_P);
+    // m_PIDcontroller.SetI(ELEVATOR_I);
+    // m_PIDcontroller.SetD(ELEVATOR_D);
+    // m_PIDcontroller.SetFeedbackDevice(m_encoder);
 }
 
 // This method will be called once per scheduler run
@@ -55,20 +56,21 @@ void Elevator::Periodic() {
 
     frc::SmartDashboard::PutNumber("Elevator Position", m_encoder.GetPosition());
     // If carridge is close to target slow down elevator
-    if (abs(m_target - m_encoder.GetPosition()) < ELEVATOR_SLOW_DISTANCE) {
-        m_PIDcontroller.SetP(ELEVATOR_SLOW_P);
-    } else if (abs(m_target - m_encoder.GetPosition()) < ELEVATOR_STOP_DISTANCE) {
+    // if (abs(m_target - m_encoder.GetPosition()) < ELEVATOR_SLOW_DISTANCE) {
+    //     m_PIDcontroller.SetP(ELEVATOR_SLOW_P);
+    // }
+    if (abs(m_target - m_encoder.GetPosition()) < ELEVATOR_STOP_DISTANCE) {
         m_atSetpoint = true;
     } 
     // If lower limit switch is hit and going down, stop and set encoder to 0
     // If upper limit switch is hit and going up, stop
-    if (m_lowerLimitSwitch.Get()) {
-        m_power = (m_power < 0) ? 0 : m_power;
-        // TODO: FIX FOR CORRECT ENCODER TYPE
-        // m_encoder.SetPosition(0);
-    } else if (m_upperLimitSwitch.Get()) {
-        m_power = (m_power > 0) ? 0 : m_power;
-    }
+    // if (m_lowerLimitSwitch.Get()) {
+    //     m_power = (m_power < 0) ? 0 : m_power;
+    //     // TODO: FIX FOR CORRECT ENCODER TYPE
+    //     // m_encoder.SetPosition(0);
+    // } else if (m_upperLimitSwitch.Get()) {
+    //     m_power = (m_power > 0) ? 0 : m_power;
+    // }
 }
 
 double Elevator::GetPosition() {
@@ -81,6 +83,11 @@ void Elevator::Drive(double power) {
     m_motor.Set(m_power);
     // m_motor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, m_power);
     m_power = power;
+}
+
+// 4.36418e-06 meters per tick
+double Elevator::ElevatorTicksToMeters(double encoderTicks) {
+    return encoderTicks / ELEVATOR_THROUGHBORE_CPR / ELEVATOR_GEAR_RATIO * ELEVATOR_OUTPUT_CIRCUMFERENCE;
 }
 
 void Elevator::GoToPosition(double target) {
@@ -96,8 +103,20 @@ void Elevator::GoToPosition(double target) {
     // Resets position marker upon getting a new position
     m_atSetpoint = false;
     // Set to normal speed after new PID command
-    m_PIDcontroller.SetP(ELEVATOR_P);
-    m_PIDcontroller.SetReference(target, rev::CANSparkMax::ControlType::kPosition);
+    // m_PIDcontroller.SetP(ELEVATOR_P);
+
+    units::volt_t pidValue = units::volt_t{m_controller.Calculate(units::meter_t{ElevatorTicksToMeters(m_encoder.GetPosition())}, 
+                                             units::meter_t{ElevatorTicksToMeters(target)})};
+    auto acceleration = (m_controller.GetSetpoint().velocity - m_lastSpeed) /
+      (frc::Timer::GetFPGATimestamp() - m_lastTime);
+
+    units::volt_t ffValue = ff.Calculate(m_controller.GetSetpoint().velocity, acceleration);
+
+    m_motor.SetVoltage(std::clamp((pidValue + ffValue), -12.0_V, 12.0_V));
+    m_lastSpeed = m_controller.GetSetpoint().velocity;
+    m_lastTime = frc::Timer::GetFPGATimestamp();
+    
+    // m_PIDcontroller.SetReference(target, rev::CANSparkMax::ControlType::kPosition);
     m_target = target;
 }
 

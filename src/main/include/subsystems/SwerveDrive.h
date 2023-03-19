@@ -88,6 +88,7 @@ class SwerveDrive : public frc2::SubsystemBase {
   double GetNormalizedYaw();
   frc::Pose2d GetPose();
   void DriveFast();
+  void LockWheels();
   frc2::SwerveControllerCommand<4> CreateSwerveCommand(frc::Trajectory trajectory);
 
   // Access functions for rotation PID controller

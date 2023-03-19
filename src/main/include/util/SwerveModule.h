@@ -11,14 +11,14 @@
 #include <frc/controller/SimpleMotorFeedforward.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/kinematics/SwerveModulePosition.h>
-#include <units/angular_velocity.h>
-#include <units/time.h>
-#include <units/velocity.h>
-#include <units/voltage.h>
 #include <numbers>
 #include "rev/CANSparkMax.h"
 #include <math.h>
 #include <iostream>
+#include <units/angular_velocity.h>
+#include <units/time.h>
+#include <units/velocity.h>
+#include <units/voltage.h>
 
 struct PIDValues {
   const double p;
@@ -46,6 +46,11 @@ struct SwerveModuleTelemetry {
   const double absoluteAngle;
   const double relativeAngle;
 };
+
+// SysID robot characterization values -- **varies by robot**
+constexpr auto ks = 0.208_V;
+constexpr auto kv = 2.206 * 1_V * 1_s / 1_m;
+constexpr auto ka = 0.409 * 1_V * 1_s * 1_s / 1_m;
 
 class SwerveModule {
  public:
@@ -105,8 +110,10 @@ class SwerveModule {
 
     double m_angleOffset;
     double m_lastAngle;
-
+  
     // Create swerve module position for odometry
     frc::SwerveModulePosition m_swervePosition{0_m, frc::Rotation2d{}};
+    // frc::SimpleMotorFeedforward<units::meters> ff{SwerveDriveConstants::ks, SwerveDriveConstants::kv, SwerveDriveConstants::ka};
+    frc::SimpleMotorFeedforward<units::meters> ff{ks, kv, ka};
     WPI_CANCoder m_absoluteEncoder; 
 };

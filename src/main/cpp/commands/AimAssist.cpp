@@ -89,6 +89,7 @@ bool AimAssist::IsFinished() {
   if ((abs((double)m_visionData.translationMatrix[0] - m_targetXDistance) < 0.04 && 
        abs((double)m_visionData.translationMatrix[1] - m_targetYDistance) < 0.04)) {
     m_swerve->Drive(units::meters_per_second_t(0.0), units::meters_per_second_t(0.0), units::angular_velocity::radians_per_second_t(0.0), true);
+    m_swerve->LockWheels();
     return true;
   }
   return false;

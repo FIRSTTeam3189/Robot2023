@@ -1,9 +1,6 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
-
 #pragma once
 
 #include "util/SwerveModule.h"
@@ -62,7 +59,7 @@ namespace SwerveDriveConstants {
     // SysID robot characterization values -- **varies by robot**
     constexpr auto ks = 0.208_V;
     constexpr auto kv = 2.206 * 1_V * 1_s / 1_m;
-    constexpr auto ka = 0.409 * 1_V * 1_s * 1_s / 1_m;
+    constexpr auto ka = 1.409 * 1_V * 1_s * 1_s / 1_m;
 
     // Distance traveled by robot per encoder tick
     // constexpr double driveEncoderDistancePerPulse = 
@@ -74,8 +71,8 @@ namespace SwerveDriveConstants {
     //     (static_cast<double>(cancoderTicksPerRevolution) * encoderTurnGearRatio);
 
     // Robot maxes - approximated and varies by robot
-    constexpr auto kMaxSpeed = 10.0_mps;
-    constexpr auto kMaxAcceleration = 5.0_mps_sq;
+    constexpr auto kMaxSpeed = 4.0_mps;
+    constexpr auto kMaxAcceleration = 3.0_mps_sq;
     constexpr units::radians_per_second_t maxAngularVelocity {PI};
     constexpr units::radians_per_second_squared_t maxAngularAcceleration {PI / 4};
 
@@ -115,10 +112,10 @@ namespace SwerveDriveConstants {
     constexpr int rightBackCancoderID {12};
 
     // Swerve angle offsets -- difference between actual degrees heading and absolute degree values
-    constexpr double frontLeftOffset {289.5};
-    constexpr double frontRightOffset {10.0};
-    constexpr double backLeftOffset {344.0};
-    constexpr double backRightOffset {0.0};
+    constexpr double frontLeftOffset {235.5};
+    constexpr double frontRightOffset {334.5};
+    constexpr double backLeftOffset {9.8};
+    constexpr double backRightOffset {88.2};
 
     constexpr SwerveInfo kLeftFrontInfo {
         leftFrontSpeedCANID, leftFrontTurningCANID, leftFrontCancoderID, 
@@ -135,7 +132,7 @@ namespace SwerveDriveConstants {
         speedMotorPID, angleMotorPID, backLeftOffset
     };
 
-    constexpr SwerveInfo kRightBackInfo {
+    constexpr SwerveInfo kmRightBackInfo {
         rightBackSpeedCANID, rightBackTurningCANID, rightBackCancoderID,
         speedMotorPID, angleMotorPID, backRightOffset
     };
@@ -147,7 +144,6 @@ namespace AutoConstants {
     // Ramsete controller (trajectory following) parameters
     constexpr auto kRamseteB = 2.0 * 1_rad * 1_rad / (1_m * 1_m);
     constexpr auto kRamseteZeta = 0.7 / 1_rad;
-    // Gyro is inverted so rotation should be inverted
     constexpr double autoRotP {-0.5};
     constexpr double autoRotI {0.0};
     constexpr double autoRotD {0.0};
@@ -165,10 +161,8 @@ namespace AutoConstants {
 };
 
 // PS5 Controls
-
 #define PS5_BILL_CONTROLLER_PORT 0
 #define PS5_TED_CONTROLLER_PORT 1
-
 #define PS5_BUTTON_SQR 1
 #define PS5_BUTTON_X 2
 #define PS5_BUTTON_O 3
@@ -183,7 +177,6 @@ namespace AutoConstants {
 #define PS5_BUTTON_RSTICK 12
 #define PS5_BUTTON_PS 13
 #define PS5_BUTTON_TOUCHPAD 14
-
 #define PS5_AXIS_LSTICK_X 0 // left is -1, right is 1
 #define PS5_AXIS_LSTICK_Y 1 // up is -1, down is 1
 #define PS5_AXIS_RSTICK_X 2 // left is -1, right is 1
@@ -192,7 +185,6 @@ namespace AutoConstants {
 #define PS5_AXIS_RSTICK_Y 5 // up is -1 , down is 1
 
 // Need to get IDs
-
 #define INTAKE_PISTON_IN 0
 #define INTAKE_PISTON_OUT 1
 #define INTAKE_ROLLER_MOTOR_ID 13
@@ -204,15 +196,25 @@ namespace AutoConstants {
 #define INTAKE_CONE_CORRECT_POWER 0.1
 
 #define ELEVATOR_MOTOR 17
-#define ELEVATOR_P 0.1
+#define ELEVATOR_P 0.05
 #define ELEVATOR_SLOW_P 0.025
 #define ELEVATOR_I 0
 #define ELEVATOR_D 0
 #define ELEVATOR_ULTRA_SHOOT_P 0.1
 #define ELEVATOR_ULTRA_SHOOT_POWER 1.0
+#define ELEVATOR_MAX_SPEED 3.0_mps
+#define ELEVATOR_MAX_ACCELERATION 3.0_mps_sq
+#define ELEVATOR_GEAR_RATIO 4.0
+#define ELEVATOR_OUTPUT_CIRCUMFERENCE (PI * 0.04552)
+// Elevator feedforward constants
+#define ELEVATOR_KS 0.0_V
+#define ELEVATOR_KG 0.0_V
+#define ELEVATOR_KV 0.0_V * 1_s / 1_m
+#define ELEVATOR_KA 0.0_V * 1_s * 1_s / 1_m
 // Values in encoder ticks
-// #define ELEVATOR_CPR 1024
-#define ELEVATOR_CPR 4096
+// #define ELEVATOR_THROUGHBORE_CPR 1024
+#define ELEVATOR_THROUGHBORE_CPR 8192
+#define ELEVATOR_INTEGRATED_CPR 42
 #define ELEVATOR_LOW_TARGET 2000
 #define ELEVATOR_MID_TARGET 4000
 #define ELEVATOR_HIGH_TARGET 6000
@@ -230,8 +232,8 @@ namespace AutoConstants {
 #define AIM_ASSIST_TARGET_ROTATION 0.0
 
 // Camera lense's offsets in meters from center front of robot
-#define CAMERA_X_OFFSET -0.095
-#define CAMERA_Y_OFFSET -0.065
+#define CAMERA_X_OFFSET -0.05588
+#define CAMERA_Y_OFFSET 0.1905
 #define VISION_X_KP 2.75
 #define VISION_X_KI 0.0
 #define VISION_X_KD 0.0
@@ -254,5 +256,3 @@ namespace AutoConstants {
 // #define GRABBER_MID_CONE_SPEED 0
 // #define GRABBER_HIGH_CONE_SPEED 0
 #define GRABBER_CARRY_SPEED -0.15
-
-#endif

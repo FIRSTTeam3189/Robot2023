@@ -90,7 +90,7 @@ double SwerveModule::FalconToDegrees(double encoderTicks) {
 }
 
 units::meter_t SwerveModule::FalconToMeters(double encoderTicks) {
-    return units::meter_t{encoderTicks / 2.0 * (SwerveDriveConstants::wheelCircumferenceMeters / (SwerveDriveConstants::encoderSpeedGearRatio * SwerveDriveConstants::falconEncoderTicksPerRevolution))};
+    return units::meter_t{encoderTicks * (SwerveDriveConstants::wheelCircumferenceMeters / (SwerveDriveConstants::encoderSpeedGearRatio * SwerveDriveConstants::falconEncoderTicksPerRevolution))};
 }
 
 void SwerveModule::DriveFast() {
@@ -107,11 +107,14 @@ void SwerveModule::SetDesiredState(const frc::SwerveModuleState &input_state) {
     double vel = state.speed.value();
     // Keep wheels in current spot instead of resetting to 0
 
-    double speedPercent = vel / (double)SwerveDriveConstants::kMaxSpeed;
-    frc::SmartDashboard::PutNumber("Target Swerve Mod Percent", speedPercent);
+    units::volt_t ffValue = std::clamp(ff.Calculate(state.speed), -12.0_V, 12.0_V);
+    m_speedMotor.Set(TalonFXControlMode::PercentOutput, (ffValue / 12.0_V));
+
+    // double speedPercent = vel / (double)SwerveDriveConstants::kMaxSpeed;
+    // frc::SmartDashboard::PutNumber("Target Swerve Mod Percent", speedPercent);
 
     // Tells PID controller to run with calculated module speed
-    m_speedMotor.Set(TalonFXControlMode::PercentOutput, speedPercent);
+    // m_speedMotor.Set(TalonFXControlMode::PercentOutput, speedPercent);
     
     // Calculate position to set angle PID to
     double turnSetpoint = DegreesToFalcon(state.angle.Degrees().value());
@@ -119,6 +122,7 @@ void SwerveModule::SetDesiredState(const frc::SwerveModuleState &input_state) {
     // If robot wants to barely move or rotate module, stop motors
     // Also sets next setpoint as current angle so no rotation happens
     // std::cout << "Velocity in mps: " << vel << " Turn difference: " << (m_lastAngle - turnSetpoint) << std::endl;
+
     if (fabs(vel) < .025 && (m_lastAngle - turnSetpoint) < 5.0) {
         // std::cout << "Stopping motors";
         Stop();

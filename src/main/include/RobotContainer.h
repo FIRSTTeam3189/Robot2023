@@ -19,6 +19,7 @@
 #include <frc2/command/SwerveControllerCommand.h>
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/InstantCommand.h>
+#include <frc2/command/RepeatCommand.h>
 #include <frc/trajectory/Trajectory.h>
 #include <frc/trajectory/TrajectoryConfig.h>
 #include <frc/Joystick.h>
@@ -126,6 +127,7 @@ class RobotContainer {
   frc2::Trigger m_driverStopButton;
   frc2::Trigger m_driveFastButton;
   frc2::Trigger m_ultraShootButton;
+  frc2::Trigger m_lockWheelsButton;
 
   // Co-driver's controls
   frc2::Trigger m_elevatorLowLevelButton;

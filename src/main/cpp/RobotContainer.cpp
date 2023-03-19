@@ -185,13 +185,16 @@ void RobotContainer::ConfigureButtonBindings() {
       RotateTo(m_swerve, 0)).ToPtr());
   // m_rightTranslateTrajectoryButton.OnTrue(&rightTranslateCommand);
 
-  // m_centerAimAssistButton = m_bill.Button(PS5_BUTTON_PS);
+  m_centerAimAssistButton = m_bill.Button(PS5_BUTTON_PS);
   m_centerAimAssistButton.OnTrue(frc2::SequentialCommandGroup(
     RotateTo(m_swerve, 0),
     ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
     frc2::ParallelRaceGroup(frc2::WaitCommand(3.0_s), AimAssist(m_vision, m_swerve, 1.0, 0.0, 0.0)),
     RotateTo(m_swerve, 0)).ToPtr());
 
+  m_lockWheelsButton = m_bill.Button(PS5_BUTTON_LTRIGGER);
+  m_lockWheelsButton.WhileTrue(frc2::InstantCommand([this]{m_swerve->LockWheels();},{m_swerve}).ToPtr().Repeatedly());
+  
   // ---------------------Ted's controls----------------------
   // Co-driver drives the elevator manually and continuously pulls in by default
   // Can also use PID buttons instead
@@ -289,6 +292,7 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 }
 
 void RobotContainer::Sync() {
+  std::cout << m_elevator->ElevatorTicksToMeters(1) << "\n";
   m_swerve->SyncSmartdashBoardValues();
   // std::cout << "Syncing robot container\n";
 }

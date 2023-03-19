@@ -348,6 +348,14 @@ void SwerveDrive::Log2DField() {
   frc::SmartDashboard::PutData("Field object", &m_fieldObject);
 }
 
+void SwerveDrive::LockWheels() {
+  frc::SwerveModuleState lockedState = frc::SwerveModuleState{0.0_mps, units::radian_t{PI / 2.0}};
+  m_SM.m_frontLeft.SetDesiredState(lockedState);
+  m_SM.m_frontRight.SetDesiredState(lockedState);
+  m_SM.m_backLeft.SetDesiredState(lockedState);
+  m_SM.m_backRight.SetDesiredState(lockedState);
+}
+
 void SwerveDrive::LogModuleStates(SwerveModuleTelemetry telemetryArray[]) {
 // Measured states to be logged in AdvantageScope (requires different format)
   double AdvantageScopeMeasuredStates[] = 
