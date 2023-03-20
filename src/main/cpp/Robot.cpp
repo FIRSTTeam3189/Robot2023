@@ -85,6 +85,7 @@ void Robot::TeleopInit() {
  */
 void Robot::TeleopPeriodic() {
   m_container.Sync();
+  m_container.CheckPOV();
 }
 
 /**

@@ -105,10 +105,15 @@ void SwerveModule::SetDesiredState(const frc::SwerveModuleState &input_state) {
     
     // const auto state = input_state;
     double vel = state.speed.value();
-    // Keep wheels in current spot instead of resetting to 0
+    
+    auto acceleration = (state.speed - m_lastSpeed) /
+      (frc::Timer::GetFPGATimestamp() - m_lastTime);
 
-    units::volt_t ffValue = std::clamp(ff.Calculate(state.speed), -12.0_V, 12.0_V);
+    units::volt_t ffValue = std::clamp(ff.Calculate(state.speed, acceleration), -12.0_V, 12.0_V);
     m_speedMotor.Set(TalonFXControlMode::PercentOutput, (ffValue / 12.0_V));
+
+    m_lastSpeed = state.speed;
+    m_lastTime = frc::Timer::GetFPGATimestamp();
 
     // double speedPercent = vel / (double)SwerveDriveConstants::kMaxSpeed;
     // frc::SmartDashboard::PutNumber("Target Swerve Mod Percent", speedPercent);
@@ -123,6 +128,7 @@ void SwerveModule::SetDesiredState(const frc::SwerveModuleState &input_state) {
     // Also sets next setpoint as current angle so no rotation happens
     // std::cout << "Velocity in mps: " << vel << " Turn difference: " << (m_lastAngle - turnSetpoint) << std::endl;
 
+    // Keep wheels in current spot instead of resetting to 0
     if (fabs(vel) < .025 && (m_lastAngle - turnSetpoint) < 5.0) {
         // std::cout << "Stopping motors";
         Stop();

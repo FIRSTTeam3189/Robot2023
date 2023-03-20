@@ -116,4 +116,6 @@ class SwerveModule {
     // frc::SimpleMotorFeedforward<units::meters> ff{SwerveDriveConstants::ks, SwerveDriveConstants::kv, SwerveDriveConstants::ka};
     frc::SimpleMotorFeedforward<units::meters> ff{ks, kv, ka};
     WPI_CANCoder m_absoluteEncoder; 
+    units::meters_per_second_t m_lastSpeed;
+    units::second_t m_lastTime;
 };

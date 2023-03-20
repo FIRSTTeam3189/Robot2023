@@ -34,13 +34,12 @@ class Elevator : public frc2::SubsystemBase {
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 
-  // Remember to switch to correct, Falcon motor
   rev::CANSparkMax m_motor;
   // WPI_TalonFX m_motor;
 
-  // rev::SparkMaxAbsoluteEncoder m_encoder;
-  rev::SparkMaxAlternateEncoder m_encoder;
-  rev::SparkMaxPIDController m_PIDcontroller;
+  rev::SparkMaxAbsoluteEncoder m_encoder;
+  // rev::SparkMaxAlternateEncoder m_encoder;
+  // rev::SparkMaxPIDController m_PIDcontroller;
   frc::TrapezoidProfile<units::meters>::Constraints m_constraints{ELEVATOR_MAX_SPEED, ELEVATOR_MAX_ACCELERATION};
   frc::ProfiledPIDController<units::meters> m_controller{ELEVATOR_P, ELEVATOR_I, ELEVATOR_D, m_constraints, 20_ms};
   frc::ElevatorFeedforward ff{ELEVATOR_KS, ELEVATOR_KG, ELEVATOR_KV, ELEVATOR_KA};

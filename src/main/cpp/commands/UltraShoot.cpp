@@ -4,22 +4,25 @@
 
 #include "commands/UltraShoot.h"
 
-UltraShoot::UltraShoot(Elevator *elevator, Grabber *grabber)
-: m_elevator(elevator), m_grabber(grabber) {
+UltraShoot::UltraShoot(Elevator *elevator, Intake *intake, Grabber *grabber)
+: m_elevator(elevator), m_intake(intake), m_grabber(grabber) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(elevator);
+  AddRequirements(intake);
   AddRequirements(grabber);
 }
 
 // Called when the command is initially scheduled.
 void UltraShoot::Initialize() {
-  // Start driving elevator up quickly
-  m_elevator->GoToPosition(ELEVATOR_ULTRA_SHOOT_TARGET);
+  m_intake->SetPistonExtension(true);
   m_elevator->SetPID(ELEVATOR_ULTRA_SHOOT_P, ELEVATOR_I, ELEVATOR_D);
 }
 
 // Called repeatedly when this Command is scheduled to run
 void UltraShoot::Execute() {
+  // Start driving elevator up quickly
+  m_elevator->GoToPosition(ELEVATOR_ULTRA_SHOOT_TARGET);
+
   if (m_elevator->GetPosition() > ELEVATOR_ULTRA_SHOOT_RELEASE_POINT) {
     m_grabber->SetSpeed(ELEVATOR_ULTRA_SHOOT_POWER);
   }

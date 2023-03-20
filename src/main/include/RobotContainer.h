@@ -118,6 +118,7 @@ class RobotContainer {
   frc2::Trigger m_autoBalanceButton;
   // frc2::Trigger m_leftAimAssistButton;
   frc2::Trigger m_centerAimAssistButton;
+  frc2::Trigger m_slideStationAimAssistButton;
   // frc2::Trigger m_rightAimAssistButton;
   frc2::Trigger m_spinIntakeInButton;
   frc2::Trigger m_spinIntakeOutButton;
@@ -136,6 +137,7 @@ class RobotContainer {
   frc2::Trigger m_cancelElevatorPIDControl;
   frc2::Trigger m_runIntakeInButton;
   frc2::Trigger m_runIntakeOutButton;
+  frc2::Trigger m_coneCorrectButton;
   frc2::Trigger m_shootButton;
   frc2::Trigger m_grabButton;
   frc2::Trigger m_codriverStopButton;

@@ -30,7 +30,7 @@ namespace SwerveDriveConstants {
     constexpr double wheelRadiusMeters = 0.0508;
     constexpr double wheelCircumferenceMeters = 2.0 * PI * wheelRadiusMeters;
     constexpr double encoderSpeedGearRatio = 8.1;
-    constexpr double encoderTurnGearRatio = 10.29;
+    constexpr double encoderTurnGearRatio = 15.43;
     constexpr int falconEncoderTicksPerRevolution = 2048;
     constexpr int cancoderTicksPerRevolution = 4096;
     constexpr units::second_t kDt {0.020};
@@ -76,8 +76,8 @@ namespace SwerveDriveConstants {
     constexpr units::radians_per_second_t maxAngularVelocity {PI};
     constexpr units::radians_per_second_squared_t maxAngularAcceleration {PI / 4};
 
-    constexpr double speedP {35.0};
-    constexpr double speedI {5.0};
+    constexpr double speedP {5.0};
+    constexpr double speedI {1.0};
     constexpr double speedD {0.0};
     constexpr double angleP {1.0};
     constexpr double angleI {0.0};
@@ -132,7 +132,7 @@ namespace SwerveDriveConstants {
         speedMotorPID, angleMotorPID, backLeftOffset
     };
 
-    constexpr SwerveInfo kmRightBackInfo {
+    constexpr SwerveInfo kRightBackInfo {
         rightBackSpeedCANID, rightBackTurningCANID, rightBackCancoderID,
         speedMotorPID, angleMotorPID, backRightOffset
     };
@@ -256,3 +256,7 @@ namespace AutoConstants {
 // #define GRABBER_MID_CONE_SPEED 0
 // #define GRABBER_HIGH_CONE_SPEED 0
 #define GRABBER_CARRY_SPEED -0.15
+#define GRABBER_COLOR_SENSOR_DEVICE_ID 0
+// Higher number the better
+#define GRABBER_SENSOR_CONFIDENCE 0.90
+#define GRABBER_SENSOR_PROXIMITY_THRESHOLD 1000

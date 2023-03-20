@@ -7,9 +7,9 @@
 Elevator::Elevator() :
 // m_motor(ELEVATOR_MOTOR),
 m_motor(ELEVATOR_MOTOR, rev::CANSparkMaxLowLevel::MotorType::kBrushless), 
-// m_encoder(m_motor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)), 
-m_encoder(m_motor.GetAlternateEncoder(ELEVATOR_THROUGHBORE_CPR)),
-m_PIDcontroller(m_motor.GetPIDController())
+m_encoder(m_motor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle))
+// m_encoder(m_motor.GetAlternateEncoder(rev::SparkMaxAlternateEncoder::Type::kQuadrature, ELEVATOR_THROUGHBORE_CPR))
+// m_PIDcontroller(m_motor.GetPIDController())
 // m_lowerLimitSwitch(ELEVATOR_LOWER_LIMIT_SWITCH_ID),
 // m_upperLimitSwitch(ELEVATOR_UPPER_LIMIT_SWITCH_ID)
 {   
@@ -103,7 +103,9 @@ void Elevator::GoToPosition(double target) {
     // Resets position marker upon getting a new position
     m_atSetpoint = false;
     // Set to normal speed after new PID command
-    // m_PIDcontroller.SetP(ELEVATOR_P);
+    if (m_controller.GetP() != ELEVATOR_P) {
+        SetPID(ELEVATOR_P, ELEVATOR_I, ELEVATOR_D);
+    }
 
     units::volt_t pidValue = units::volt_t{m_controller.Calculate(units::meter_t{ElevatorTicksToMeters(m_encoder.GetPosition())}, 
                                              units::meter_t{ElevatorTicksToMeters(target)})};
@@ -124,12 +126,15 @@ void Elevator::SetPID(double kP, double kI, double kD) {
     // m_motor.Config_kP(0, kP);
     // m_motor.Config_kI(0, kI);
     // m_motor.Config_kD(0, kD);
-    m_PIDcontroller.SetP(kP);
-    m_PIDcontroller.SetI(kI);
-    m_PIDcontroller.SetD(kD);
+    // m_PIDcontroller.SetP(kP);
+    // m_PIDcontroller.SetI(kI);
+    // m_PIDcontroller.SetD(kD);
+    m_controller.SetP(kP);
+    m_controller.SetI(kI);
+    m_controller.SetD(kD);
 }
 
 bool Elevator::AtSetpoint() {
     return m_atSetpoint;
-    return false;
+    // return false;
 }

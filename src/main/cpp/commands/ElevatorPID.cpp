@@ -15,7 +15,6 @@ ElevatorPID::ElevatorPID(Elevator *elevator, Grabber *grabber, Intake *intake, d
 // Called when the command is initially scheduled.
 void ElevatorPID::Initialize() {
     m_intake->SetPistonExtension(true);
-    m_elevator->GoToPosition(m_target);
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -23,6 +22,7 @@ void ElevatorPID::Execute() {
   // Maybe run grabber inwards during PID so the piece doesn't fall out
   // m_grabber->SetSpeed(GRABBER_CARRY_SPEED);
 
+  m_elevator->GoToPosition(m_target);
   if (m_elevator->AtSetpoint()) {
     m_interrupt = true;
     // Maybe retract intake when PID command is done -- test first

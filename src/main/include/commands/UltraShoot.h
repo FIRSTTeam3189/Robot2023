@@ -9,6 +9,7 @@
 
 #include "subsystems/Elevator.h"
 #include "subsystems/Grabber.h"
+#include "subsystems/Intake.h"
 
 /**
  * An example command.
@@ -20,7 +21,7 @@
 class UltraShoot
     : public frc2::CommandHelper<frc2::CommandBase, UltraShoot> {
  public:
-  UltraShoot(Elevator *elevator, Grabber *grabber);
+  UltraShoot(Elevator *elevator, Intake *intake, Grabber *grabber);
 
   void Initialize() override;
 
@@ -32,5 +33,6 @@ class UltraShoot
 
  private:
   Elevator *m_elevator;
+  Intake *m_intake;
   Grabber *m_grabber;
 };

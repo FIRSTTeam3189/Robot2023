@@ -13,6 +13,6 @@ TwoCargoUltrashootBalance::TwoCargoUltrashootBalance(SwerveDrive *swerve, Elevat
   // AddCommands(FooCommand{}, BarCommand{});
   AddCommands(
     OneCargoPickupBalance(m_swerve, m_elevator, m_grabber, m_intake, true),
-    UltraShoot(m_elevator, m_grabber)
+    UltraShoot(m_elevator, m_intake, m_grabber)
   );
 }
