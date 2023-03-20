@@ -10,6 +10,7 @@ Grabber::Grabber() : m_motor(GRABBER_MOTOR_ID), m_colorSensor(frc::I2C::Port::kM
     m_motor.ConfigClosedloopRamp(0);
     m_colorMatcher.AddColorMatch(kConeTarget);
     m_colorMatcher.AddColorMatch(kCubeTarget);
+    m_colorSensor.ConfigureColorSensor(rev::ColorSensorV3::ColorResolution::k13bit, rev::ColorSensorV3::ColorMeasurementRate::k500ms);
 }
 
 // This method will be called once per scheduler run
@@ -19,25 +20,25 @@ void Grabber::Periodic() {
     m_colorMatcher.SetConfidenceThreshold(GRABBER_SENSOR_CONFIDENCE);
     m_matchedColor = *m_colorMatcher.MatchColor(m_detectedColor);
     uint32_t m_proximity = m_colorSensor.GetProximity();
-    if (m_matchedColor == kConeTarget && m_proximity >= GRABBER_SENSOR_PROXIMITY_THRESHOLD) {
-        frc::Shuffleboard::GetTab("Driver Tab")
-        .Add("Grabber Piece Color", true)
-        .WithWidget(frc::BuiltInWidgets::kBooleanBox)
-        .WithProperties({
-        {"colorWhenTrue", nt::Value::MakeString("yellow")}
-        }).GetEntry();
-    } else if (m_matchedColor == kCubeTarget && m_proximity >= GRABBER_SENSOR_PROXIMITY_THRESHOLD) {
-        frc::Shuffleboard::GetTab("Driver Tab")
-        .Add("Grabber Piece Color", true)
-        .WithWidget(frc::BuiltInWidgets::kBooleanBox)
-        .WithProperties({
-        {"colorWhenTrue", nt::Value::MakeString("blue")}
-        }).GetEntry();
+    if (m_matchedColor == kConeTarget) {
+        frc::SmartDashboard::PutBoolean("Has Cone?", true);
+    } else if (m_matchedColor == kCubeTarget) {
+        // frc::Shuffleboard::GetTab("Driver Tab")
+        // .Add("Grabber Piece Color", true)
+        // .WithWidget(frc::BuiltInWidgets::kBooleanBox)
+        // .WithProperties({
+        // {"colorWhenTrue", nt::Value::MakeString("blue")}
+        // }).GetEntry();
+        frc::SmartDashboard::PutBoolean("Has Cube?", true);
     } else {
-        frc::Shuffleboard::GetTab("Driver Tab")
-        .Add("Grabber Piece Color", false)
-        .WithWidget(frc::BuiltInWidgets::kBooleanBox);
+        // frc::Shuffleboard::GetTab("Driver Tab")
+        // .Add("Grabber Piece Color", false)
+        // .WithWidget(frc::BuiltInWidgets::kBooleanBox);
+        frc::SmartDashboard::PutBoolean("Has Cone?", false);
+        frc::SmartDashboard::PutBoolean("Has Cube?", false);
     }   
+
+
 }
 
 void Grabber::SetSpeed(double power) {

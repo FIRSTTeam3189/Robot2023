@@ -30,8 +30,8 @@ private:
   frc::Color m_detectedColor;
   frc::Color m_matchedColor;
   
-  static constexpr frc::Color kCubeTarget = frc::Color(0.284, 0.154, 0.561);
-  static constexpr frc::Color kConeTarget = frc::Color(0.586, 0.414, 0.0);
+  static constexpr frc::Color kCubeTarget = frc::Color(0.350, 0.200, 0.450);
+  static constexpr frc::Color kConeTarget = frc::Color(0.546, 0.454, 0.0);
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 };
