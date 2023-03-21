@@ -200,6 +200,7 @@ namespace AutoConstants {
 #define ELEVATOR_SLOW_P 0.025
 #define ELEVATOR_I 0
 #define ELEVATOR_D 0
+#define ELEVATOR_SETTLE_LOOPS 10
 #define ELEVATOR_ULTRA_SHOOT_P 0.1
 #define ELEVATOR_ULTRA_SHOOT_POWER 1.0
 #define ELEVATOR_MAX_SPEED 3.0_mps

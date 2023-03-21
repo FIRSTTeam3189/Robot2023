@@ -22,7 +22,7 @@ m_absoluteEncoder(SI.CANCoderID, "Swerve")
     m_angleMotor.ConfigFactoryDefault();
     m_speedMotor.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor);
     m_speedMotor.ConfigFeedbackNotContinuous(true);
-    m_speedMotor.SetNeutralMode(NeutralMode::Brake);
+    m_speedMotor.SetNeutralMode(NeutralMode::Coast);
     m_speedMotor.Config_kP(0, speedP, 50);
     m_speedMotor.Config_kI(0, speedI, 50);
     m_speedMotor.Config_kD(0, speedD, 50);

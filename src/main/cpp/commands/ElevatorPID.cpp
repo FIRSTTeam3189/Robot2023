@@ -4,8 +4,8 @@
 
 #include "commands/ElevatorPID.h"
 
-ElevatorPID::ElevatorPID(Elevator *elevator, Grabber *grabber, Intake *intake, double target, bool interrupt) 
-: m_elevator(elevator), m_grabber(grabber), m_intake(intake), m_target(target), m_interrupt(interrupt) {
+ElevatorPID::ElevatorPID(Elevator *elevator, Grabber *grabber, Intake *intake, double target, bool shouldFinish) 
+: m_elevator(elevator), m_grabber(grabber), m_intake(intake), m_target(target), m_shouldFinish(shouldFinish) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(elevator);
   AddRequirements(grabber);
@@ -24,9 +24,13 @@ void ElevatorPID::Execute() {
 
   m_elevator->GoToPosition(m_target);
   if (m_elevator->AtSetpoint()) {
-    m_interrupt = true;
+    m_shouldFinish = true;
+    m_withinThresholdLoops++;
     // Maybe retract intake when PID command is done -- test first
     // m_intake->SetPistonExtension(false);
+  } else {
+    m_withinThresholdLoops = 0;
+    m_shouldFinish = false;
   }
 
   if(m_elevator->GetPosition() == 0) {
@@ -41,5 +45,6 @@ void ElevatorPID::End(bool interrupted) {}
 // Ends command when elevator is close to its target
 bool ElevatorPID::IsFinished() {
   // return m_elevator->AtSetpoint();
-  return m_interrupt;
+  // return m_shouldFinish;
+  return (m_withinThresholdLoops >= ELEVATOR_SETTLE_LOOPS) && m_shouldFinish;
 }

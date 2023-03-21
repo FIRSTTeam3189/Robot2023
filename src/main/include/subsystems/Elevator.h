@@ -37,7 +37,8 @@ class Elevator : public frc2::SubsystemBase {
   rev::CANSparkMax m_motor;
   // WPI_TalonFX m_motor;
 
-  rev::SparkMaxAbsoluteEncoder m_encoder;
+  // rev::SparkMaxAbsoluteEncoder m_encoder;
+  rev::SparkMaxRelativeEncoder m_encoder;
   // rev::SparkMaxAlternateEncoder m_encoder;
   // rev::SparkMaxPIDController m_PIDcontroller;
   frc::TrapezoidProfile<units::meters>::Constraints m_constraints{ELEVATOR_MAX_SPEED, ELEVATOR_MAX_ACCELERATION};
@@ -45,6 +46,8 @@ class Elevator : public frc2::SubsystemBase {
   frc::ElevatorFeedforward ff{ELEVATOR_KS, ELEVATOR_KG, ELEVATOR_KV, ELEVATOR_KA};
   // frc::DigitalInput m_lowerLimitSwitch;
   // frc::DigitalInput m_upperLimitSwitch;
+  rev::SparkMaxLimitSwitch m_lowerLimitSwitch;
+  rev::SparkMaxLimitSwitch m_upperLimitSwitch;
   bool m_atSetpoint;
   double m_target;
   double m_power;

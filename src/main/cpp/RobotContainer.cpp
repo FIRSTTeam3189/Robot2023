@@ -228,9 +228,20 @@ void RobotContainer::ConfigureButtonBindings() {
   // When codriver releases button (i.e. they should hold it down until they want this to happen),
   // the shooter will shoot for a specified amount of time
   auto timedShoot = frc2::ParallelDeadlineGroup(
-                      frc2::WaitCommand(3.0_s), 
-                      ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED));
+      frc2::WaitCommand(3.0_s), 
+      ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED));
 
+  // Should replace the one above once tested
+  // auto timedShoot = frc2::SequentialCommandGroup( 
+  //   frc2::ParallelDeadlineGroup(
+  //     frc2::WaitCommand(3.0_s), 
+  //     ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)),
+  //   ElevatorPID(m_elevator, m_grabber, m_intake, 0, false),
+  //   frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false); },{m_intake})
+  // );
+
+  // When pressing codriver elevator buttons, moves elevator up to target
+  // On release, shoot the piece
   m_elevatorLowLevelButton = m_ted.Button(PS5_BUTTON_X);  
   m_elevatorLowLevelButton.OnTrue(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_LOW_TARGET, false).ToPtr());
   m_elevatorLowLevelButton.OnFalse(&timedShoot);

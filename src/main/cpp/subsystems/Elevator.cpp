@@ -7,11 +7,14 @@
 Elevator::Elevator() :
 // m_motor(ELEVATOR_MOTOR),
 m_motor(ELEVATOR_MOTOR, rev::CANSparkMaxLowLevel::MotorType::kBrushless), 
-m_encoder(m_motor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle))
+// m_encoder(m_motor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCycle)),
+m_encoder(m_motor.GetEncoder()),
 // m_encoder(m_motor.GetAlternateEncoder(rev::SparkMaxAlternateEncoder::Type::kQuadrature, ELEVATOR_THROUGHBORE_CPR))
 // m_PIDcontroller(m_motor.GetPIDController())
 // m_lowerLimitSwitch(ELEVATOR_LOWER_LIMIT_SWITCH_ID),
 // m_upperLimitSwitch(ELEVATOR_UPPER_LIMIT_SWITCH_ID)
+m_lowerLimitSwitch(m_motor.GetReverseLimitSwitch(rev::SparkMaxLimitSwitch::Type::kNormallyOpen)),
+m_upperLimitSwitch(m_motor.GetForwardLimitSwitch(rev::SparkMaxLimitSwitch::Type::kNormallyOpen))
 {   
     // Configure falcon PID and miscellaneous settings
     // m_motor.ConfigFactoryDefault();
@@ -24,7 +27,9 @@ m_encoder(m_motor.GetAbsoluteEncoder(rev::SparkMaxAbsoluteEncoder::Type::kDutyCy
     // m_motor.ConfigClosedloopRamp(0);
     // m_motor.ConfigOpenloopRamp(0);
     // m_motor.SetNeutralMode(ctre::phoenix::motorcontrol::Brake);
-
+    
+    m_upperLimitSwitch.EnableLimitSwitch(true);
+    m_lowerLimitSwitch.EnableLimitSwitch(true);
     // m_encoder.SetPositionConversionFactor(ELEVATOR_INTEGRATED_CPR);
     m_encoder.SetPositionConversionFactor(ELEVATOR_THROUGHBORE_CPR);
     // m_PIDcontroller.SetP(ELEVATOR_P);
@@ -54,6 +59,8 @@ void Elevator::Periodic() {
     //     }
     // }
 
+    frc::SmartDashboard::PutBoolean("Elevator Top Limit Switch", m_upperLimitSwitch.Get());
+    frc::SmartDashboard::PutBoolean("Elevator Lower Limit Switch", m_lowerLimitSwitch.Get());
     frc::SmartDashboard::PutNumber("Elevator Position", m_encoder.GetPosition());
     // If carridge is close to target slow down elevator
     // if (abs(m_target - m_encoder.GetPosition()) < ELEVATOR_SLOW_DISTANCE) {
