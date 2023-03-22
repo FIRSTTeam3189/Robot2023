@@ -10,6 +10,7 @@ ElevatorPID::ElevatorPID(Elevator *elevator, Grabber *grabber, Intake *intake, d
   AddRequirements(elevator);
   AddRequirements(grabber);
   AddRequirements(intake);
+  std::cout << "PID\n";
 }
 
 // Called when the command is initially scheduled.
@@ -21,7 +22,7 @@ void ElevatorPID::Initialize() {
 void ElevatorPID::Execute() {
   // Maybe run grabber inwards during PID so the piece doesn't fall out
   // m_grabber->SetSpeed(GRABBER_CARRY_SPEED);
-
+  std::cout << "PID running\n";
   m_elevator->GoToPosition(m_target);
   if (m_elevator->AtSetpoint()) {
     m_shouldFinish = true;
@@ -46,5 +47,6 @@ void ElevatorPID::End(bool interrupted) {}
 bool ElevatorPID::IsFinished() {
   // return m_elevator->AtSetpoint();
   // return m_shouldFinish;
+  std::cout << "Threshold loops " << m_withinThresholdLoops << " should finish " << m_shouldFinish << "\n";
   return (m_withinThresholdLoops >= ELEVATOR_SETTLE_LOOPS) && m_shouldFinish;
 }

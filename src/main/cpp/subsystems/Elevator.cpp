@@ -27,11 +27,12 @@ m_upperLimitSwitch(m_motor.GetForwardLimitSwitch(rev::SparkMaxLimitSwitch::Type:
     // m_motor.ConfigClosedloopRamp(0);
     // m_motor.ConfigOpenloopRamp(0);
     // m_motor.SetNeutralMode(ctre::phoenix::motorcontrol::Brake);
-    
-    m_upperLimitSwitch.EnableLimitSwitch(true);
+
+    m_motor.RestoreFactoryDefaults();
+    m_motor.SetInverted(true);
+    m_upperLimitSwitch.EnableLimitSwitch(false);
     m_lowerLimitSwitch.EnableLimitSwitch(true);
-    // m_encoder.SetPositionConversionFactor(ELEVATOR_INTEGRATED_CPR);
-    m_encoder.SetPositionConversionFactor(ELEVATOR_THROUGHBORE_CPR);
+    m_encoder.SetPositionConversionFactor(ELEVATOR_INTEGRATED_CPR);
     // m_PIDcontroller.SetP(ELEVATOR_P);
     // m_PIDcontroller.SetI(ELEVATOR_I);
     // m_PIDcontroller.SetD(ELEVATOR_D);
@@ -61,29 +62,27 @@ void Elevator::Periodic() {
 
     frc::SmartDashboard::PutBoolean("Elevator Top Limit Switch", m_upperLimitSwitch.Get());
     frc::SmartDashboard::PutBoolean("Elevator Lower Limit Switch", m_lowerLimitSwitch.Get());
-    frc::SmartDashboard::PutNumber("Elevator Position", m_encoder.GetPosition());
+    frc::SmartDashboard::PutNumber("Elevator Position (ticks)", (int)m_encoder.GetPosition());
+    frc::SmartDashboard::PutNumber("Elevator Position (m)", ElevatorTicksToMeters(m_encoder.GetPosition()));
     // If carridge is close to target slow down elevator
     // if (abs(m_target - m_encoder.GetPosition()) < ELEVATOR_SLOW_DISTANCE) {
     //     m_PIDcontroller.SetP(ELEVATOR_SLOW_P);
     // }
-    if (abs(m_target - m_encoder.GetPosition()) < ELEVATOR_STOP_DISTANCE) {
-        m_atSetpoint = true;
-    } 
+
     // If lower limit switch is hit and going down, stop and set encoder to 0
     // If upper limit switch is hit and going up, stop
-    // if (m_lowerLimitSwitch.Get()) {
-    //     m_power = (m_power < 0) ? 0 : m_power;
-    //     // TODO: FIX FOR CORRECT ENCODER TYPE
-    //     // m_encoder.SetPosition(0);
-    // } else if (m_upperLimitSwitch.Get()) {
-    //     m_power = (m_power > 0) ? 0 : m_power;
-    // }
+    if (m_lowerLimitSwitch.Get()) {
+        m_power = (m_power < 0) ? 0 : m_power;
+        // TODO: FIX FOR CORRECT ENCODER TYPE
+        m_encoder.SetPosition(0);
+    } else if (m_upperLimitSwitch.Get()) {
+        m_power = (m_power > 0) ? 0 : m_power;
+    }
 }
 
 double Elevator::GetPosition() {
     // return m_motor.GetSelectedSensorPosition();
     return m_encoder.GetPosition();
-    // return 0.0;
 }
 
 void Elevator::Drive(double power) {
@@ -92,9 +91,10 @@ void Elevator::Drive(double power) {
     m_power = power;
 }
 
-// 4.36418e-06 meters per tick
+// 4.36418e-06 meters per tick for trougbore encoder
 double Elevator::ElevatorTicksToMeters(double encoderTicks) {
-    return encoderTicks / ELEVATOR_THROUGHBORE_CPR / ELEVATOR_GEAR_RATIO * ELEVATOR_OUTPUT_CIRCUMFERENCE;
+    // return encoderTicks / ELEVATOR_THROUGHBORE_CPR / ELEVATOR_GEAR_RATIO * ELEVATOR_OUTPUT_CIRCUMFERENCE;
+    return 0.97 * encoderTicks / ELEVATOR_INTEGRATED_CPR / ELEVATOR_GEAR_RATIO * ELEVATOR_OUTPUT_CIRCUMFERENCE;
 }
 
 void Elevator::GoToPosition(double target) {
@@ -108,7 +108,6 @@ void Elevator::GoToPosition(double target) {
     // m_target = target;
 
     // Resets position marker upon getting a new position
-    m_atSetpoint = false;
     // Set to normal speed after new PID command
     if (m_controller.GetP() != ELEVATOR_P) {
         SetPID(ELEVATOR_P, ELEVATOR_I, ELEVATOR_D);
@@ -142,6 +141,5 @@ void Elevator::SetPID(double kP, double kI, double kD) {
 }
 
 bool Elevator::AtSetpoint() {
-    return m_atSetpoint;
-    // return false;
+    return abs(m_target - m_encoder.GetPosition()) < ELEVATOR_STOP_DISTANCE;
 }

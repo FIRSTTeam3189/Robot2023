@@ -48,7 +48,6 @@ class Elevator : public frc2::SubsystemBase {
   // frc::DigitalInput m_upperLimitSwitch;
   rev::SparkMaxLimitSwitch m_lowerLimitSwitch;
   rev::SparkMaxLimitSwitch m_upperLimitSwitch;
-  bool m_atSetpoint;
   double m_target;
   double m_power;
   units::meters_per_second_t m_lastSpeed;
