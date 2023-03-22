@@ -29,6 +29,8 @@ class Elevator : public frc2::SubsystemBase {
   bool AtSetpoint();
   void SetPID(double kP, double kI, double kD);
   double ElevatorTicksToMeters(double encoderTicks);
+  bool GetRunningState();
+  void SetRunningState(bool isRunning);
 
  private:
   // Components (e.g. motor controllers and sensors) should generally be
@@ -50,6 +52,7 @@ class Elevator : public frc2::SubsystemBase {
   rev::SparkMaxLimitSwitch m_upperLimitSwitch;
   double m_target;
   double m_power;
+  bool m_isRunning = false;
   units::meters_per_second_t m_lastSpeed;
   units::second_t m_lastTime;
 };

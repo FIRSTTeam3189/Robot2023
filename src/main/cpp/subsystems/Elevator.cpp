@@ -30,7 +30,7 @@ m_upperLimitSwitch(m_motor.GetForwardLimitSwitch(rev::SparkMaxLimitSwitch::Type:
 
     m_motor.RestoreFactoryDefaults();
     m_motor.SetInverted(true);
-    m_upperLimitSwitch.EnableLimitSwitch(false);
+    m_upperLimitSwitch.EnableLimitSwitch(true);
     m_lowerLimitSwitch.EnableLimitSwitch(true);
     m_encoder.SetPositionConversionFactor(ELEVATOR_INTEGRATED_CPR);
     // m_PIDcontroller.SetP(ELEVATOR_P);
@@ -81,7 +81,7 @@ void Elevator::Periodic() {
 }
 
 double Elevator::GetPosition() {
-    // return m_motor.GetSelectedSensorPosition();
+    // return m_motor.GetSelectedSensorPosition()
     return m_encoder.GetPosition();
 }
 
@@ -126,6 +126,14 @@ void Elevator::GoToPosition(double target) {
     
     // m_PIDcontroller.SetReference(target, rev::CANSparkMax::ControlType::kPosition);
     m_target = target;
+}
+
+void Elevator::SetRunningState(bool isRunning) {
+    m_isRunning = isRunning;
+}
+
+bool Elevator::GetRunningState() {
+    return m_isRunning;
 }
 
 void Elevator::SetPID(double kP, double kI, double kD) {

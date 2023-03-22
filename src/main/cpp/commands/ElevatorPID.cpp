@@ -48,5 +48,9 @@ bool ElevatorPID::IsFinished() {
   // return m_elevator->AtSetpoint();
   // return m_shouldFinish;
   std::cout << "Threshold loops " << m_withinThresholdLoops << " should finish " << m_shouldFinish << "\n";
-  return (m_withinThresholdLoops >= ELEVATOR_SETTLE_LOOPS) && m_shouldFinish;
+  if (m_withinThresholdLoops >= ELEVATOR_SETTLE_LOOPS && m_shouldFinish) {
+    m_elevator->SetRunningState(false);
+    return true;
+  }
+  return false;
 }
