@@ -28,7 +28,7 @@ m_absoluteEncoder(SI.CANCoderID, "Swerve")
     m_speedMotor.Config_kD(0, speedD, 50);
     // m_speedMotor.ConfigClosedloopRamp(SwerveDriveConstants::loopRampRate);
     m_speedMotor.ConfigClosedloopRamp(0);
-    m_speedMotor.ConfigOpenloopRamp(0);
+    m_speedMotor.ConfigOpenloopRamp(0.01);
     m_speedMotor.ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration{
                                             true, SwerveDriveConstants::ampLimit, SwerveDriveConstants::ampLimit + 10.0, 0.1});
 

@@ -26,7 +26,7 @@ OneCargoPickupOne::OneCargoPickupOne(SwerveDrive *swerveDrive, Elevator *elevato
 
   AddCommands(
     OneCargo(m_swerve, m_elevator, m_grabber, m_intake),
-    ElevatorPID(m_elevator, m_grabber, m_intake, 0, false),
+    ElevatorPID(m_elevator, m_grabber, m_intake, 0, false, true),
     RotateTo(m_swerve, 180.0),
     swerveScoringToCargoCommand,
     ToggleIntakePistons(m_intake),

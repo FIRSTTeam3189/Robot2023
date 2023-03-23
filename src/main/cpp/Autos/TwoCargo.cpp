@@ -29,7 +29,7 @@ TwoCargo::TwoCargo(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabbe
     OneCargoPickupOne(m_swerve, m_elevator, m_grabber, m_intake),
     RotateTo(m_swerve, 180.0),
     swerveCargoToScoringCommand,
-    ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET, false),
+    ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET, false, true),
     ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)
   );
 

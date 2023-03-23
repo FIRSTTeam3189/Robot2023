@@ -14,6 +14,14 @@ m_conveyorMotor(INTAKE_CONVEYOR_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushles
 m_leftConeCorrectMotor(INTAKE_L_CONE_CORRECT_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless),
 m_rightConeCorrectMotor(INTAKE_R_CONE_CORRECT_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless) {
     m_intakePiston.SetExtended(false);
+    m_rollerMotor.RestoreFactoryDefaults();
+    m_conveyorMotor.RestoreFactoryDefaults();
+    m_leftConeCorrectMotor.RestoreFactoryDefaults();
+    m_rightConeCorrectMotor.RestoreFactoryDefaults();
+    m_rollerMotor.SetInverted(true);
+    m_conveyorMotor.SetInverted(true);
+    m_leftConeCorrectMotor.SetInverted(true);
+    m_rightConeCorrectMotor.SetInverted(true);
 }
 
 // This method will be called once per scheduler run
@@ -30,6 +38,6 @@ void Intake::SetPistonExtension(bool isExtended) {
 void Intake::SetPower(double intakePower, double conveyorPower, double coneCorrectPower) {
     m_rollerMotor.Set(intakePower);
     m_conveyorMotor.Set(conveyorPower);
-    m_leftConeCorrectMotor.Set(coneCorrectPower);
-    m_rightConeCorrectMotor.Set(coneCorrectPower);
+    // m_leftConeCorrectMotor.Set(coneCorrectPower);
+    // m_rightConeCorrectMotor.Set(coneCorrectPower);
 }

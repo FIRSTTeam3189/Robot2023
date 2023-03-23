@@ -240,56 +240,67 @@ void RobotContainer::ConfigureButtonBindings() {
   // When pressing codriver elevator buttons, moves elevator up to target
   // On release, shoot the piece
   m_elevatorLowLevelButton = m_ted.Button(PS5_BUTTON_X);  
-  m_elevatorLowLevelButton.OnTrue(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_LOW_TARGET, false).ToPtr());
+  m_elevatorLowLevelButton.OnTrue(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_LOW_TARGET, false, true).ToPtr());
   m_elevatorLowLevelButton.OnFalse(frc2::SequentialCommandGroup( 
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(.25_s), 
       ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)),
-    ShootFromCarriage(m_grabber, 0),
-    ElevatorPID(m_elevator, m_grabber, m_intake, 0, false),
+    frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
+    ElevatorPID(m_elevator, m_grabber, m_intake, 0, false, false),
     frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
   ).ToPtr());
   // m_elevatorLowLevelButton.OnFalse(ElevatorPID(m_elevator, m_grabber, m_intake, 0, false).ToPtr());
   
   m_elevatorMidLevelButton = m_ted.Button(PS5_BUTTON_SQR);
-  m_elevatorMidLevelButton.OnTrue(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET, false).ToPtr());
+  m_elevatorMidLevelButton.OnTrue(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET, false, true).ToPtr());
   m_elevatorMidLevelButton.OnFalse(frc2::SequentialCommandGroup( 
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(.25_s), 
       ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)),
-    ShootFromCarriage(m_grabber, 0),
-    ElevatorPID(m_elevator, m_grabber, m_intake, 0, false),
+    frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
+    ElevatorPID(m_elevator, m_grabber, m_intake, 0, false, false),
     frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
   ).ToPtr());
   // m_elevatorMidLevelButton.OnFalse(ElevatorPID(m_elevator, m_grabber, m_intake, 0, false).ToPtr());
 
   m_elevatorHighLevelButton = m_ted.Button(PS5_BUTTON_TRI);
-  m_elevatorHighLevelButton.OnTrue(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET, false).ToPtr());
+  m_elevatorHighLevelButton.OnTrue(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET, false, true).ToPtr());
   m_elevatorHighLevelButton.OnFalse(frc2::SequentialCommandGroup( 
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(.25_s), 
       ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)),
-    ShootFromCarriage(m_grabber, 0),
-    ElevatorPID(m_elevator, m_grabber, m_intake, 0, false),
+    frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
+    ElevatorPID(m_elevator, m_grabber, m_intake, 0, false, false),
     frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
   ).ToPtr());
   // m_elevatorHighLevelButton.OnFalse(ElevatorPID(m_elevator, m_grabber, m_intake, 0, false).ToPtr());
 
   m_cancelElevatorPIDControl = m_ted.Button(PS5_BUTTON_LSTICK);
-  m_cancelElevatorPIDControl.OnTrue(ElevatorPID(m_elevator, m_grabber, m_intake, 0, true).ToPtr());
+  m_cancelElevatorPIDControl.OnTrue(ElevatorPID(m_elevator, m_grabber, m_intake, 0, true, false).ToPtr());
 
-  // m_toggleIntakePistonsButton = m_ted.Button(PS5_BUTTON_LBUMPER);
-  // m_toggleIntakePistonsButton.OnTrue(ToggleIntakePistons(m_intake).ToPtr());
+  m_toggleIntakePistonsButton = m_ted.Button(PS5_BUTTON_TOUCHPAD);
+  m_toggleIntakePistonsButton.OnTrue(ToggleIntakePistons(m_intake).ToPtr());
+
+  m_runConveyorButton = m_ted.Button(PS5_BUTTON_MENU);
+  m_runConveyorButton.WhileTrue(
+    frc2::InstantCommand([this]{m_intake->SetPower(0, INTAKE_CONVEYOR_POWER, 0);},{m_intake}).ToPtr()
+  );
+  m_runConveyorButton.OnFalse(RunIntake(m_intake, 0, 0, 0).ToPtr());
 
   // Hold down intake buttons to extend pistons and run; retracts when you let go
   m_runIntakeInButton = m_ted.Button(PS5_BUTTON_LBUMPER);
   m_runIntakeInButton.OnTrue(frc2::InstantCommand([this]{
     m_intake->SetPistonExtension(true);
   },{m_intake}).ToPtr());
-  m_runIntakeInButton.WhileTrue(RunIntake(m_intake, INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER).ToPtr());
+  m_runIntakeInButton.WhileTrue(
+    frc2::SequentialCommandGroup(
+      frc2::WaitCommand(0.5_s),
+      RunIntake(m_intake, INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER)
+    ).ToPtr());
   m_runIntakeInButton.OnFalse(frc2::InstantCommand([this]{
-    m_intake->SetPistonExtension(false);
     m_intake->SetPower(0, 0, 0);
+    frc2::WaitCommand(1.0_s).Schedule();
+    m_intake->SetPistonExtension(false);
   },{m_intake}).ToPtr());
 
   m_runIntakeOutButton = m_ted.Button(PS5_BUTTON_RBUMPER);
@@ -298,16 +309,17 @@ void RobotContainer::ConfigureButtonBindings() {
   },{m_intake}).ToPtr());
   m_runIntakeOutButton.WhileTrue(RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, -INTAKE_CONE_CORRECT_POWER).ToPtr());
   m_runIntakeOutButton.OnFalse(frc2::InstantCommand([this]{
-    m_intake->SetPistonExtension(false);
     m_intake->SetPower(0, 0, 0);
+    frc2::WaitCommand(1.0_s).Schedule();
+    m_intake->SetPistonExtension(false);
   },{m_intake}).ToPtr());
 
-  m_coneCorrectButton = m_ted.Button(PS5_BUTTON_TOUCHPAD);
-  m_coneCorrectButton.OnTrue(frc2::InstantCommand([this]{m_intake->SetPistonExtension(false);},{m_intake}).ToPtr());
-  m_coneCorrectButton.WhileTrue(
-    frc2::ParallelRaceGroup(RunIntake(m_intake, INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER),
-                            ShootFromCarriage(m_grabber, GRABBER_GRAB_SPEED)).ToPtr());
-  m_coneCorrectButton.OnFalse(RunIntake(m_intake, 0, 0, 0).ToPtr());
+  // m_coneCorrectButton = m_ted.Button(PS5_BUTTON_TOUCHPAD);
+  // m_coneCorrectButton.OnTrue(frc2::InstantCommand([this]{m_intake->SetPistonExtension(false);},{m_intake}).ToPtr());
+  // m_coneCorrectButton.WhileTrue(
+  //   frc2::ParallelRaceGroup(RunIntake(m_intake, INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER),
+  //                           ShootFromCarriage(m_grabber, GRABBER_GRAB_SPEED)).ToPtr());
+  // m_coneCorrectButton.OnFalse(RunIntake(m_intake, 0, 0, 0).ToPtr());
 
   m_grabButton = m_ted.Button(PS5_BUTTON_LTRIGGER);
   m_grabButton.WhileTrue(ShootFromCarriage(m_grabber, GRABBER_GRAB_SPEED).ToPtr());
@@ -326,6 +338,7 @@ void RobotContainer::ConfigureButtonBindings() {
 
   m_ultraShootButton = m_ted.Button(PS5_BUTTON_CREATE);
   m_ultraShootButton.OnTrue(UltraShoot(m_elevator, m_intake, m_grabber).ToPtr());
+  m_ultraShootButton.OnFalse(ShootFromCarriage(m_grabber, 0).ToPtr());
 
   // If co-driver pushes right stick forward or backward, intake will run accordingly to reject or pick up piece
   // m_intake->SetDefaultCommand((frc2::RunCommand([this]{
@@ -383,21 +396,21 @@ void RobotContainer::CheckPOV() {
       case 0:
         if (!m_elevator->GetRunningState()) {
           std::cout << "About to run PID\n";
-          frc2::CommandScheduler::GetInstance().Schedule(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET, false).ToPtr());
+          frc2::CommandScheduler::GetInstance().Schedule(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET, false, true).ToPtr());
           m_elevator->SetRunningState(true);
         }
         break;
       case 90:
         if (!m_elevator->GetRunningState()) {
           std::cout << "About to run PID\n";
-          frc2::CommandScheduler::GetInstance().Schedule(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET, false).ToPtr());
+          frc2::CommandScheduler::GetInstance().Schedule(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET, false, true).ToPtr());
           m_elevator->SetRunningState(true);
         }
         break;
       case 180:
         if (!m_elevator->GetRunningState()) {
           std::cout << "About to run PID\n";
-          frc2::CommandScheduler::GetInstance().Schedule(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_LOW_TARGET, false).ToPtr());
+          frc2::CommandScheduler::GetInstance().Schedule(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_LOW_TARGET, false, true).ToPtr());
           m_elevator->SetRunningState(true);
         }
         break;

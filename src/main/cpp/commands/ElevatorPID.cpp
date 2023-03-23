@@ -4,8 +4,8 @@
 
 #include "commands/ElevatorPID.h"
 
-ElevatorPID::ElevatorPID(Elevator *elevator, Grabber *grabber, Intake *intake, double target, bool shouldFinish) 
-: m_elevator(elevator), m_grabber(grabber), m_intake(intake), m_target(target), m_shouldFinish(shouldFinish) {
+ElevatorPID::ElevatorPID(Elevator *elevator, Grabber *grabber, Intake *intake, double target, bool shouldFinish, bool shouldGrab) 
+: m_elevator(elevator), m_grabber(grabber), m_intake(intake), m_target(target), m_shouldFinish(shouldFinish), m_shouldGrab(shouldGrab) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(elevator);
   AddRequirements(grabber);
@@ -21,7 +21,9 @@ void ElevatorPID::Initialize() {
 // Called repeatedly when this Command is scheduled to run
 void ElevatorPID::Execute() {
   // Maybe run grabber inwards during PID so the piece doesn't fall out
-  // m_grabber->SetSpeed(GRABBER_CARRY_SPEED);
+  if (m_shouldGrab) {
+    // m_grabber->SetSpeed(GRABBER_CARRY_SPEED);
+  }
   std::cout << "PID running\n";
   m_elevator->GoToPosition(m_target);
   if (m_elevator->AtSetpoint()) {

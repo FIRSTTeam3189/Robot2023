@@ -141,6 +141,8 @@ class RobotContainer {
   frc2::Trigger m_shootButton;
   frc2::Trigger m_grabButton;
   frc2::Trigger m_codriverStopButton;
+  frc2::Trigger m_toggleIntakePistonsButton;
+  frc2::Trigger m_runConveyorButton;
 
   void ConfigureButtonBindings();
 };

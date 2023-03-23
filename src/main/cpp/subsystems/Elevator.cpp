@@ -30,6 +30,7 @@ m_upperLimitSwitch(m_motor.GetForwardLimitSwitch(rev::SparkMaxLimitSwitch::Type:
 
     m_motor.RestoreFactoryDefaults();
     m_motor.SetInverted(true);
+    m_motor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
     m_upperLimitSwitch.EnableLimitSwitch(true);
     m_lowerLimitSwitch.EnableLimitSwitch(true);
     m_encoder.SetPositionConversionFactor(ELEVATOR_INTEGRATED_CPR);

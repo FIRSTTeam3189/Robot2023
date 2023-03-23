@@ -37,7 +37,7 @@ TwoPieceWithVision::TwoPieceWithVision(SwerveDrive *swerveDrive, Elevator *eleva
     swerveCargoToAutoAimCommand,
     AimAssist(m_vision, m_swerve, 1.0, 0.0, 0),
     swerveAimToScoringCommand,
-    ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET, false),
+    ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET, false, true),
     ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)
   );
 

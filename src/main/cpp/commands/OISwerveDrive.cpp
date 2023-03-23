@@ -52,7 +52,7 @@ units::angular_velocity::radians_per_second_t OISwerveDrive::SetDesiredRotationa
   // Stop rotating if within tolerance
   if (m_rotationPIDController.AtSetpoint())
     rot = units::angular_velocity::radians_per_second_t {0.0};
-  return -rot;
+  return rot;
 }
 
 // Called repeatedly when this Command is scheduled to run

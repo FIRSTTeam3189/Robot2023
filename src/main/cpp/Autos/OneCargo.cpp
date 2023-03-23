@@ -27,7 +27,7 @@ OneCargo::OneCargo(SwerveDrive *swerve, Elevator *elevator, Grabber *grabber, In
   // Sends elevator to target, then runs grabber for 5 seconds
   AddCommands(
     frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
-    ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET, false),
+    ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET, false, true),
     frc2::ParallelDeadlineGroup(frc2::WaitCommand(2.5_s), ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED))
   );
 }

@@ -54,7 +54,7 @@ namespace SwerveDriveConstants {
     
     // 0-max ramp time, current limit in amps
     constexpr double loopRampRate {.1};
-    constexpr double ampLimit {40.0};
+    constexpr double ampLimit {30.0};
 
     // SysID robot characterization values -- **varies by robot**
     constexpr auto ks = 0.208_V;
@@ -197,10 +197,10 @@ namespace AutoConstants {
 #define INTAKE_CONE_CORRECT_POWER 0.1
 
 #define ELEVATOR_MOTOR 17
-#define ELEVATOR_P 50.0
+#define ELEVATOR_P 238.62
 #define ELEVATOR_SLOW_P 0.000025
 #define ELEVATOR_I 0
-#define ELEVATOR_D 0
+#define ELEVATOR_D 17.493
 #define ELEVATOR_SETTLE_LOOPS 10
 #define ELEVATOR_ULTRA_SHOOT_P 0.1
 #define ELEVATOR_ULTRA_SHOOT_POWER 1.0
@@ -209,22 +209,22 @@ namespace AutoConstants {
 #define ELEVATOR_GEAR_RATIO 20.0
 #define ELEVATOR_OUTPUT_CIRCUMFERENCE (PI * 0.04552)
 // Elevator feedforward constants
-#define ELEVATOR_KS 0.0_V
-#define ELEVATOR_KG 0.0_V
-#define ELEVATOR_KV 0.0_V * 1_s / 1_m
-#define ELEVATOR_KA 0.0_V * 1_s * 1_s / 1_m
+#define ELEVATOR_KS 0.17186_V
+#define ELEVATOR_KG 0.31493_V
+#define ELEVATOR_KV 20.578_V * 1_s / 1_m
+#define ELEVATOR_KA 0.67322_V * 1_s * 1_s / 1_m
 // Values in encoder ticks
 // #define ELEVATOR_THROUGHBORE_CPR 1024
 #define ELEVATOR_THROUGHBORE_CPR 8192
 #define ELEVATOR_INTEGRATED_CPR 42
-#define ELEVATOR_LOW_TARGET 500
-#define ELEVATOR_MID_TARGET 1000
-#define ELEVATOR_HIGH_TARGET 1500
+#define ELEVATOR_LOW_TARGET 1200
+#define ELEVATOR_MID_TARGET 1900
+#define ELEVATOR_HIGH_TARGET 2800
 #define ELEVATOR_SLOW_DISTANCE 250
 #define ELEVATOR_STOP_DISTANCE 50
 #define ELEVATOR_LOWER_LIMIT_SWITCH_ID 0 
 #define ELEVATOR_UPPER_LIMIT_SWITCH_ID 1
-#define ELEVATOR_ULTRA_SHOOT_TARGET 2000
+#define ELEVATOR_ULTRA_SHOOT_TARGET 2500
 #define ELEVATOR_ULTRA_SHOOT_RELEASE_POINT 1500
 
 // Target distances are in meters
@@ -248,7 +248,7 @@ namespace AutoConstants {
 
 // #define GRABBER_MOTOR_ID 0
 #define GRABBER_MOTOR_ID 18
-#define GRABBER_DROP_SPEED 1.0
+#define GRABBER_DROP_SPEED 0.5
 #define GRABBER_GRAB_SPEED -0.40
 // #define GRABBER_REJECT_SPEED 0
 // #define GRABBER_LOW_CUBE_SPEED 0
