@@ -13,11 +13,11 @@ TwoPieceWithVision::TwoPieceWithVision(SwerveDrive *swerveDrive, Elevator *eleva
   // AddCommands(FooCommand{}, BarCommand{});
   frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2, SwerveDriveConstants::kMaxAcceleration / 2};
   config.SetKinematics(SwerveDriveConstants::kinematics);
-  // config.SetReversed(true);
+  config.SetReversed(false);
 
-  // std::cout << "Cargo to scoring\n";
+  std::cout << "Cargo to scoring\n";
   auto cargoToAutoAimTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-    frc::Pose2d{5.69_m * AutoConstants::TrajectoryScale, 0.0_m, 180_deg},
+    frc::Pose2d{5.69_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
     {frc::Translation2d{4.0_m * AutoConstants::TrajectoryScale, 0.0_m}}, 
     frc::Pose2d{2.5_m * AutoConstants::TrajectoryScale, 0.0_m, 180_deg},
     config);

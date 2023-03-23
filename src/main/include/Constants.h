@@ -177,6 +177,7 @@ namespace AutoConstants {
 #define PS5_BUTTON_RSTICK 12
 #define PS5_BUTTON_PS 13
 #define PS5_BUTTON_TOUCHPAD 14
+#define PS5_BUTTON_MIC 15
 #define PS5_AXIS_LSTICK_X 0 // left is -1, right is 1
 #define PS5_AXIS_LSTICK_Y 1 // up is -1, down is 1
 #define PS5_AXIS_RSTICK_X 2 // left is -1, right is 1

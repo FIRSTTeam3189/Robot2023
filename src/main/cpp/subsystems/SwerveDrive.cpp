@@ -236,6 +236,7 @@ void SwerveDrive::Stop() {
 
 void SwerveDrive::InitSmartDashboard() {
   // Add swerve PID values to PID tabs
+  frc::SmartDashboard::PutNumber("Robot yaw", GetNormalizedYaw());
   EntryRotationP = SwerveRotationPIDTab.Add("Rotation P", AutoConstants::thetaPIDController.GetP()).GetEntry();
   EntryRotationI = SwerveRotationPIDTab.Add("Rotation I", AutoConstants::thetaPIDController.GetI()).GetEntry();
   EntryRotationD = SwerveRotationPIDTab.Add("Rotation D", AutoConstants::thetaPIDController.GetD()).GetEntry();

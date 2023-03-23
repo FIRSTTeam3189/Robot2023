@@ -58,12 +58,12 @@ units::angular_velocity::radians_per_second_t OISwerveDrive::SetDesiredRotationa
 // Called repeatedly when this Command is scheduled to run
 void OISwerveDrive::Execute() {
   // Limits speed and rotation to max speed
-  const auto xSpeed = -frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_Y), 0.05) * SwerveDriveConstants::kMaxSpeed;
+  const auto xSpeed = frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_Y), 0.05) * SwerveDriveConstants::kMaxSpeed;
   // const auto xSpeed = -m_xspeedLimiter.Calculate(
   //               frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_Y), 0.05)) *
   //             SwerveDriveConstants::kMaxSpeed;
 
-  const auto ySpeed = frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_X), 0.05) * SwerveDriveConstants::kMaxSpeed;
+  const auto ySpeed = -frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_X), 0.05) * SwerveDriveConstants::kMaxSpeed;
   // const auto ySpeed = m_yspeedLimiter.Calculate(
   //               frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_X), 0.05)) *
   //             SwerveDriveConstants::kMaxSpeed;

@@ -241,36 +241,39 @@ void RobotContainer::ConfigureButtonBindings() {
   // On release, shoot the piece
   m_elevatorLowLevelButton = m_ted.Button(PS5_BUTTON_X);  
   m_elevatorLowLevelButton.OnTrue(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_LOW_TARGET, false).ToPtr());
-  // m_elevatorLowLevelButton.OnFalse(frc2::SequentialCommandGroup( 
-  //   frc2::ParallelDeadlineGroup(
-  //     frc2::WaitCommand(3.0_s), 
-  //     ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)),
-  //   ElevatorPID(m_elevator, m_grabber, m_intake, 0, false),
-  //   frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false); },{m_intake})
-  // ).ToPtr());
-  m_elevatorLowLevelButton.OnFalse(ElevatorPID(m_elevator, m_grabber, m_intake, 0, false).ToPtr());
+  m_elevatorLowLevelButton.OnFalse(frc2::SequentialCommandGroup( 
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(.25_s), 
+      ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)),
+    ShootFromCarriage(m_grabber, 0),
+    ElevatorPID(m_elevator, m_grabber, m_intake, 0, false),
+    frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
+  ).ToPtr());
+  // m_elevatorLowLevelButton.OnFalse(ElevatorPID(m_elevator, m_grabber, m_intake, 0, false).ToPtr());
   
   m_elevatorMidLevelButton = m_ted.Button(PS5_BUTTON_SQR);
   m_elevatorMidLevelButton.OnTrue(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET, false).ToPtr());
-  // m_elevatorMidLevelButton.OnFalse(frc2::SequentialCommandGroup( 
-  //   frc2::ParallelDeadlineGroup(
-  //     frc2::WaitCommand(3.0_s), 
-  //     ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)),
-  //   ElevatorPID(m_elevator, m_grabber, m_intake, 0, false),
-  //   frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false); },{m_intake})
-  // ).ToPtr());
-  m_elevatorMidLevelButton.OnFalse(ElevatorPID(m_elevator, m_grabber, m_intake, 0, false).ToPtr());
+  m_elevatorMidLevelButton.OnFalse(frc2::SequentialCommandGroup( 
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(.25_s), 
+      ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)),
+    ShootFromCarriage(m_grabber, 0),
+    ElevatorPID(m_elevator, m_grabber, m_intake, 0, false),
+    frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
+  ).ToPtr());
+  // m_elevatorMidLevelButton.OnFalse(ElevatorPID(m_elevator, m_grabber, m_intake, 0, false).ToPtr());
 
   m_elevatorHighLevelButton = m_ted.Button(PS5_BUTTON_TRI);
   m_elevatorHighLevelButton.OnTrue(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET, false).ToPtr());
-  // m_elevatorHighLevelButton.OnFalse(frc2::SequentialCommandGroup( 
-  //   frc2::ParallelDeadlineGroup(
-  //     frc2::WaitCommand(3.0_s), 
-  //     ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)),
-  //   ElevatorPID(m_elevator, m_grabber, m_intake, 0, false),
-  //   frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false); },{m_intake})
-  // ).ToPtr());
-  m_elevatorHighLevelButton.OnFalse(ElevatorPID(m_elevator, m_grabber, m_intake, 0, false).ToPtr());
+  m_elevatorHighLevelButton.OnFalse(frc2::SequentialCommandGroup( 
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(.25_s), 
+      ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)),
+    ShootFromCarriage(m_grabber, 0),
+    ElevatorPID(m_elevator, m_grabber, m_intake, 0, false),
+    frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
+  ).ToPtr());
+  // m_elevatorHighLevelButton.OnFalse(ElevatorPID(m_elevator, m_grabber, m_intake, 0, false).ToPtr());
 
   m_cancelElevatorPIDControl = m_ted.Button(PS5_BUTTON_LSTICK);
   m_cancelElevatorPIDControl.OnTrue(ElevatorPID(m_elevator, m_grabber, m_intake, 0, true).ToPtr());
@@ -386,7 +389,7 @@ void RobotContainer::CheckPOV() {
         break;
       case 90:
         if (!m_elevator->GetRunningState()) {
-          std::cout << "About to run PID\n";                                                                                                                       '''''''''''''''''''''''''''''';;;;;;;;;;;;;;;;;;;;;;;;
+          std::cout << "About to run PID\n";
           frc2::CommandScheduler::GetInstance().Schedule(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET, false).ToPtr());
           m_elevator->SetRunningState(true);
         }
