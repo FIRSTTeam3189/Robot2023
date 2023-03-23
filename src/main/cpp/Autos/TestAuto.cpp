@@ -27,11 +27,11 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Intake *intake)
   auto sShapeTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
     // "Clamped cubic" trajectory -- robot poses at endpoints, only positions for interior waypoints
     // Start position at (0, 0) facing positive X-axis
-    frc::Pose2d{1.0_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
+    frc::Pose2d{0.0_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
     // Pass through 2 interior points to make sideways "S"
-    {frc::Translation2d{1.25_m * AutoConstants::TrajectoryScale, 0.0_m * AutoConstants::TrajectoryScale}, 
-    frc::Translation2d{1.25_m * AutoConstants::TrajectoryScale, -0.25_m * AutoConstants::TrajectoryScale}},
-    frc::Pose2d{1.5_m * AutoConstants::TrajectoryScale, -0.25_m * AutoConstants::TrajectoryScale, 0_deg},
+    {frc::Translation2d{1.0_m * AutoConstants::TrajectoryScale, 0.0_m * AutoConstants::TrajectoryScale}, 
+    frc::Translation2d{1.0_m * AutoConstants::TrajectoryScale, -1.0_m * AutoConstants::TrajectoryScale}},
+    frc::Pose2d{2.0_m * AutoConstants::TrajectoryScale, -1.0_m * AutoConstants::TrajectoryScale, 180_deg},
     config);
 
   // std::cout << "Special\n";

@@ -40,10 +40,6 @@ namespace SwerveDriveConstants {
     constexpr auto xDistanceFromCenter {0.282575_m};
     constexpr auto yDistanceFromCenter {0.282575_m};
 
-    // For some reason, this has +x and +y to forward and right
-    // Which doesn't match swerve module locations
-    // But it works and doing it correctly doesn't work
-    // So that probably needs to be fixed
     // Kinematics object for both drive and auto
     static frc::SwerveDriveKinematics<4> kinematics{
         frc::Translation2d{+xDistanceFromCenter, -yDistanceFromCenter},
@@ -59,7 +55,7 @@ namespace SwerveDriveConstants {
     // SysID robot characterization values -- **varies by robot**
     constexpr auto ks = 0.208_V;
     constexpr auto kv = 2.206 * 1_V * 1_s / 1_m;
-    constexpr auto ka = 1.409 * 1_V * 1_s * 1_s / 1_m;
+    constexpr auto ka = 2.409 * 1_V * 1_s * 1_s / 1_m;
 
     // Distance traveled by robot per encoder tick
     // constexpr double driveEncoderDistancePerPulse = 
@@ -83,9 +79,9 @@ namespace SwerveDriveConstants {
     constexpr double angleI {0.0};
     constexpr double angleD {0.0};
     // These are for robot rotation, not wheel rotation
-    constexpr double rotP {0.25};
+    constexpr double rotP {0.15};
     constexpr double rotI {0.0001};
-    constexpr double rotD {0.00009};
+    constexpr double rotD {0.1};
 
     // Default speed + angle PID values
     constexpr PIDValues speedMotorPID {
@@ -144,9 +140,10 @@ namespace AutoConstants {
     // Ramsete controller (trajectory following) parameters
     constexpr auto kRamseteB = 2.0 * 1_rad * 1_rad / (1_m * 1_m);
     constexpr auto kRamseteZeta = 0.7 / 1_rad;
-    constexpr double autoRotP {-0.5};
+    constexpr double autoRotP {0.0};
     constexpr double autoRotI {0.0};
     constexpr double autoRotD {0.0};
+    constexpr int autoBalanceSettleLoops = 25;
 
     // PID Controllers for x and y movement in auto mode -- theta controller is part of drive object
     constexpr double kPXController = 2.0;
@@ -219,13 +216,13 @@ namespace AutoConstants {
 #define ELEVATOR_INTEGRATED_CPR 42
 #define ELEVATOR_LOW_TARGET 1200
 #define ELEVATOR_MID_TARGET 1900
-#define ELEVATOR_HIGH_TARGET 2800
+#define ELEVATOR_HIGH_TARGET 2900
 #define ELEVATOR_SLOW_DISTANCE 250
 #define ELEVATOR_STOP_DISTANCE 50
 #define ELEVATOR_LOWER_LIMIT_SWITCH_ID 0 
 #define ELEVATOR_UPPER_LIMIT_SWITCH_ID 1
-#define ELEVATOR_ULTRA_SHOOT_TARGET 2500
-#define ELEVATOR_ULTRA_SHOOT_RELEASE_POINT 1500
+#define ELEVATOR_ULTRA_SHOOT_TARGET 2900
+#define ELEVATOR_ULTRA_SHOOT_RELEASE_POINT 2200
 
 // Target distances are in meters
 #define AIM_ASSIST_TARGET_X_DISTANCE 1.0
@@ -257,7 +254,7 @@ namespace AutoConstants {
 // #define GRABBER_LOW_CONE_SPEED 0
 // #define GRABBER_MID_CONE_SPEED 0
 // #define GRABBER_HIGH_CONE_SPEED 0
-#define GRABBER_CARRY_SPEED -0.15
+#define GRABBER_CARRY_SPEED -0.05
 #define GRABBER_COLOR_SENSOR_DEVICE_ID 0
 // Higher number the better
 #define GRABBER_SENSOR_CONFIDENCE 0.80

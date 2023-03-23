@@ -13,9 +13,9 @@ speedD(SI.speedMotorPID.d),
 angleP(SI.angleMotorPID.p),
 angleI(SI.angleMotorPID.i),
 angleD(SI.angleMotorPID.d),
-m_angleOffset(SI.encoderOffset),
 m_speedMotor(SI.speedMotorID, "Swerve"),
 m_angleMotor(SI.angleMotorID, "Swerve"),
+m_angleOffset(SI.encoderOffset),
 m_absoluteEncoder(SI.CANCoderID, "Swerve")
 {
     m_speedMotor.ConfigFactoryDefault();

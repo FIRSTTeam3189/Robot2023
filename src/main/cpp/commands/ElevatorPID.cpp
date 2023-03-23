@@ -22,7 +22,7 @@ void ElevatorPID::Initialize() {
 void ElevatorPID::Execute() {
   // Maybe run grabber inwards during PID so the piece doesn't fall out
   if (m_shouldGrab) {
-    // m_grabber->SetSpeed(GRABBER_CARRY_SPEED);
+    m_grabber->SetSpeed(GRABBER_CARRY_SPEED);
   }
   std::cout << "PID running\n";
   m_elevator->GoToPosition(m_target);

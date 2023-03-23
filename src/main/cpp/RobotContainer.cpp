@@ -108,21 +108,21 @@ void RobotContainer::ConfigureButtonBindings() {
   // m_resetEncodersToAbsoluteButton = m_bill.Button(PS5_BUTTON_CREATE);
   // m_resetEncodersToAbsoluteButton.OnTrue(ResetEncodersToAbsolute(m_swerve).ToPtr());
   
-  frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2, SwerveDriveConstants::kMaxAcceleration / 2};
-  config.SetKinematics(SwerveDriveConstants::kinematics);
+  // frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2, SwerveDriveConstants::kMaxAcceleration / 2};
+  // config.SetKinematics(SwerveDriveConstants::kinematics);
 
-  frc::Trajectory leftTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-    frc::Pose2d{0.0_m, 0.0_m, 0_deg},
-    {frc::Translation2d{0.0_m, -0.20_m}},
-    frc::Pose2d{0.0_m, -0.40_m, 0_deg},
-    config 
-  );
-  frc::Trajectory rightTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-    frc::Pose2d{0.0_m, 0.0_m, 0_deg},
-    {frc::Translation2d{0.0_m, 0.20_m}},
-    frc::Pose2d{0.0_m, 0.40_m, 0_deg},
-    config 
-  );
+  // frc::Trajectory leftTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+  //   frc::Pose2d{0.0_m, 0.0_m, 0_deg},
+  //   {frc::Translation2d{0.0_m, -0.20_m}},
+  //   frc::Pose2d{0.0_m, -0.40_m, 0_deg},
+  //   config 
+  // );
+  // frc::Trajectory rightTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+  //   frc::Pose2d{0.0_m, 0.0_m, 0_deg},
+  //   {frc::Translation2d{0.0_m, 0.20_m}},
+  //   frc::Pose2d{0.0_m, 0.40_m, 0_deg},
+  //   config 
+  // );
 
   // frc::Trajectory leftTrajectory, rightTrajectory;
   // auto leftTranslateCommand = m_swerve->CreateSwerveCommand(frc::Trajectory());
@@ -156,45 +156,53 @@ void RobotContainer::ConfigureButtonBindings() {
   //   rightTranslateCommand
   // );
   
-  auto leftTranslateCommand = m_swerve->CreateSwerveCommand(leftTrajectory);
-  auto rightTranslateCommand = m_swerve->CreateSwerveCommand(rightTrajectory);
+  // auto leftTranslateCommand = m_swerve->CreateSwerveCommand(leftTrajectory);
+  // auto rightTranslateCommand = m_swerve->CreateSwerveCommand(rightTrajectory);
 
-  // m_leftAimAssistButton = m_bill.Button(PS5_BUTTON_CREATE);
+  m_leftAimAssistButton = m_bill.Button(PS5_BUTTON_CREATE);
   // m_leftAimAssistButton.OnTrue(frc2::SequentialCommandGroup(
   //     RotateTo(m_swerve, 0), ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
   //     frc2::ParallelRaceGroup(frc2::WaitCommand(3.0_s), AimAssist(m_vision, m_swerve, 1.0, 0.0, 0.0)), 
   //     ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}), leftTranslateCommand,
   //     RotateTo(m_swerve, 0)).ToPtr());
+  m_leftAimAssistButton.OnTrue(frc2::ParallelRaceGroup(
+    frc2::WaitCommand(3.0_s), TrajectoryAimAssist(m_vision, m_swerve, 1.0, -0.4, 0.0)
+  ).ToPtr());
 
-  // m_leftTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_CREATE);
-  m_leftTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_LBUMPER);
-  m_leftTranslateTrajectoryButton.OnTrue(frc2::SequentialCommandGroup(
-      RotateTo(m_swerve, 0), ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
-      leftTranslateCommand,
-      RotateTo(m_swerve, 0)).ToPtr());
+  // m_leftTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_LBUMPER);
+  // m_leftTranslateTrajectoryButton.OnTrue(frc2::SequentialCommandGroup(
+  //     RotateTo(m_swerve, 0), ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
+  //     leftTranslateCommand,
+  //     RotateTo(m_swerve, 0)).ToPtr());
   // m_leftTranslateTrajectoryButton.OnTrue(&leftTranslateCommandGroup);
 
-  // m_rightTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_MENU);
+  m_rightAimAssistButton = m_bill.Button(PS5_BUTTON_MENU);
   // m_rightAimAssistButton.OnTrue(frc2::SequentialCommandGroup(
   //     RotateTo(m_swerve, 0), ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
   //     frc2::ParallelRaceGroup(frc2::WaitCommand(3.0_s), AimAssist(m_vision, m_swerve, 1.0, 0.0, 0.0)),
   //     ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}), rightTranslateCommand,
   //     RotateTo(m_swerve, 0)).ToPtr());
+  m_rightAimAssistButton.OnTrue(frc2::ParallelRaceGroup(
+    frc2::WaitCommand(3.0_s), TrajectoryAimAssist(m_vision, m_swerve, 1.0, 0.4, 0.0)
+  ).ToPtr());
 
   // m_rightTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_MENU);  
-  m_rightTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_RBUMPER);
-  m_rightTranslateTrajectoryButton.OnTrue(frc2::SequentialCommandGroup(
-      RotateTo(m_swerve, 0), ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
-      rightTranslateCommand,
-      RotateTo(m_swerve, 0)).ToPtr());
+  // m_rightTranslateTrajectoryButton = m_bill.Button(PS5_BUTTON_RBUMPER);
+  // m_rightTranslateTrajectoryButton.OnTrue(frc2::SequentialCommandGroup(
+  //     RotateTo(m_swerve, 0), ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
+  //     rightTranslateCommand,
+  //     RotateTo(m_swerve, 0)).ToPtr());
   // m_rightTranslateTrajectoryButton.OnTrue(&rightTranslateCommandGroup);
 
   m_centerAimAssistButton = m_bill.Button(PS5_BUTTON_PS);
-  m_centerAimAssistButton.OnTrue(frc2::SequentialCommandGroup(
-    RotateTo(m_swerve, 0),
-    ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
-    frc2::ParallelRaceGroup(frc2::WaitCommand(3.0_s), AimAssist(m_vision, m_swerve, 1.0, 0.0, 0.0)),
-    RotateTo(m_swerve, 0)).ToPtr());
+  // m_centerAimAssistButton.OnTrue(frc2::SequentialCommandGroup(
+  //   RotateTo(m_swerve, 0),
+  //   ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, 0_deg}),
+  //   frc2::ParallelRaceGroup(frc2::WaitCommand(3.0_s), AimAssist(m_vision, m_swerve, 1.0, 0.0, 0.0)),
+  //   RotateTo(m_swerve, 0)).ToPtr());
+  m_centerAimAssistButton.OnTrue(frc2::ParallelRaceGroup(
+    frc2::WaitCommand(3.0_s), TrajectoryAimAssist(m_vision, m_swerve, 1.0, 0.0, 0.0)
+  ).ToPtr());
 
   m_slideStationAimAssistButton = m_bill.Button(PS5_BUTTON_CREATE);
   m_slideStationAimAssistButton.OnTrue(frc2::InstantCommand([this] {
@@ -283,9 +291,24 @@ void RobotContainer::ConfigureButtonBindings() {
 
   m_runConveyorButton = m_ted.Button(PS5_BUTTON_MENU);
   m_runConveyorButton.WhileTrue(
-    frc2::InstantCommand([this]{m_intake->SetPower(0, INTAKE_CONVEYOR_POWER, 0);},{m_intake}).ToPtr()
+    frc2::InstantCommand([this]{
+      m_intake->SetPower((-INTAKE_ROLLER_POWER / 2), INTAKE_CONVEYOR_POWER, 0);
+      m_grabber->SetSpeed(GRABBER_GRAB_SPEED);
+    },{m_intake, m_grabber}).ToPtr()
   );
-  m_runConveyorButton.OnFalse(RunIntake(m_intake, 0, 0, 0).ToPtr());
+  m_runConveyorButton.OnFalse(frc2::InstantCommand([this]{
+      m_intake->SetPower(0, 0, 0);
+      m_grabber->SetSpeed(0);
+    },{m_intake, m_grabber}).ToPtr()
+  );
+
+  m_coneCorrectButton = m_ted.Button(PS5_BUTTON_TOUCHPAD);
+  // m_coneCorrectButton.OnTrue(frc2::InstantCommand([this]{m_intake->SetPistonExtension(false);},{m_intake}).ToPtr());
+  // m_coneCorrectButton.WhileTrue(
+  //   frc2::ParallelRaceGroup(RunIntake(m_intake, INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER),
+  //                           ShootFromCarriage(m_grabber, GRABBER_GRAB_SPEED)).ToPtr());
+  m_coneCorrectButton.WhileTrue(frc2::InstantCommand([this]{m_intake->SetPower((INTAKE_ROLLER_POWER / 2), -INTAKE_CONVEYOR_POWER, 0);},{m_intake}).ToPtr());
+  m_coneCorrectButton.OnFalse(RunIntake(m_intake, 0, 0, 0).ToPtr());
 
   // Hold down intake buttons to extend pistons and run; retracts when you let go
   m_runIntakeInButton = m_ted.Button(PS5_BUTTON_LBUMPER);
@@ -297,11 +320,21 @@ void RobotContainer::ConfigureButtonBindings() {
       frc2::WaitCommand(0.5_s),
       RunIntake(m_intake, INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER)
     ).ToPtr());
-  m_runIntakeInButton.OnFalse(frc2::InstantCommand([this]{
-    m_intake->SetPower(0, 0, 0);
-    frc2::WaitCommand(1.0_s).Schedule();
-    m_intake->SetPistonExtension(false);
-  },{m_intake}).ToPtr());
+  m_runIntakeInButton.OnFalse(frc2::SequentialCommandGroup(
+    frc2::InstantCommand([this]{
+      m_intake->SetPower(0, 0, 0);
+      m_intake->SetPistonExtension(false);
+    },{m_intake}),
+    frc2::WaitCommand(0.5_s),
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(2.0_s), 
+      frc2::ParallelRaceGroup(
+        RunIntake(m_intake, 0, INTAKE_CONVEYOR_POWER, 0),
+        ShootFromCarriage(m_grabber, GRABBER_GRAB_SPEED)
+      )
+    ),
+    frc2::InstantCommand([this]{m_intake->SetPower(0, 0, 0); m_grabber->SetSpeed(0);},{m_intake, m_grabber})
+  ).ToPtr());
 
   m_runIntakeOutButton = m_ted.Button(PS5_BUTTON_RBUMPER);
   m_runIntakeOutButton.OnTrue(frc2::InstantCommand([this]{
@@ -313,13 +346,6 @@ void RobotContainer::ConfigureButtonBindings() {
     frc2::WaitCommand(1.0_s).Schedule();
     m_intake->SetPistonExtension(false);
   },{m_intake}).ToPtr());
-
-  // m_coneCorrectButton = m_ted.Button(PS5_BUTTON_TOUCHPAD);
-  // m_coneCorrectButton.OnTrue(frc2::InstantCommand([this]{m_intake->SetPistonExtension(false);},{m_intake}).ToPtr());
-  // m_coneCorrectButton.WhileTrue(
-  //   frc2::ParallelRaceGroup(RunIntake(m_intake, INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER),
-  //                           ShootFromCarriage(m_grabber, GRABBER_GRAB_SPEED)).ToPtr());
-  // m_coneCorrectButton.OnFalse(RunIntake(m_intake, 0, 0, 0).ToPtr());
 
   m_grabButton = m_ted.Button(PS5_BUTTON_LTRIGGER);
   m_grabButton.WhileTrue(ShootFromCarriage(m_grabber, GRABBER_GRAB_SPEED).ToPtr());

@@ -37,7 +37,7 @@ void AutoBalance::Execute() {
     rot = units::angular_velocity::radians_per_second_t{0.25};
   }
 
-  if (abs(m_lastPitch) < 2.5 && abs((double)m_swerve->m_odometry.GetPose().X() - (double)m_lastXPosition) < 0.001) {
+  if (abs(m_lastPitch) < 2.5 && abs((double)m_swerve->m_odometry.GetPose().X() - (double)m_lastXPosition) < 0.01) {
     m_withinThresholdLoops++;
   } else {
     m_withinThresholdLoops = 0;
@@ -54,5 +54,9 @@ void AutoBalance::End(bool interrupted) {}
 // Returns true when the command should end.
 bool AutoBalance::IsFinished() {
   // Ends balance command if robot is level and didn't move much since last command schedule
-  return (m_withinThresholdLoops >= 25);
+  if (m_withinThresholdLoops >= AutoConstants::autoBalanceSettleLoops) {
+    m_swerve->LockWheels();
+    return true;
+  }
+  return false;
 }

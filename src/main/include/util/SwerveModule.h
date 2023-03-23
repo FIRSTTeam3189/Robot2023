@@ -50,7 +50,7 @@ struct SwerveModuleTelemetry {
 // SysID robot characterization values -- **varies by robot**
 constexpr auto ks = 0.208_V;
 constexpr auto kv = 2.206 * 1_V * 1_s / 1_m;
-constexpr auto ka = 0.409 * 1_V * 1_s * 1_s / 1_m;
+constexpr auto ka = 2.409 * 1_V * 1_s * 1_s / 1_m;
 
 class SwerveModule {
  public:

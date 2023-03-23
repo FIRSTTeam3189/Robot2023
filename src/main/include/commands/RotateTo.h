@@ -17,6 +17,6 @@ class RotateTo
   bool IsFinished() override;
 
  private:
-  SwerveDrive *m_swerve;
   double m_targetAngle;
+  SwerveDrive *m_swerve;
 };
