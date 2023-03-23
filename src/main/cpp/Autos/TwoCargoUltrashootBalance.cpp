@@ -13,6 +13,18 @@ TwoCargoUltrashootBalance::TwoCargoUltrashootBalance(SwerveDrive *swerve, Elevat
   // AddCommands(FooCommand{}, BarCommand{});
   AddCommands(
     OneCargoPickupBalance(m_swerve, m_elevator, m_grabber, m_intake, true),
-    UltraShoot(m_elevator, m_intake, m_grabber)
+    frc2::SequentialCommandGroup(
+      frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
+      frc2::WaitCommand(0.5_s),
+    frc2::ParallelDeadlineGroup(
+      ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_ULTRA_SHOOT_TARGET, false, true)),
+      frc2::RunCommand([this]{
+        if (m_elevator->GetPosition() > ELEVATOR_ULTRA_SHOOT_RELEASE_POINT) {
+          m_grabber->SetSpeed(ELEVATOR_ULTRA_SHOOT_POWER);
+        }},{m_elevator, m_grabber})
+    ),
+    frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
+    ElevatorPID(m_elevator, m_grabber, m_intake, 0, false, false),
+    frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
   );
 }

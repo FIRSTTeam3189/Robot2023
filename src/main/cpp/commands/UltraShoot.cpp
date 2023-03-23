@@ -15,7 +15,7 @@ UltraShoot::UltraShoot(Elevator *elevator, Intake *intake, Grabber *grabber)
 // Called when the command is initially scheduled.
 void UltraShoot::Initialize() {
   m_intake->SetPistonExtension(true);
-  m_elevator->SetPID(ELEVATOR_ULTRA_SHOOT_P, ELEVATOR_I, ELEVATOR_D);
+  // m_elevator->SetPID(ELEVATOR_ULTRA_SHOOT_P, ELEVATOR_I, ELEVATOR_D);
 }
 
 // Called repeatedly when this Command is scheduled to run

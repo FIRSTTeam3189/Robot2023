@@ -11,6 +11,8 @@
 #include "subsystems/Grabber.h"
 #include "subsystems/Intake.h"
 
+#include "commands/ElevatorPID.h"
+
 /**
  * An example command.
  *

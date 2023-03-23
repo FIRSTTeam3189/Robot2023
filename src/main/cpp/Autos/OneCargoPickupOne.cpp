@@ -26,12 +26,25 @@ OneCargoPickupOne::OneCargoPickupOne(SwerveDrive *swerveDrive, Elevator *elevato
 
   AddCommands(
     OneCargo(m_swerve, m_elevator, m_grabber, m_intake),
-    ElevatorPID(m_elevator, m_grabber, m_intake, 0, false, true),
     RotateTo(m_swerve, 180.0),
     swerveScoringToCargoCommand,
-    ToggleIntakePistons(m_intake),
-    frc2::ParallelDeadlineGroup(frc2::WaitCommand(5.0_s), RunIntake(m_intake, INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER)),
-    ToggleIntakePistons(m_intake)
+    frc2::InstantCommand([this]{
+    m_intake->SetPistonExtension(true);
+    },{m_intake}),
+    frc2::WaitCommand(0.5_s),
+    RunIntake(m_intake, INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER),
+    frc2::WaitCommand(1.0_s),
+    frc2::InstantCommand([this]{
+      m_intake->SetPower(0, 0, 0);
+      m_intake->SetPistonExtension(false);
+    },{m_intake}),
+    frc2::WaitCommand(0.5_s),
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(1.0_s), 
+      RunIntake(m_intake, 0, INTAKE_CONVEYOR_POWER, 0),
+      ShootFromCarriage(m_grabber, GRABBER_GRAB_SPEED)
+    ),
+    frc2::InstantCommand([this]{m_intake->SetPower(0, 0, 0); m_grabber->SetSpeed(0);},{m_intake, m_grabber})
   );
 
   // AddCommands(

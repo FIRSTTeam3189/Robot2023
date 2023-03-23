@@ -111,7 +111,7 @@ namespace SwerveDriveConstants {
     constexpr double frontLeftOffset {235.5};
     constexpr double frontRightOffset {334.5};
     constexpr double backLeftOffset {9.8};
-    constexpr double backRightOffset {88.2};
+    constexpr double backRightOffset {84.2};
 
     constexpr SwerveInfo kLeftFrontInfo {
         leftFrontSpeedCANID, leftFrontTurningCANID, leftFrontCancoderID, 

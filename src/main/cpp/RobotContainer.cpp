@@ -248,7 +248,11 @@ void RobotContainer::ConfigureButtonBindings() {
   // When pressing codriver elevator buttons, moves elevator up to target
   // On release, shoot the piece
   m_elevatorLowLevelButton = m_ted.Button(PS5_BUTTON_X);  
-  m_elevatorLowLevelButton.OnTrue(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_LOW_TARGET, false, true).ToPtr());
+  m_elevatorLowLevelButton.OnTrue(
+    frc2::SequentialCommandGroup(
+      frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
+      frc2::WaitCommand(0.5_s),
+      ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_LOW_TARGET, false, true)).ToPtr());
   m_elevatorLowLevelButton.OnFalse(frc2::SequentialCommandGroup( 
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(.25_s), 
@@ -260,7 +264,11 @@ void RobotContainer::ConfigureButtonBindings() {
   // m_elevatorLowLevelButton.OnFalse(ElevatorPID(m_elevator, m_grabber, m_intake, 0, false).ToPtr());
   
   m_elevatorMidLevelButton = m_ted.Button(PS5_BUTTON_SQR);
-  m_elevatorMidLevelButton.OnTrue(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET, false, true).ToPtr());
+  m_elevatorMidLevelButton.OnTrue(
+    frc2::SequentialCommandGroup(
+        frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
+        frc2::WaitCommand(0.5_s), 
+        ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET, false, true)).ToPtr());
   m_elevatorMidLevelButton.OnFalse(frc2::SequentialCommandGroup( 
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(.25_s), 
@@ -272,7 +280,11 @@ void RobotContainer::ConfigureButtonBindings() {
   // m_elevatorMidLevelButton.OnFalse(ElevatorPID(m_elevator, m_grabber, m_intake, 0, false).ToPtr());
 
   m_elevatorHighLevelButton = m_ted.Button(PS5_BUTTON_TRI);
-  m_elevatorHighLevelButton.OnTrue(ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET, false, true).ToPtr());
+  m_elevatorHighLevelButton.OnTrue(
+    frc2::SequentialCommandGroup(
+        frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
+        frc2::WaitCommand(0.5_s),
+        ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET, false, true)).ToPtr());
   m_elevatorHighLevelButton.OnFalse(frc2::SequentialCommandGroup( 
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(.25_s), 
@@ -327,11 +339,9 @@ void RobotContainer::ConfigureButtonBindings() {
     },{m_intake}),
     frc2::WaitCommand(0.5_s),
     frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(2.0_s), 
-      frc2::ParallelRaceGroup(
-        RunIntake(m_intake, 0, INTAKE_CONVEYOR_POWER, 0),
-        ShootFromCarriage(m_grabber, GRABBER_GRAB_SPEED)
-      )
+      frc2::WaitCommand(1.0_s), 
+      RunIntake(m_intake, 0, INTAKE_CONVEYOR_POWER, 0),
+      ShootFromCarriage(m_grabber, GRABBER_GRAB_SPEED)
     ),
     frc2::InstantCommand([this]{m_intake->SetPower(0, 0, 0); m_grabber->SetSpeed(0);},{m_intake, m_grabber})
   ).ToPtr());
@@ -363,8 +373,20 @@ void RobotContainer::ConfigureButtonBindings() {
   },{m_intake, m_grabber, m_elevator}).ToPtr()));
 
   m_ultraShootButton = m_ted.Button(PS5_BUTTON_CREATE);
-  m_ultraShootButton.OnTrue(UltraShoot(m_elevator, m_intake, m_grabber).ToPtr());
-  m_ultraShootButton.OnFalse(ShootFromCarriage(m_grabber, 0).ToPtr());
+  m_ultraShootButton.OnTrue(frc2::SequentialCommandGroup(
+     frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
+     frc2::WaitCommand(0.5_s),
+     ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_ULTRA_SHOOT_TARGET, false, true)).ToPtr());
+  m_ultraShootButton.WhileTrue(frc2::RunCommand([this]{
+    if (m_elevator->GetPosition() > ELEVATOR_ULTRA_SHOOT_RELEASE_POINT) {
+      m_grabber->SetSpeed(ELEVATOR_ULTRA_SHOOT_POWER);
+    }
+  },{m_elevator, m_grabber}).ToPtr());
+  m_ultraShootButton.OnFalse(frc2::SequentialCommandGroup( 
+    frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
+    ElevatorPID(m_elevator, m_grabber, m_intake, 0, false, false),
+    frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
+  ).ToPtr());
 
   // If co-driver pushes right stick forward or backward, intake will run accordingly to reject or pick up piece
   // m_intake->SetDefaultCommand((frc2::RunCommand([this]{

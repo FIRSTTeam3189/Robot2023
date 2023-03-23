@@ -19,7 +19,9 @@ void RunIntake::Execute() {
 }
 
 // Called once the command ends or is interrupted.
-void RunIntake::End(bool interrupted) {}
+void RunIntake::End(bool interrupted) {
+  m_intake->SetPower(0, 0, 0);
+}
 
 // Returns true when the command should end.
 bool RunIntake::IsFinished() {

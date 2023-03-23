@@ -19,7 +19,9 @@ void ShootFromCarriage::Execute() {
 }
 
 // Called once the command ends or is interrupted.
-void ShootFromCarriage::End(bool interrupted) {}
+void ShootFromCarriage::End(bool interrupted) {
+  m_grabber->SetSpeed(0);
+}
 
 // Returns true when the command should end.
 bool ShootFromCarriage::IsFinished() {

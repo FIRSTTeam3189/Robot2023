@@ -121,7 +121,7 @@ void Elevator::GoToPosition(double target) {
 
     units::volt_t ffValue = ff.Calculate(m_controller.GetSetpoint().velocity, acceleration);
 
-    m_motor.SetVoltage(std::clamp((pidValue + ffValue), -12.0_V, 12.0_V));
+    m_motor.SetVoltage(std::clamp((pidValue + ffValue), -12.0_V, 12.0_V) / 2.0);
     m_lastSpeed = m_controller.GetSetpoint().velocity;
     m_lastTime = frc::Timer::GetFPGATimestamp();
     
