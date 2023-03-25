@@ -11,7 +11,7 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Intake *intake)
 : m_swerve(swerveDrive), m_intake(intake) {
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
-  frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2, SwerveDriveConstants::kMaxAcceleration / 2};
+  frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 1.5, SwerveDriveConstants::kMaxAcceleration / 1.5};
   config.SetKinematics(SwerveDriveConstants::kinematics);
 
   // // std::cout << "Straight Line\n";
@@ -19,19 +19,25 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Intake *intake)
   // // Alternatively, import "paths" from PathWeaver as JSON files
   auto straightLineTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
     frc::Pose2d{0.0_m, 0.0_m, 0_deg},
-    {frc::Translation2d{0.0_m * AutoConstants::TrajectoryScale, 0.5_m}}, 
-    frc::Pose2d{0.0_m * AutoConstants::TrajectoryScale, 1.0_m, 0_deg},
+    {frc::Translation2d{0.0_m * AutoConstants::TrajectoryScale, 1.0_m}}, 
+    frc::Pose2d{0.0_m * AutoConstants::TrajectoryScale, 2.0_m, 0_deg},
     config);
-
+  // config.SetReversed(true);
+  // auto straightLineTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+  //   frc::Pose2d{0.0_m, 0.0_m, 0_deg},
+  //   {frc::Translation2d{-1.0_m * AutoConstants::TrajectoryScale, 0.0_m}}, 
+  //   frc::Pose2d{-2.0_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
+  //   config);
+    
   // // std::cout << "S Shape\n";
   // auto sShapeTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
   //   // "Clamped cubic" trajectory -- robot poses at endpoints, only positions for interior waypoints
   //   // Start position at (0, 0) facing positive X-axis
   //   frc::Pose2d{0.0_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
   //   // Pass through 2 interior points to make sideways "S"
-  //   {frc::Translation2d{1.0_m * AutoConstants::TrajectoryScale, 0.0_m * AutoConstants::TrajectoryScale}, 
-  //   frc::Translation2d{1.0_m * AutoConstants::TrajectoryScale, -1.0_m * AutoConstants::TrajectoryScale}},
-  //   frc::Pose2d{2.0_m * AutoConstants::TrajectoryScale, -1.0_m * AutoConstants::TrajectoryScale, 180_deg},
+  //   {frc::Translation2d{-1.0_m * AutoConstants::TrajectoryScale, 0.0_m * AutoConstants::TrajectoryScale}, 
+  //   frc::Translation2d{-1.0_m * AutoConstants::TrajectoryScale, -1.0_m * AutoConstants::TrajectoryScale}},
+  //   frc::Pose2d{-2.0_m * AutoConstants::TrajectoryScale, -1.0_m * AutoConstants::TrajectoryScale, 180_deg},
   //   config);
 
   // // std::cout << "Special\n";

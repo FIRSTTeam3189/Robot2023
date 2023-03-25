@@ -18,6 +18,7 @@
 #include "commands/ElevatorPID.h"
 #include "commands/DriveToPose.h"
 #include "commands/RunIntake.h"
+#include "commands/ResetOdometry.h"
 #include "Constants.h"
 
 #include <iostream>

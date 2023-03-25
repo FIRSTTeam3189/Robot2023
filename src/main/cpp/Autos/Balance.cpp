@@ -12,7 +12,7 @@ Balance::Balance(SwerveDrive *swerve) : m_swerve(swerve) {
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
 
-  frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 1.5, SwerveDriveConstants::kMaxAcceleration / 1.5};
+  frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 1.25, SwerveDriveConstants::kMaxAcceleration / 1.5};
   config.SetKinematics(SwerveDriveConstants::kinematics);
   config.SetReversed(true);
 

@@ -143,7 +143,7 @@ namespace AutoConstants {
     constexpr double autoRotP {0.0};
     constexpr double autoRotI {0.0};
     constexpr double autoRotD {0.0};
-    constexpr int autoBalanceSettleLoops = 25;
+    constexpr int autoBalanceSettleLoops = 10;
 
     // PID Controllers for x and y movement in auto mode -- theta controller is part of drive object
     constexpr double kPXController = 0.5;

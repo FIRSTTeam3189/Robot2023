@@ -18,15 +18,15 @@ void AutoBalance::Execute() {
   // Auto balance command for charge station -- simple bang bang control
   // Keep driving forward/backward until balance is about level
   // If balance tips rapidly, reverse slightly and rotate bot to lock wheels
-  double pitch = -m_swerve->GetPitch();
+  double pitch = m_swerve->GetPitch();
   auto speed = 0.0_mps;
   auto rot = units::angular_velocity::radians_per_second_t{0.0};
 
   // Signage depends on Pigeon mount orientation
   if (pitch > 4.0) {
-    speed = 3.0_mps;
+    speed = 2.75_mps;
   } else if (pitch < -4.0) {
-    speed = -2.0_mps;
+    speed = -2.25_mps;
   }
  
   if (pitch - m_lastPitch < -0.1) {
@@ -37,7 +37,7 @@ void AutoBalance::Execute() {
     rot = units::angular_velocity::radians_per_second_t{0.25};
   }
 
-  if (abs(m_lastPitch) < 2.5 && abs((double)m_swerve->m_odometry.GetPose().X() - (double)m_lastXPosition) < 0.01) {
+  if (abs(m_lastPitch) < 2.5 && abs((double)m_swerve->m_odometry.GetPose().X() - (double)m_lastXPosition) < 0.1) {
     m_withinThresholdLoops++;
   } else {
     m_withinThresholdLoops = 0;
