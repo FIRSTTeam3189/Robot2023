@@ -11,25 +11,31 @@ OneCargoBalance::OneCargoBalance(SwerveDrive *swerveDrive, Elevator *elevator, G
 : m_swerve(swerveDrive), m_elevator(elevator), m_grabber(grabber), m_intake(intake) {
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
-  frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2, SwerveDriveConstants::kMaxAcceleration / 2};
-  config.SetKinematics(SwerveDriveConstants::kinematics);
+  // frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2, SwerveDriveConstants::kMaxAcceleration / 2};
+  // config.SetKinematics(SwerveDriveConstants::kinematics);
 
   // std::cout << "Scoring to charge\n";
-  auto scoringToChargeStationTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-    frc::Pose2d{0.0_m, 0.0_m, 0_deg},
-    {frc::Translation2d{1.75_m * AutoConstants::TrajectoryScale, 0.0_m}}, 
-    frc::Pose2d{3.5_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
-    config);
+  // auto scoringToChargeStationTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+  //   frc::Pose2d{0.0_m, 0.0_m, 0_deg},
+  //   {frc::Translation2d{1.75_m * AutoConstants::TrajectoryScale, 0.0_m}}, 
+  //   frc::Pose2d{3.5_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
+  //   config);
 
-  // scoringToChargeStationTrajectory.TransformBy(frc::Transform2d{frc::Pose2d{0_m, 0_m, 0_deg}, m_swerve->GetPose()});
-  frc2::SwerveControllerCommand<4> swerveScoringToChargeCommand = m_swerve->CreateSwerveCommand(scoringToChargeStationTrajectory);
+  // // scoringToChargeStationTrajectory.TransformBy(frc::Transform2d{frc::Pose2d{0_m, 0_m, 0_deg}, m_swerve->GetPose()});
+  // frc2::SwerveControllerCommand<4> swerveScoringToChargeCommand = m_swerve->CreateSwerveCommand(scoringToChargeStationTrajectory);
 
   AddCommands(
     OneCargo(m_swerve, m_elevator, m_grabber, m_intake),
-    RotateTo(m_swerve, 0.0),
-    swerveScoringToChargeCommand,
+    DriveToPose(m_swerve, frc::Transform2d{frc::Translation2d{3.5_m, 0.0_m}, frc::Rotation2d{0.0_deg}}, 0.0),
     AutoBalance(m_swerve)
   );
+
+  // AddCommands(
+  //   OneCargo(m_swerve, m_elevator, m_grabber, m_intake),
+  //   RotateTo(m_swerve, 0.0),
+  //   swerveScoringToChargeCommand,
+  //   AutoBalance(m_swerve)
+  // );
 
   // AddCommands(
   //   OneCargo(m_swerve, m_elevator, m_grabber, m_intake),

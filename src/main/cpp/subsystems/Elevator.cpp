@@ -110,9 +110,9 @@ void Elevator::GoToPosition(double target) {
 
     // Resets position marker upon getting a new position
     // Set to normal speed after new PID command
-    if (m_controller.GetP() != ELEVATOR_P) {
-        SetPID(ELEVATOR_P, ELEVATOR_I, ELEVATOR_D);
-    }
+    // if (m_controller.GetP() != ELEVATOR_P) {
+    //     SetPID(ELEVATOR_P, ELEVATOR_I, ELEVATOR_D);
+    // }
 
     units::volt_t pidValue = units::volt_t{m_controller.Calculate(units::meter_t{ElevatorTicksToMeters(m_encoder.GetPosition())}, 
                                              units::meter_t{ElevatorTicksToMeters(target)})};

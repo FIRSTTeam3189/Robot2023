@@ -50,8 +50,10 @@ units::angular_velocity::radians_per_second_t OISwerveDrive::SetDesiredRotationa
                 * SwerveDriveConstants::maxAngularVelocity;
   
   // Stop rotating if within tolerance
-  if (m_rotationPIDController.AtSetpoint())
+  if (abs(m_swerve_drive->GetNormalizedYaw() - goalAngle) < 2.5) {
     rot = units::angular_velocity::radians_per_second_t {0.0};
+  }
+
   return rot;
 }
 

@@ -16,6 +16,11 @@ ElevatorPID::ElevatorPID(Elevator *elevator, Grabber *grabber, Intake *intake, d
 // Called when the command is initially scheduled.
 void ElevatorPID::Initialize() {
     m_intake->SetPistonExtension(true);
+    if (m_target == 0.0) {
+      m_elevator->SetPID(50.0, 0.0, 0.0);
+    } else {
+      m_elevator->SetPID(ELEVATOR_P, ELEVATOR_I, ELEVATOR_D);
+    }
 }
 
 // Called repeatedly when this Command is scheduled to run

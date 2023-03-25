@@ -19,21 +19,32 @@ TrajectoryAimAssist::TrajectoryAimAssist(Vision *vision, SwerveDrive *swerve, do
   AddRequirements(m_swerve);
   AddRequirements(m_vision);
 
-  if (m_visionData.detectionID != DetectionType::None) {
-      auto m_pose = m_swerve->GetPose();
-      frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed, SwerveDriveConstants::kMaxAcceleration};
-      config.SetKinematics(SwerveDriveConstants::kinematics);
+  // if (m_visionData.detectionID != DetectionType::None) {
+  //   auto m_pose = m_swerve->GetPose();
+  //   frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed, SwerveDriveConstants::kMaxAcceleration};
+  //   config.SetKinematics(SwerveDriveConstants::kinematics);
 
-      units::meter_t xDistance = units::meter_t{m_visionData.translationMatrix[0] - m_targetXDistance};
-      units::meter_t yDistance = units::meter_t{m_visionData.translationMatrix[1] - m_targetYDistance};
-      frc::Trajectory visionTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-        m_pose,
-        {frc::Translation2d{(m_pose.X() + xDistance) / 2, (m_pose.Y() + yDistance) / 2}}, 
-        frc::Pose2d{m_pose.X() + xDistance, m_pose.Y() + yDistance, frc::Rotation2d{units::degree_t{m_targetRotAngle}}},
-        config);
+  //   units::meter_t xDistance = units::meter_t{m_visionData.translationMatrix[0] - m_targetXDistance};
+  //   units::meter_t yDistance = units::meter_t{m_visionData.translationMatrix[1] - m_targetYDistance};
+  //   frc::Trajectory visionTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+  //     m_pose,
+  //     {frc::Translation2d{(m_pose.X() + xDistance) / 2, (m_pose.Y() + yDistance) / 2}}, 
+  //     frc::Pose2d{m_pose.X() + xDistance, m_pose.Y() + yDistance, frc::Rotation2d{units::degree_t{m_targetRotAngle}}},
+  //     config);
 
-      // visionTrajectory.TransformBy(frc::Transform2d{frc::Pose2d{0_m, 0_m, 0_deg}, m_swerve->GetPose()});
-      frc2::SwerveControllerCommand<4> visionCommand = m_swerve->CreateSwerveCommand(visionTrajectory);
-      AddCommands(visionCommand);
-  }
+  //   // visionTrajectory.TransformBy(frc::Transform2d{frc::Pose2d{0_m, 0_m, 0_deg}, m_swerve->GetPose()});
+  //   frc2::SwerveControllerCommand<4> visionCommand = m_swerve->CreateSwerveCommand(visionTrajectory);
+
+  //   frc::Pose2d targetPose{};
+
+  //   AddCommands(frc2::SequentialCommandGroup(
+  //     frc2::InstantCommand([&]{
+  //       targetPose = m_pose.TransformBy(frc::Transform2d{frc::Translation2d{xDistance, yDistance}, frc::Rotation2d{0.0_deg}});
+  //     },{m_swerve}),
+  //     DriveToPose(m_swerve, targetPose, targetRotAngle)
+  //     )
+  //   );
+
+    // AddCommands(visionCommand);
+  // }
 }

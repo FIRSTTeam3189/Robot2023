@@ -12,6 +12,7 @@
 #include "subsystems/SwerveDrive.h"
 #include "commands/AutoBalance.h"
 #include "commands/ResetOdometry.h"
+#include "commands/DriveToPose.h"
 #include "Constants.h"
 
 class Balance

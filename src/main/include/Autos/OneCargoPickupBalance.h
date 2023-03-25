@@ -31,4 +31,5 @@ class OneCargoPickupBalance
   Elevator *m_elevator;
   Grabber *m_grabber;
   Intake *m_intake;
+  bool m_isRedSide;
 };

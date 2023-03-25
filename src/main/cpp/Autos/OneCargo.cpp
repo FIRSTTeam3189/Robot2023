@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "Autos/OneCargo.h"
+#include <iostream>
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.
 // For more information, see:
@@ -26,11 +27,15 @@ OneCargo::OneCargo(SwerveDrive *swerve, Elevator *elevator, Grabber *grabber, In
 
   // Sends elevator to target, then runs grabber for 5 seconds
   AddCommands(
-    frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
+    frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);
+    std::cout << "Starting one cargo\n";},{m_swerve}),
     frc2::SequentialCommandGroup(
-        frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
-        frc2::WaitCommand(0.5_s), 
-        ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET, false, true)),
+      frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
+      frc2::ParallelDeadlineGroup(
+        frc2::WaitCommand(0.5_s),
+        RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, 0)
+      ),
+      ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET, false, true)),
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(.25_s), 
       ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)),

@@ -11,20 +11,20 @@ TwoCargoUltrashootBalance::TwoCargoUltrashootBalance(SwerveDrive *swerve, Elevat
 : m_swerve(swerve), m_elevator(elevator), m_grabber(grabber), m_intake(intake) {
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
-  AddCommands(
-    OneCargoPickupBalance(m_swerve, m_elevator, m_grabber, m_intake, true),
-    frc2::SequentialCommandGroup(
-      frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
-      frc2::WaitCommand(0.5_s),
-    frc2::ParallelDeadlineGroup(
-      ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_ULTRA_SHOOT_TARGET, false, true)),
-      frc2::RunCommand([this]{
-        if (m_elevator->GetPosition() > ELEVATOR_ULTRA_SHOOT_RELEASE_POINT) {
-          m_grabber->SetSpeed(ELEVATOR_ULTRA_SHOOT_POWER);
-        }},{m_elevator, m_grabber})
-    ),
-    frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
-    ElevatorPID(m_elevator, m_grabber, m_intake, 0, false, false),
-    frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
-  );
+  // AddCommands(
+  //   OneCargoPickupBalance(m_swerve, m_elevator, m_grabber, m_intake, true),
+  //   frc2::SequentialCommandGroup(
+  //     frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
+  //     frc2::WaitCommand(0.5_s),
+  //   frc2::ParallelDeadlineGroup(
+  //     ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_ULTRA_SHOOT_TARGET, false, true)),
+  //     frc2::RunCommand([this]{
+  //       if (m_elevator->GetPosition() > ELEVATOR_ULTRA_SHOOT_RELEASE_POINT) {
+  //         m_grabber->SetSpeed(ELEVATOR_ULTRA_SHOOT_POWER);
+  //       }},{m_elevator, m_grabber})
+  //   ),
+  //   frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
+  //   ElevatorPID(m_elevator, m_grabber, m_intake, 0, false, false),
+  //   frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
+  // );
 }

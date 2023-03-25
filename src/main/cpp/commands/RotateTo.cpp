@@ -19,10 +19,10 @@ RotateTo::RotateTo(SwerveDrive *swerveDrive, double targetAngle)
                       // Use the output here
                       if (output > 0) {
                         swerveDrive->Drive(0_mps, 0_mps, 
-                                         units::radians_per_second_t{(output / SwerveDriveConstants::DEGToRAD) + 0.5}, true);
+                                         units::radians_per_second_t{(-output / SwerveDriveConstants::DEGToRAD) + 0.5}, true);
                       } else {
                         swerveDrive->Drive(0_mps, 0_mps, 
-                                         units::radians_per_second_t{(output / SwerveDriveConstants::DEGToRAD) - 0.5}, true);
+                                         units::radians_per_second_t{(-output / SwerveDriveConstants::DEGToRAD) - 0.5}, true);
                       }
                     }, 
                     {swerveDrive}} 

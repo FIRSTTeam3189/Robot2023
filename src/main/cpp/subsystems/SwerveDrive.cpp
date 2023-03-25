@@ -189,8 +189,9 @@ frc::Pose2d SwerveDrive::GetPose() {
   // Invert y-axis
   frc::Pose2d pose = m_odometry.GetPose();
   frc::Translation2d translation = pose.Translation();
-  units::meter_t correctedY = -translation.Y();
-  auto correctedTranslation = frc::Translation2d{translation.X(), correctedY};
+  // units::meter_t correctedY = -translation.Y();
+  units::meter_t correctedX = -translation.X();
+  auto correctedTranslation = frc::Translation2d{correctedX, translation.Y()};
   frc::Pose2d correctedPose = frc::Pose2d{correctedTranslation, pose.Rotation()};
   return correctedPose;
   // return m_odometry.GetPose();

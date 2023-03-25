@@ -19,6 +19,7 @@
 #include "commands/ResetOdometry.h"
 #include "commands/RunIntake.h"
 #include "commands/RotateTo.h"
+#include "commands/DriveToPose.h"
 #include "commands/AutoBalance.h"
 #include "Autos/Balance.h"
 

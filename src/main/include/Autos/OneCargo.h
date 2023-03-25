@@ -16,6 +16,8 @@
 #include "subsystems/SwerveDrive.h"
 #include "commands/ShootFromCarriage.h"
 #include "commands/ElevatorPID.h"
+#include "commands/DriveToPose.h"
+#include "commands/RunIntake.h"
 #include "Constants.h"
 
 #include <iostream>

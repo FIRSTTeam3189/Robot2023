@@ -81,7 +81,7 @@ namespace SwerveDriveConstants {
     // These are for robot rotation, not wheel rotation
     constexpr double rotP {0.15};
     constexpr double rotI {0.0001};
-    constexpr double rotD {0.1};
+    constexpr double rotD {0.0};
 
     // Default speed + angle PID values
     constexpr PIDValues speedMotorPID {
@@ -111,7 +111,7 @@ namespace SwerveDriveConstants {
     constexpr double frontLeftOffset {235.5};
     constexpr double frontRightOffset {334.5};
     constexpr double backLeftOffset {9.8};
-    constexpr double backRightOffset {84.2};
+    constexpr double backRightOffset {88.2};
 
     constexpr SwerveInfo kLeftFrontInfo {
         leftFrontSpeedCANID, leftFrontTurningCANID, leftFrontCancoderID, 
@@ -146,7 +146,7 @@ namespace AutoConstants {
     constexpr int autoBalanceSettleLoops = 25;
 
     // PID Controllers for x and y movement in auto mode -- theta controller is part of drive object
-    constexpr double kPXController = 2.0;
+    constexpr double kPXController = 0.5;
     constexpr double kPYController = kPXController;
 
     static frc::TrapezoidProfile<units::radians>::Constraints thetaConstraints{SwerveDriveConstants::maxAngularVelocity,
@@ -216,7 +216,7 @@ namespace AutoConstants {
 #define ELEVATOR_INTEGRATED_CPR 42
 #define ELEVATOR_LOW_TARGET 1200
 #define ELEVATOR_MID_TARGET 1900
-#define ELEVATOR_HIGH_TARGET 2900
+#define ELEVATOR_HIGH_TARGET 2800
 #define ELEVATOR_SLOW_DISTANCE 250
 #define ELEVATOR_STOP_DISTANCE 50
 #define ELEVATOR_LOWER_LIMIT_SWITCH_ID 0 
@@ -246,7 +246,7 @@ namespace AutoConstants {
 // #define GRABBER_MOTOR_ID 0
 #define GRABBER_MOTOR_ID 18
 #define GRABBER_DROP_SPEED 0.5
-#define GRABBER_GRAB_SPEED -0.40
+#define GRABBER_GRAB_SPEED -0.50
 // #define GRABBER_REJECT_SPEED 0
 // #define GRABBER_LOW_CUBE_SPEED 0
 // #define GRABBER_MID_CUBE_SPEED 0
@@ -254,7 +254,7 @@ namespace AutoConstants {
 // #define GRABBER_LOW_CONE_SPEED 0
 // #define GRABBER_MID_CONE_SPEED 0
 // #define GRABBER_HIGH_CONE_SPEED 0
-#define GRABBER_CARRY_SPEED -0.05
+#define GRABBER_CARRY_SPEED -0.15
 #define GRABBER_COLOR_SENSOR_DEVICE_ID 0
 // Higher number the better
 #define GRABBER_SENSOR_CONFIDENCE 0.80

@@ -27,6 +27,7 @@
 
 #include "Autos/TestAuto.h"
 #include "Autos/OneCargo.h"
+#include "Autos/Balance.h"
 #include "Autos/OneCargoBalance.h"
 #include "Autos/OneCargoPickupBalance.h"
 #include "Autos/OneCargoPickupOne.h"
@@ -45,6 +46,7 @@
 #include "commands/AimAssist.h"
 #include "commands/ElevatorRawDrive.h"
 #include "commands/UltraShoot.h"
+#include "commands/DriveToPose.h"
 #include "commands/TrajectoryAimAssist.h"
 
 #include "subsystems/SwerveDrive.h"
@@ -81,6 +83,7 @@ class RobotContainer {
 
   // Add autonomous routines to chooser
   TestAuto m_TestAuto{m_swerve, m_intake};
+  Balance m_balance{m_swerve};
   OneCargo m_oneCargo{m_swerve, m_elevator, m_grabber, m_intake};
   OneCargoBalance m_oneCargoBalance{m_swerve, m_elevator, m_grabber, m_intake};
   OneCargoPickupBalance m_oneCargoPickupBalanceRed{m_swerve, m_elevator, m_grabber, m_intake, true};
