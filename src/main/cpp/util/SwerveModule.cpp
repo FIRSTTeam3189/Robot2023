@@ -30,7 +30,7 @@ m_absoluteEncoder(SI.CANCoderID, "Swerve")
     m_speedMotor.ConfigClosedloopRamp(0);
     m_speedMotor.ConfigOpenloopRamp(0.01);
     m_speedMotor.ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration{
-                                            true, SwerveDriveConstants::ampLimit, SwerveDriveConstants::ampLimit + 10.0, 0.1});
+                                            true, SwerveDriveConstants::ampLimit, SwerveDriveConstants::ampLimit + 5.0, 0.1});
 
     m_angleMotor.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor);
     // m_angleMotor.ConfigRemoteFeedbackFilter(m_absoluteEncoder.GetDeviceNumber(), RemoteSensorSource::RemoteSensorSource_CANCoder, 0);
@@ -97,6 +97,49 @@ void SwerveModule::DriveFast() {
     m_speedMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 1.0);
 }
 
+void SwerveModule::SetDesiredPercentState(const frc::SwerveModuleState &input_state) {
+    // First optimize swerve states (figures out whether CW or CCW is less turning angle)
+    // frc::SmartDashboard::PutNumber("Input state angle", input_state.angle.Degrees().value());
+    const auto state = OptimizeAngle(
+        input_state, units::degree_t{FalconToDegrees(m_angleMotor.GetSelectedSensorPosition())});
+    
+    // const auto state = input_state;
+    double vel = state.speed.value();
+    
+    // auto acceleration = (state.speed - m_lastSpeed) /
+    //   (frc::Timer::GetFPGATimestamp() - m_lastTime);
+
+    // units::volt_t ffValue = std::clamp(ff.Calculate(state.speed, acceleration), -12.0_V, 12.0_V);
+    // m_speedMotor.Set(TalonFXControlMode::PercentOutput, (ffValue / 12.0_V));
+
+    // m_lastSpeed = state.speed;
+    // m_lastTime = frc::Timer::GetFPGATimestamp();
+
+    double speedPercent = vel / (double)SwerveDriveConstants::kMaxSpeed;
+    // frc::SmartDashboard::PutNumber("Target Swerve Mod Percent", (double)(ffValue / 12.0_V));
+
+    // Tells PID controller to run with calculated module speed
+    m_speedMotor.Set(TalonFXControlMode::PercentOutput, speedPercent);
+    
+    // Calculate position to set angle PID to
+    double turnSetpoint = DegreesToFalcon(state.angle.Degrees().value());
+    // double turnSetpoint = -25000.0;
+    // If robot wants to barely move or rotate module, stop motors
+    // Also sets next setpoint as current angle so no rotation happens
+    // std::cout << "Velocity in mps: " << vel << " Turn difference: " << (m_lastAngle - turnSetpoint) << std::endl;
+
+    // Keep wheels in current spot instead of resetting to 0
+    if (fabs(vel) < .025 && (m_lastAngle - turnSetpoint) < 5.0) {
+        // std::cout << "Stopping motors";
+        Stop();
+        turnSetpoint = m_lastAngle;
+    } else {
+        m_angleMotor.Set(TalonFXControlMode::Position, turnSetpoint);
+    }
+
+    m_lastAngle = turnSetpoint;
+}
+
 void SwerveModule::SetDesiredState(const frc::SwerveModuleState &input_state) {
     // First optimize swerve states (figures out whether CW or CCW is less turning angle)
     frc::SmartDashboard::PutNumber("Input state angle", input_state.angle.Degrees().value());
@@ -116,7 +159,7 @@ void SwerveModule::SetDesiredState(const frc::SwerveModuleState &input_state) {
     m_lastTime = frc::Timer::GetFPGATimestamp();
 
     // double speedPercent = vel / (double)SwerveDriveConstants::kMaxSpeed;
-    // frc::SmartDashboard::PutNumber("Target Swerve Mod Percent", speedPercent);
+    frc::SmartDashboard::PutNumber("Target Swerve Mod Percent", (double)(ffValue / 12.0_V));
 
     // Tells PID controller to run with calculated module speed
     // m_speedMotor.Set(TalonFXControlMode::PercentOutput, speedPercent);

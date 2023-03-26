@@ -15,11 +15,14 @@ ElevatorPID::ElevatorPID(Elevator *elevator, Grabber *grabber, Intake *intake, d
 
 // Called when the command is initially scheduled.
 void ElevatorPID::Initialize() {
+  if (m_target > 300.0) {
     m_intake->SetPistonExtension(true);
+  }
+  
     if (m_target == 0.0) {
       m_elevator->SetPID(50.0, 0.0, 0.0);
     } else {
-      m_elevator->SetPID(ELEVATOR_P, ELEVATOR_I, ELEVATOR_D);
+      m_elevator->SetPID(ELEVATOR_P + 200.0, ELEVATOR_I, ELEVATOR_D);
     }
 }
 

@@ -56,6 +56,27 @@ void SwerveDrive::ResetGyro() {
   m_pigeon.Reset();
 }
 
+void SwerveDrive::PercentDrive(
+  units::meters_per_second_t xSpeed,
+  units::meters_per_second_t ySpeed,
+  units::radians_per_second_t rot,
+  bool fieldRelative) {
+  UpdateOdometry();
+  
+  auto states = SwerveDriveConstants::kinematics.ToSwerveModuleStates(
+    fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
+                        xSpeed, ySpeed, rot, -m_pigeon.GetRotation2d())
+                        : frc::ChassisSpeeds{xSpeed, ySpeed, rot});
+  SwerveDriveConstants::kinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed);
+
+  auto [fl, fr, bl, br] = states;
+
+  m_SM.m_frontLeft.SetDesiredPercentState(states[0]);
+  m_SM.m_frontRight.SetDesiredPercentState(states[1]);
+  m_SM.m_backLeft.SetDesiredPercentState(states[2]);
+  m_SM.m_backRight.SetDesiredPercentState(states[3]);
+}
+
 void SwerveDrive::Drive(
   // Pass in speeds and rotations, get back module states
   units::meters_per_second_t xSpeed,

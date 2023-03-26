@@ -41,7 +41,12 @@ void RobotContainer::ConfigureButtonBindings() {
   m_spinIntakeInButton.OnTrue(frc2::InstantCommand([this]{
     m_intake->SetPistonExtension(true);
   },{m_intake}).ToPtr());
-  m_spinIntakeInButton.WhileTrue(RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, -INTAKE_CONE_CORRECT_POWER).ToPtr());
+  m_spinIntakeInButton.WhileTrue(
+    frc2::SequentialCommandGroup(
+      RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, -INTAKE_CONE_CORRECT_POWER),
+      ShootFromCarriage(m_grabber, 0.25)
+    )
+    .ToPtr());
   m_spinIntakeInButton.OnFalse(frc2::InstantCommand([this]{
     m_intake->SetPower(0, 0, 0);
     frc2::WaitCommand(1.0_s).Schedule();
@@ -288,7 +293,10 @@ void RobotContainer::ConfigureButtonBindings() {
   m_elevatorLowLevelButton.OnTrue(
     frc2::SequentialCommandGroup(
       frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
-      frc2::WaitCommand(0.5_s),
+      frc2::ParallelDeadlineGroup(
+        frc2::WaitCommand(0.5_s),
+        RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, 0)
+      ),
       ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_LOW_TARGET, false, true)).ToPtr());
   m_elevatorLowLevelButton.OnFalse(frc2::SequentialCommandGroup( 
     frc2::ParallelDeadlineGroup(
@@ -304,7 +312,10 @@ void RobotContainer::ConfigureButtonBindings() {
   m_elevatorMidLevelButton.OnTrue(
     frc2::SequentialCommandGroup(
         frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
-        frc2::WaitCommand(0.5_s), 
+        frc2::ParallelDeadlineGroup(
+        frc2::WaitCommand(0.5_s),
+        RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, 0)
+      ),
         ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET, false, true)).ToPtr());
   m_elevatorMidLevelButton.OnFalse(frc2::SequentialCommandGroup( 
     frc2::ParallelDeadlineGroup(
@@ -320,7 +331,10 @@ void RobotContainer::ConfigureButtonBindings() {
   m_elevatorHighLevelButton.OnTrue(
     frc2::SequentialCommandGroup(
         frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
+        frc2::ParallelDeadlineGroup(
         frc2::WaitCommand(0.5_s),
+        RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, 0)
+      ),
         ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET, false, true)).ToPtr());
   m_elevatorHighLevelButton.OnFalse(frc2::SequentialCommandGroup( 
     frc2::ParallelDeadlineGroup(
@@ -338,12 +352,17 @@ void RobotContainer::ConfigureButtonBindings() {
   m_toggleIntakePistonsButton = m_ted.Button(PS5_BUTTON_TOUCHPAD);
   m_toggleIntakePistonsButton.OnTrue(ToggleIntakePistons(m_intake).ToPtr());
 
-  m_runConveyorButton = m_ted.Button(PS5_BUTTON_MENU);
-  m_runConveyorButton.WhileTrue(
-    frc2::InstantCommand([this]{
-      m_intake->SetPower(0.0, INTAKE_CONVEYOR_POWER, 0);
-      m_grabber->SetSpeed(GRABBER_GRAB_SPEED);
-    },{m_intake, m_grabber}).ToPtr()
+  m_runConveyorButton = m_ted.Button(PS5_BUTTON_CREATE);
+  m_runConveyorButton.OnTrue(
+    frc2::SequentialCommandGroup(
+      frc2::InstantCommand([this]{
+        m_intake->SetPower(0.0, INTAKE_CONVEYOR_POWER, 0);
+      // m_grabber->SetSpeed(GRABBER_GRAB_SPEED);
+      },{m_intake, m_grabber}),
+      frc2::ParallelDeadlineGroup(
+        frc2::WaitCommand(0.35_s),
+        ElevatorPID(m_elevator, m_grabber, m_intake, 200, false, true)
+      )).ToPtr()
   );
   m_runConveyorButton.OnFalse(frc2::InstantCommand([this]{
       m_intake->SetPower(0, 0, 0);
@@ -409,7 +428,7 @@ void RobotContainer::ConfigureButtonBindings() {
     m_grabber->SetSpeed(0);
   },{m_intake, m_grabber, m_elevator}).ToPtr()));
 
-  m_ultraShootButton = m_ted.Button(PS5_BUTTON_CREATE);
+  m_ultraShootButton = m_ted.Button(PS5_BUTTON_LSTICK);
   m_ultraShootButton.OnTrue(frc2::SequentialCommandGroup(
      frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
      frc2::WaitCommand(0.5_s),

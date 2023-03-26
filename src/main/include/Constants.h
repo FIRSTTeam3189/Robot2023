@@ -50,12 +50,12 @@ namespace SwerveDriveConstants {
     
     // 0-max ramp time, current limit in amps
     constexpr double loopRampRate {.1};
-    constexpr double ampLimit {30.0};
+    constexpr double ampLimit {35.0};
 
     // SysID robot characterization values -- **varies by robot**
-    constexpr auto ks = 0.208_V;
-    constexpr auto kv = 2.206 * 1_V * 1_s / 1_m;
-    constexpr auto ka = 2.409 * 1_V * 1_s * 1_s / 1_m;
+    constexpr auto ks = 0.408_V;
+    constexpr auto kv = 3.206 * 1_V * 1_s / 1_m;
+    constexpr auto ka = 3.409 * 1_V * 1_s * 1_s / 1_m;
 
     // Distance traveled by robot per encoder tick
     // constexpr double driveEncoderDistancePerPulse = 
@@ -143,7 +143,7 @@ namespace AutoConstants {
     constexpr double autoRotP {0.0};
     constexpr double autoRotI {0.0};
     constexpr double autoRotD {0.0};
-    constexpr int autoBalanceSettleLoops = 10;
+    constexpr int autoBalanceSettleLoops = 25;
 
     // PID Controllers for x and y movement in auto mode -- theta controller is part of drive object
     constexpr double kPXController = 0.5;
@@ -207,7 +207,7 @@ namespace AutoConstants {
 #define ELEVATOR_OUTPUT_CIRCUMFERENCE (PI * 0.04552)
 // Elevator feedforward constants
 #define ELEVATOR_KS 0.17186_V
-#define ELEVATOR_KG 0.31493_V
+#define ELEVATOR_KG 0.41493_V
 #define ELEVATOR_KV 20.578_V * 1_s / 1_m
 #define ELEVATOR_KA 0.67322_V * 1_s * 1_s / 1_m
 // Values in encoder ticks
@@ -218,7 +218,7 @@ namespace AutoConstants {
 #define ELEVATOR_MID_TARGET 1900
 #define ELEVATOR_HIGH_TARGET 2800
 #define ELEVATOR_SLOW_DISTANCE 250
-#define ELEVATOR_STOP_DISTANCE 50
+#define ELEVATOR_STOP_DISTANCE 100
 #define ELEVATOR_LOWER_LIMIT_SWITCH_ID 0 
 #define ELEVATOR_UPPER_LIMIT_SWITCH_ID 1
 #define ELEVATOR_ULTRA_SHOOT_TARGET 2900

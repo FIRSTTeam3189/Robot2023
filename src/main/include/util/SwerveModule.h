@@ -15,6 +15,7 @@
 #include "rev/CANSparkMax.h"
 #include <math.h>
 #include <iostream>
+
 #include <units/angular_velocity.h>
 #include <units/time.h>
 #include <units/velocity.h>
@@ -48,15 +49,16 @@ struct SwerveModuleTelemetry {
 };
 
 // SysID robot characterization values -- **varies by robot**
-constexpr auto ks = 0.208_V;
-constexpr auto kv = 2.206 * 1_V * 1_s / 1_m;
-constexpr auto ka = 2.409 * 1_V * 1_s * 1_s / 1_m;
+constexpr auto ks = 0.408_V;
+constexpr auto kv = 3.206 * 1_V * 1_s / 1_m;
+constexpr auto ka = 3.409 * 1_V * 1_s * 1_s / 1_m;
 
 class SwerveModule {
  public:
   SwerveModule(SwerveInfo SI);
   void Stop();
   void SetDesiredState(const frc::SwerveModuleState &state);
+  void SetDesiredPercentState(const frc::SwerveModuleState &state);
   void ManualModuleSpeed(double speed);
   void ManualModuleTurn(double speed);
   frc::SwerveModuleState GetState();

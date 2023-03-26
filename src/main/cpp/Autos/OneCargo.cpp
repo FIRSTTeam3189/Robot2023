@@ -41,7 +41,9 @@ OneCargo::OneCargo(SwerveDrive *swerve, Elevator *elevator, Grabber *grabber, In
       frc2::WaitCommand(.25_s), 
       ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)),
     frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
-    ElevatorPID(m_elevator, m_grabber, m_intake, 0, false, false),
+    frc2::ParallelDeadlineGroup(
+      frc2::WaitCommand(2.0_s),
+      ElevatorPID(m_elevator, m_grabber, m_intake, 0, false, false)),
     frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
   );
 }

@@ -61,6 +61,11 @@ class SwerveDrive : public frc2::SubsystemBase {
  public:
   SwerveDrive();
 
+  void PercentDrive(units::meters_per_second_t xSpeed,
+   units::meters_per_second_t ySpeed,
+   units::radians_per_second_t rot,
+   bool fieldRelative);
+
   void Drive(units::meters_per_second_t xSpeed,
    units::meters_per_second_t ySpeed,
    units::radians_per_second_t rot,

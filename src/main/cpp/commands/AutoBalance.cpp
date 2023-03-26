@@ -22,11 +22,14 @@ void AutoBalance::Execute() {
   auto speed = 0.0_mps;
   auto rot = units::angular_velocity::radians_per_second_t{0.0};
 
+  if (m_isGoingUpFirstTime)
+    speed = 6.0_mps;
   // Signage depends on Pigeon mount orientation
   if (pitch > 4.0) {
-    speed = 2.75_mps;
+    speed = 2.5_mps;
   } else if (pitch < -4.0) {
-    speed = -2.25_mps;
+    speed = -1.5_mps;
+    m_isGoingUpFirstTime = false;
   }
  
   if (pitch - m_lastPitch < -0.1) {
@@ -45,7 +48,7 @@ void AutoBalance::Execute() {
 
   m_lastPitch = pitch;
   m_lastXPosition = m_swerve->m_odometry.GetPose().X();
-  m_swerve->Drive(speed, 0.0_mps, rot, true);
+  m_swerve->PercentDrive(speed, 0.0_mps, rot, true);
 }
 
 // Called once the command ends or is interrupted.
