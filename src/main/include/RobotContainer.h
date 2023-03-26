@@ -82,16 +82,24 @@ class RobotContainer {
   Intake *m_intake = new Intake();
 
   // Add autonomous routines to chooser
-  TestAuto m_TestAuto{m_swerve, m_intake};
+  TestAuto m_testAuto1{m_swerve, m_intake, 1};
+  TestAuto m_testAuto2{m_swerve, m_intake, 2};
+  TestAuto m_testAuto3{m_swerve, m_intake, 3};
   Balance m_balance{m_swerve};
-  OneCargo m_oneCargo{m_swerve, m_elevator, m_grabber, m_intake};
-  OneCargoBalance m_oneCargoBalance{m_swerve, m_elevator, m_grabber, m_intake};
-  OneCargoPickupBalance m_oneCargoPickupBalanceRed{m_swerve, m_elevator, m_grabber, m_intake, true};
-  OneCargoPickupBalance m_oneCargoPickupBalanceBlue{m_swerve, m_elevator, m_grabber, m_intake, false};
-  OneCargoPickupOne m_oneCargoPickupOne{m_swerve, m_elevator, m_grabber, m_intake};
+  OneCargo m_oneCargoHigh{m_swerve, m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET};
+  OneCargo m_oneCargoMid{m_swerve, m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET};
+  OneCargoBalance m_oneCargoHighBalance{m_swerve, m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET};
+  OneCargoBalance m_oneCargoMidBalance{m_swerve, m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET};
+  OneCargoPickupBalance m_oneCargoHighPickupBalanceRed{m_swerve, m_elevator, m_grabber, m_intake, true, ELEVATOR_HIGH_TARGET};
+  OneCargoPickupBalance m_oneCargoHighPickupBalanceBlue{m_swerve, m_elevator, m_grabber, m_intake, false, ELEVATOR_HIGH_TARGET};
+  OneCargoPickupBalance m_oneCargoMidPickupBalanceRed{m_swerve, m_elevator, m_grabber, m_intake, true, ELEVATOR_MID_TARGET};
+  OneCargoPickupBalance m_oneCargoMidPickupBalanceBlue{m_swerve, m_elevator, m_grabber, m_intake, false, ELEVATOR_MID_TARGET};
+  OneCargoPickupOne m_oneCargoHighPickupOne{m_swerve, m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET};
+  OneCargoPickupOne m_oneCargoMidPickupOne{m_swerve, m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET};
   TwoCargo m_twoCargo{m_swerve, m_elevator, m_grabber, m_intake};
-  TwoPieceWithVision m_twoPieceWithVision{m_swerve, m_elevator, m_grabber, m_intake, m_vision};
-  TwoCargoUltrashootBalance m_twoCargoUltrashoot{m_swerve, m_elevator, m_grabber, m_intake};
+  // TwoPieceWithVision m_twoPieceWithVision{m_swerve, m_elevator, m_grabber, m_intake, m_vision};
+  TwoCargoUltrashootBalance m_twoCargoRedUltrashoot{m_swerve, m_elevator, m_grabber, m_intake, true};
+  TwoCargoUltrashootBalance m_twoCargoBlueUltrashoot{m_swerve, m_elevator, m_grabber, m_intake, false};
 
   frc::SendableChooser<frc2::Command*> m_chooser;
 

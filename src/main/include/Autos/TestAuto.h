@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <frc/controller/PIDController.h>
 #include <frc2/command/CommandHelper.h>
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/RepeatCommand.h>
@@ -29,7 +30,7 @@ class TestAuto
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
                                  TestAuto> {
  public:
-  TestAuto(SwerveDrive *swerveDrive, Intake *intake);
+  TestAuto(SwerveDrive *swerveDrive, Intake *intake, int testNum);
 
  private:
   SwerveDrive *m_swerve;

@@ -17,17 +17,25 @@ RobotContainer::RobotContainer() {
   m_swerve->SetDefaultCommand(OISwerveDrive(&m_bill, m_swerve, false));
   m_grabber->SetDefaultCommand(frc2::RunCommand([this]{m_grabber->SetSpeed(-0.15);},{m_grabber}));
 
-  m_chooser.SetDefaultOption("Default Test Auto", &m_oneCargo);
-  m_chooser.AddOption("Test Auto", &m_TestAuto);
+  m_chooser.SetDefaultOption("Default Test Auto", &m_oneCargoHighBalance);
+  m_chooser.AddOption("Test Auto: Straight Line", &m_testAuto1);
+  m_chooser.AddOption("Test Auto: Straight Line W/ +Rotate", &m_testAuto2);
+  m_chooser.AddOption("Test Auto: Straight Line W/ -Rotate", &m_testAuto3);
   m_chooser.AddOption("Balance", &m_balance);
-  m_chooser.AddOption("One Cargo", &m_oneCargo);
-  m_chooser.AddOption("One Cargo Balance", &m_oneCargoBalance);
-  m_chooser.AddOption("One Cargo Pickup + Balance Red Side", &m_oneCargoPickupBalanceRed);
-  m_chooser.AddOption("One Cargo Pickup + Balance Blue Side", &m_oneCargoPickupBalanceBlue);
-  m_chooser.AddOption("One Cargo Pickup One", &m_oneCargoPickupOne);
+  m_chooser.AddOption("One Cargo High", &m_oneCargoHigh);
+  m_chooser.AddOption("One Cargo Mid", &m_oneCargoMid);
+  m_chooser.AddOption("One Cargo High + Balance", &m_oneCargoHighBalance);
+  m_chooser.AddOption("One Cargo Mid + Balance", &m_oneCargoMidBalance);
+  m_chooser.AddOption("One Cargo High + Pickup + Balance Red Side", &m_oneCargoHighPickupBalanceRed);
+  m_chooser.AddOption("One Cargo High + Pickup + Balance Blue Side", &m_oneCargoHighPickupBalanceBlue);
+  m_chooser.AddOption("One Cargo Mid + Pickup + Balance Red Side", &m_oneCargoMidPickupBalanceRed);
+  m_chooser.AddOption("One Cargo Mid + Pickup + Balance Blue Side", &m_oneCargoMidPickupBalanceBlue);
+  m_chooser.AddOption("One Cargo High + Pickup One", &m_oneCargoHighPickupOne);
+  m_chooser.AddOption("One Cargo Mid + Pickup One", &m_oneCargoMidPickupOne);
   m_chooser.AddOption("Two Cargo", &m_twoCargo);
-  m_chooser.AddOption("Two Cargo With Vision", &m_twoPieceWithVision);
-  m_chooser.AddOption("Two Cargo + Balance + Ultrashoot", &m_twoCargoUltrashoot);
+  // m_chooser.AddOption("Two Cargo With Vision", &m_twoPieceWithVision);
+  m_chooser.AddOption("Two Cargo Red + Balance + Ultrashoot", &m_twoCargoRedUltrashoot);
+  m_chooser.AddOption("Two Cargo Blue + Balance + Ultrashoot", &m_twoCargoBlueUltrashoot);
 
   frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
   AutoConstants::thetaPIDController.EnableContinuousInput(units::radian_t{-PI}, units::radian_t{PI});
@@ -75,7 +83,7 @@ void RobotContainer::ConfigureButtonBindings() {
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(1.0_s), 
       RunIntake(m_intake, 0, INTAKE_CONVEYOR_POWER, 0),
-      ShootFromCarriage(m_grabber, GRABBER_GRAB_SPEED)
+      ShootFromCarriage(m_grabber, 0.15)
     ),
     frc2::InstantCommand([this]{m_intake->SetPower(0, 0, 0); m_grabber->SetSpeed(0);},{m_intake, m_grabber})
   ).ToPtr());
@@ -361,7 +369,8 @@ void RobotContainer::ConfigureButtonBindings() {
       },{m_intake, m_grabber}),
       frc2::ParallelDeadlineGroup(
         frc2::WaitCommand(0.35_s),
-        ElevatorPID(m_elevator, m_grabber, m_intake, 200, false, true)
+        ElevatorPID(m_elevator, m_grabber, m_intake, 200, false, true),
+        ShootFromCarriage(m_grabber, GRABBER_GRAB_SPEED)
       )).ToPtr()
   );
   m_runConveyorButton.OnFalse(frc2::InstantCommand([this]{

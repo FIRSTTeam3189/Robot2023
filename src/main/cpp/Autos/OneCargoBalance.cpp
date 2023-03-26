@@ -7,7 +7,7 @@
 // NOTE:  Consider using this command inline, rather than writing a subclass.
 // For more information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-OneCargoBalance::OneCargoBalance(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabber, Intake *intake) 
+OneCargoBalance::OneCargoBalance(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabber, Intake *intake, int elevatorTarget) 
 : m_swerve(swerveDrive), m_elevator(elevator), m_grabber(grabber), m_intake(intake) {
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
@@ -36,7 +36,7 @@ OneCargoBalance::OneCargoBalance(SwerveDrive *swerveDrive, Elevator *elevator, G
         frc2::WaitCommand(0.5_s),
         RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, 0)
       ),
-      ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET, false, true)),
+      ElevatorPID(m_elevator, m_grabber, m_intake, elevatorTarget, false, true)),
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(.25_s), 
       ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)),

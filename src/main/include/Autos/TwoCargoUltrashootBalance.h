@@ -27,7 +27,7 @@ class TwoCargoUltrashootBalance
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
                                  TwoCargoUltrashootBalance> {
  public:
-  TwoCargoUltrashootBalance(SwerveDrive *swerve, Elevator *elevator, Grabber *grabber, Intake *intake);
+  TwoCargoUltrashootBalance(SwerveDrive *swerve, Elevator *elevator, Grabber *grabber, Intake *intake, bool isRedSide);
   
  private:
   SwerveDrive *m_swerve;

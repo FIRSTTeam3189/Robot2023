@@ -24,7 +24,7 @@ class OneCargoPickupBalance
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
                                  OneCargoPickupBalance> {
  public:
-  OneCargoPickupBalance(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabber, Intake *intake, bool isRedSide);
+  OneCargoPickupBalance(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabber, Intake *intake, bool isRedSide, int elevatorTarget);
   
  private:
   SwerveDrive *m_swerve;

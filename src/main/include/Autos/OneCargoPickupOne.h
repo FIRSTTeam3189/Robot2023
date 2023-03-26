@@ -27,7 +27,7 @@ class OneCargoPickupOne
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
                                  OneCargoPickupOne> {
  public:
-  OneCargoPickupOne(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabber, Intake *intake);
+  OneCargoPickupOne(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabber, Intake *intake, int elevatorTarget);
 
  private:
   SwerveDrive *m_swerve;

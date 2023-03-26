@@ -7,21 +7,114 @@
 // NOTE:  Consider using this command inline, rather than writing a subclass.
 // For more information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-TestAuto::TestAuto(SwerveDrive *swerveDrive, Intake *intake) 
+TestAuto::TestAuto(SwerveDrive *swerveDrive, Intake *intake, int testNum) 
 : m_swerve(swerveDrive), m_intake(intake) {
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
-  frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 1.5, SwerveDriveConstants::kMaxAcceleration / 1.5};
-  config.SetKinematics(SwerveDriveConstants::kinematics);
 
-  // // std::cout << "Straight Line\n";
-  // // Manually creates trajectory on RoboRIO
-  // // Alternatively, import "paths" from PathWeaver as JSON files
-  auto straightLineTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-    frc::Pose2d{0.0_m, 0.0_m, 0_deg},
-    {frc::Translation2d{0.0_m * AutoConstants::TrajectoryScale, 1.0_m}}, 
-    frc::Pose2d{0.0_m * AutoConstants::TrajectoryScale, 2.0_m, 0_deg},
-    config);
+  switch(testNum) {
+
+    // Straight line
+    case 1:
+      {
+      frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 1.5, SwerveDriveConstants::kMaxAcceleration / 1.5};
+      config.SetKinematics(SwerveDriveConstants::kinematics);
+      config.SetReversed(true);
+
+      // // std::cout << "Straight Line\n";
+      // // Manually creates trajectory on RoboRIO
+      // // Alternatively, import "paths" from PathWeaver as JSON files
+      auto straightLineTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+        frc::Pose2d{0.0_m, 0.0_m, 0_deg},
+        {frc::Translation2d{-1.0_m * AutoConstants::TrajectoryScale, 0.0_m}}, 
+        frc::Pose2d{-2.0_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
+        config);
+
+      frc2::SwerveControllerCommand<4> swerveLineCommand = m_swerve->CreateSwerveCommand(straightLineTrajectory);
+
+      AddCommands(
+        swerveLineCommand
+      );
+      }
+      break;
+
+    // Straight line with auto rotation
+    case 2:
+      {
+      frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 1.5, SwerveDriveConstants::kMaxAcceleration / 1.5};
+      config.SetKinematics(SwerveDriveConstants::kinematics);
+      config.SetReversed(true);
+
+      auto straightLineTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+        frc::Pose2d{0.0_m, 0.0_m, 0_deg},
+        {frc::Translation2d{-1.0_m * AutoConstants::TrajectoryScale, 0.0_m}}, 
+        frc::Pose2d{-2.0_m * AutoConstants::TrajectoryScale, 0.0_m, 180_deg},
+        config);
+
+      frc::ProfiledPIDController<units::radians> thetaPIDController {0.05, 0.0, 0.0, {SwerveDriveConstants::maxAngularVelocity,
+                                                                        SwerveDriveConstants::maxAngularAcceleration}};
+
+      frc2::SwerveControllerCommand<4> swerveLineCommand {
+        straightLineTrajectory, 
+        [this]() { return m_swerve->GetPose(); },
+        SwerveDriveConstants::kinematics,
+        AutoConstants::autoXPIDController,
+        AutoConstants::autoYPIDController, 
+        thetaPIDController,
+        [this](auto moduleStates) { m_swerve->SetModuleStates(moduleStates); },
+        {m_swerve}
+      };
+
+      AddCommands(
+        swerveLineCommand
+      );
+      }
+      break;
+
+    // Straight line with negative auto rotation
+    case 3:
+      {
+      frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 1.5, SwerveDriveConstants::kMaxAcceleration / 1.5};
+      config.SetKinematics(SwerveDriveConstants::kinematics);
+      config.SetReversed(true);
+
+      auto straightLineTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+        frc::Pose2d{0.0_m, 0.0_m, 0_deg},
+        {frc::Translation2d{-1.0_m * AutoConstants::TrajectoryScale, 0.0_m}}, 
+        frc::Pose2d{-2.0_m * AutoConstants::TrajectoryScale, 0.0_m, 180_deg},
+        config);
+
+      frc::ProfiledPIDController<units::radians> thetaPIDController {-0.05, 0.0, 0.0, {SwerveDriveConstants::maxAngularVelocity,
+                                                                        SwerveDriveConstants::maxAngularAcceleration}};
+
+      frc2::SwerveControllerCommand<4> swerveLineCommand {
+        straightLineTrajectory, 
+        [this]() { return m_swerve->GetPose(); },
+        SwerveDriveConstants::kinematics,
+        AutoConstants::autoXPIDController,
+        AutoConstants::autoYPIDController, 
+        thetaPIDController,
+        [this](auto moduleStates) { m_swerve->SetModuleStates(moduleStates); },
+        {m_swerve}
+      };
+
+      AddCommands(
+        swerveLineCommand
+      );
+      }
+      break;
+
+    // Auto balance with PID
+    case 4:
+      {
+      
+      }
+      break;
+    
+    default:
+      break;
+  }
+
   // config.SetReversed(true);
   // auto straightLineTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
   //   frc::Pose2d{0.0_m, 0.0_m, 0_deg},
@@ -100,7 +193,6 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Intake *intake)
   //   frc::Pose2d{2.0_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
   //   config);
 
-  frc2::SwerveControllerCommand<4> swerveLineCommand = m_swerve->CreateSwerveCommand(straightLineTrajectory);
   // frc2::SwerveControllerCommand<4> swerveSCommand = m_swerve->CreateSwerveCommand(sShapeTrajectory);
   // frc2::SwerveControllerCommand<4> specialCommand = m_swerve->CreateSwerveCommand(specialTrajectory);
   // frc2::SwerveControllerCommand<4> squareCommand = m_swerve->CreateSwerveCommand(squareTrajectory);
@@ -126,10 +218,6 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Intake *intake)
   //   RotateTo(m_swerve, 180),
   //   Balance(m_swerve)
   // );
-  
-  AddCommands(
-    swerveLineCommand
-  );
 
   // AddCommands(
   //   ResetOdometry(m_swerve, frc::Pose2d(0.0_m, 0.0_m, 0_deg)),
