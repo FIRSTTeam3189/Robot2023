@@ -40,8 +40,13 @@ OneCargoPickupOne::OneCargoPickupOne(SwerveDrive *swerveDrive, Elevator *elevato
 
   AddCommands(
     ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
+    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
+    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
     frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);
     std::cout << "Starting one cargo\n";},{m_swerve}),
+    frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
+    frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
+    frc2::WaitCommand(0.25_s),
     frc2::SequentialCommandGroup(
       frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
       frc2::ParallelDeadlineGroup(

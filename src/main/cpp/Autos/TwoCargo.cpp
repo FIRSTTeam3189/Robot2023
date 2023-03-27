@@ -21,7 +21,7 @@ TwoCargo::TwoCargo(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabbe
     frc::Pose2d{-5.50_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
     config);
 
-  frc::TrajectoryConfig slowConfig{SwerveDriveConstants::kMaxSpeed / 1.5, SwerveDriveConstants::kMaxAcceleration / 1.5};
+  frc::TrajectoryConfig slowConfig{SwerveDriveConstants::kMaxSpeed / 2.5, SwerveDriveConstants::kMaxAcceleration / 1.5};
   slowConfig.SetKinematics(SwerveDriveConstants::kinematics);
   slowConfig.SetReversed(true);
 
@@ -32,12 +32,12 @@ TwoCargo::TwoCargo(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabbe
     slowConfig
   );
 
-  config.SetReversed(false);
+  config.SetReversed(true);
   std::cout << "Cargo to scoring\n";
   auto cargoToScoringTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-    frc::Pose2d{-5.69_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
+    frc::Pose2d{-5.69_m * AutoConstants::TrajectoryScale, 0.0_m, 180_deg},
     {frc::Translation2d{-2.845_m * AutoConstants::TrajectoryScale, 0.0_m}}, 
-    frc::Pose2d{-0.1_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
+    frc::Pose2d{0.0_m * AutoConstants::TrajectoryScale, 0.0_m, 180_deg},
     config);
 
   // cargoToScoringTrajectory.TransformBy(frc::Transform2d{frc::Pose2d{0_m, 0_m, 0_deg}, m_swerve->GetPose()});
@@ -69,9 +69,14 @@ TwoCargo::TwoCargo(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabbe
   // );
 
   AddCommands(
+    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
+    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
     ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
     frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);
     std::cout << "Starting one cargo\n";},{m_swerve}),
+    frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
+    frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
+    frc2::WaitCommand(0.25_s),
     frc2::SequentialCommandGroup(
       frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
       frc2::ParallelDeadlineGroup(
@@ -115,8 +120,8 @@ TwoCargo::TwoCargo(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabbe
       ShootFromCarriage(m_grabber, GRABBER_GRAB_SPEED)
     ),
     frc2::InstantCommand([this]{m_intake->SetPower(0, 0, 0); m_grabber->SetSpeed(0);},{m_intake, m_grabber}),
-    swerveCargoToScoringCommand,
     RotateTo(m_swerve, 180.0),
+    swerveCargoToScoringCommand,
     frc2::SequentialCommandGroup(
       frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
       frc2::ParallelDeadlineGroup(

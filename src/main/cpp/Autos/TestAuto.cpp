@@ -7,8 +7,8 @@
 // NOTE:  Consider using this command inline, rather than writing a subclass.
 // For more information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-TestAuto::TestAuto(SwerveDrive *swerveDrive, Intake *intake, int testNum) 
-: m_swerve(swerveDrive), m_intake(intake) {
+TestAuto::TestAuto(SwerveDrive *swerveDrive, Elevator *elevator, Intake *intake, Grabber *grabber, int testNum) 
+: m_swerve(swerveDrive), m_elevator(elevator), m_intake(intake), m_grabber(grabber) {
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
 
@@ -104,13 +104,97 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Intake *intake, int testNum)
       }
       break;
 
-    // Auto balance with PID
+    // Move forward while intaking
     case 4:
       {
-      
+        frc::TrajectoryConfig slowConfig{SwerveDriveConstants::kMaxSpeed / 1.5, SwerveDriveConstants::kMaxAcceleration / 1.5};
+        slowConfig.SetKinematics(SwerveDriveConstants::kinematics);
+        slowConfig.SetReversed(true);
+
+        auto cargoCreepForwardTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+          frc::Pose2d{0.0_m, 0.0_m, 0_deg},
+          {frc::Translation2d{-0.2_m * AutoConstants::TrajectoryScale, 0.0_m}}, 
+          frc::Pose2d{-0.4_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
+          slowConfig
+        );
+
+        frc2::SwerveControllerCommand<4> swerveCargoCreepForwardCommand = m_swerve->CreateSwerveCommand(cargoCreepForwardTrajectory);
+
+        AddCommands(
+          frc2::SequentialCommandGroup(
+          frc2::InstantCommand([this]{
+            m_intake->SetPistonExtension(true);
+          },{m_intake}),
+          frc2::ParallelDeadlineGroup(
+            frc2::WaitCommand(0.5_s),
+            RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, 0)
+          )
+        ),
+        frc2::ParallelDeadlineGroup(
+          frc2::WaitCommand(2.5_s),
+          RunIntake(m_intake, INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER),
+          swerveCargoCreepForwardCommand
+        ),
+        frc2::InstantCommand([this]{
+          m_intake->SetPower(0, 0, 0);
+          m_swerve->Drive(0_mps, 0_mps, 0_rad / 1_s, true);
+          m_intake->SetPistonExtension(false);
+        },{m_intake}),
+        frc2::WaitCommand(0.5_s),
+        frc2::ParallelDeadlineGroup(
+          frc2::WaitCommand(1.0_s), 
+          RunIntake(m_intake, 0, INTAKE_CONVEYOR_POWER, 0),
+          ShootFromCarriage(m_grabber, GRABBER_GRAB_SPEED)
+        ),
+        frc2::InstantCommand([this]{m_intake->SetPower(0, 0, 0); m_grabber->SetSpeed(0);},{m_intake, m_grabber})
+        );
       }
       break;
     
+    // Rotate, move forward, rotate
+    case 5:
+      {
+      frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 1.5, SwerveDriveConstants::kMaxAcceleration / 1.5};
+      config.SetKinematics(SwerveDriveConstants::kinematics);
+      config.SetReversed(true);
+
+      // // std::cout << "Straight Line\n";
+      // // Manually creates trajectory on RoboRIO
+      // // Alternatively, import "paths" from PathWeaver as JSON files
+      auto forwardTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+        frc::Pose2d{0.0_m, 0.0_m, 0_deg},
+        {frc::Translation2d{-1.0_m * AutoConstants::TrajectoryScale, 0.0_m}}, 
+        frc::Pose2d{-2.0_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
+        config);
+
+      
+      auto backwardsTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+        frc::Pose2d{-2.0_m, 0.0_m, 180_deg},
+        {frc::Translation2d{-1.0_m * AutoConstants::TrajectoryScale, 0.0_m}}, 
+        frc::Pose2d{0.0_m * AutoConstants::TrajectoryScale, 0.0_m, 180_deg},
+        config);
+
+
+      frc2::SwerveControllerCommand<4> swerveForwardCommand = m_swerve->CreateSwerveCommand(forwardTrajectory);
+      frc2::SwerveControllerCommand<4> swerveBackwardCommand = m_swerve->CreateSwerveCommand(backwardsTrajectory);
+
+      AddCommands(
+        ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
+        ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
+        ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
+        frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
+        frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
+        frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
+        frc2::WaitCommand(0.25_s),
+        RotateTo(m_swerve, 0.0),
+        swerveForwardCommand,
+        RotateTo(m_swerve, 180.0),
+        swerveBackwardCommand,
+        RotateTo(m_swerve, 0.0)
+      );
+      }
+      break;
+
     default:
       break;
   }

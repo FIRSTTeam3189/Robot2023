@@ -15,12 +15,15 @@ RobotContainer::RobotContainer() {
 
   // Joystick operated - real control scheme
   m_swerve->SetDefaultCommand(OISwerveDrive(&m_bill, m_swerve, false));
-  m_grabber->SetDefaultCommand(frc2::RunCommand([this]{m_grabber->SetSpeed(-0.15);},{m_grabber}));
+  // m_grabber->SetDefaultCommand(frc2::RunCommand([this]{m_grabber->SetSpeed(-0.15);},{m_grabber}));
 
-  m_chooser.SetDefaultOption("Default Test Auto", &m_oneCargoHighBalance);
+  m_chooser.SetDefaultOption("Default Test Auto", &m_outtake);
   m_chooser.AddOption("Test Auto: Straight Line", &m_testAuto1);
   m_chooser.AddOption("Test Auto: Straight Line W/ +Rotate", &m_testAuto2);
   m_chooser.AddOption("Test Auto: Straight Line W/ -Rotate", &m_testAuto3);
+  m_chooser.AddOption("Test Auto: Drive Forward W/ Intake", &m_testAuto4);
+  m_chooser.AddOption("Test Auto: Drive Forward and Backard W/ Rotate n Place", &m_testAuto5);
+  m_chooser.AddOption("Outtake", &m_outtake);
   m_chooser.AddOption("Balance", &m_balance);
   m_chooser.AddOption("One Cargo High", &m_oneCargoHigh);
   m_chooser.AddOption("One Cargo Mid", &m_oneCargoMid);
@@ -51,7 +54,7 @@ void RobotContainer::ConfigureButtonBindings() {
   },{m_intake}).ToPtr());
   m_spinIntakeInButton.WhileTrue(
     frc2::SequentialCommandGroup(
-      RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, -INTAKE_CONE_CORRECT_POWER),
+      RunIntake(m_intake, -0.50, -0.50, -INTAKE_CONE_CORRECT_POWER),
       ShootFromCarriage(m_grabber, 0.25)
     )
     .ToPtr());
@@ -82,8 +85,8 @@ void RobotContainer::ConfigureButtonBindings() {
     frc2::WaitCommand(0.5_s),
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(1.0_s), 
-      RunIntake(m_intake, 0, INTAKE_CONVEYOR_POWER, 0),
-      ShootFromCarriage(m_grabber, 0.15)
+      RunIntake(m_intake, 0, INTAKE_CONVEYOR_POWER, 0)
+      // ShootFromCarriage(m_grabber, 0.15)
     ),
     frc2::InstantCommand([this]{m_intake->SetPower(0, 0, 0); m_grabber->SetSpeed(0);},{m_intake, m_grabber})
   ).ToPtr());
@@ -267,7 +270,7 @@ void RobotContainer::ConfigureButtonBindings() {
   // }).ToPtr());
  
   m_lockWheelsButton = m_bill.Button(PS5_BUTTON_RTRIGGER);
-  // m_lockWheelsButton.WhileTrue(frc2::InstantCommand([this]{m_swerve->LockWheels();},{m_swerve}).ToPtr().Repeatedly());
+  m_lockWheelsButton.WhileTrue(frc2::InstantCommand([this]{m_swerve->LockWheels();},{m_swerve}).ToPtr().Repeatedly());
 
   // ---------------------Ted's controls----------------------
   // Co-driver drives the elevator manually and continuously pulls in by default
@@ -369,8 +372,8 @@ void RobotContainer::ConfigureButtonBindings() {
       },{m_intake, m_grabber}),
       frc2::ParallelDeadlineGroup(
         frc2::WaitCommand(0.35_s),
-        ElevatorPID(m_elevator, m_grabber, m_intake, 200, false, true),
-        ShootFromCarriage(m_grabber, GRABBER_GRAB_SPEED)
+        ElevatorPID(m_elevator, m_grabber, m_intake, 200, false, true)
+        // ShootFromCarriage(m_grabber, GRABBER_GRAB_SPEED)
       )).ToPtr()
   );
   m_runConveyorButton.OnFalse(frc2::InstantCommand([this]{

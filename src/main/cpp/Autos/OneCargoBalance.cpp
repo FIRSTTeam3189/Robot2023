@@ -28,8 +28,13 @@ OneCargoBalance::OneCargoBalance(SwerveDrive *swerveDrive, Elevator *elevator, G
   AddCommands(
     // OneCargo(m_swerve, m_elevator, m_grabber, m_intake),
     ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
+    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
+    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
     frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);
     std::cout << "Starting one cargo\n";},{m_swerve}),
+    frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
+    frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
+    frc2::WaitCommand(0.25_s),
     frc2::SequentialCommandGroup(
       frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
       frc2::ParallelDeadlineGroup(
@@ -45,7 +50,7 @@ OneCargoBalance::OneCargoBalance(SwerveDrive *swerveDrive, Elevator *elevator, G
       frc2::WaitCommand(2.0_s),
       ElevatorPID(m_elevator, m_grabber, m_intake, 0, false, false)),
     frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake}),
-    RotateTo(m_swerve, 170.0),
+    // RotateTo(m_swerve, 170.0),
     swerveScoringToChargeCommand,
     AutoBalance(m_swerve)
   );
