@@ -147,8 +147,13 @@ void RobotContainer::ConfigureButtonBindings() {
   m_resetOdometryButton.OnTrue(ResetOdometry(
     m_swerve, frc::Pose2d{0.0_m, 0.0_m, {0.0_deg}}).ToPtr());
 
-  // m_toggleATan2RotButton = m_bill.Button(PS5_BUTTON_CREATE);
-  // m_toggleATan2RotButton.ToggleOnTrue(OISwerveDrive(&m_bill, m_swerve, true).ToPtr());
+  m_toggleATan2RotButton = m_bill.Button(PS5_BUTTON_RSTICK);
+  m_toggleATan2RotButton.OnTrue(
+    frc2::InstantCommand([this]{
+      m_isMagnitudeRot = !m_isMagnitudeRot;
+      m_swerve->SetDefaultCommand(OISwerveDrive(&m_bill, m_swerve, m_isMagnitudeRot));
+    },{m_swerve}).ToPtr()
+  );
   
   // m_updatePIDButton = m_bill.Button(PS5_BUTTON_MENU);
   // m_updatePIDButton.OnTrue(UpdatePIDValues(m_swerve).ToPtr());

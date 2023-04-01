@@ -34,6 +34,7 @@ namespace SwerveDriveConstants {
     constexpr int falconEncoderTicksPerRevolution = 2048;
     constexpr int cancoderTicksPerRevolution = 4096;
     constexpr units::second_t kDt {0.020};
+    constexpr auto swerveConstantSpinSpeed = 1.0_rad / 1.0_s;
 
     // Coordinate plane distance in meters to each swerve drive
     // This has x-positive as forward, y-positive as right
@@ -146,7 +147,7 @@ namespace AutoConstants {
     constexpr int autoBalanceSettleLoops = 25;
 
     // PID Controllers for x and y movement in auto mode -- theta controller is part of drive object
-    constexpr double kPXController = 0.5;
+    constexpr double kPXController = 0.0;
     constexpr double kPYController = kPXController;
 
     static frc::TrapezoidProfile<units::radians>::Constraints thetaConstraints{SwerveDriveConstants::maxAngularVelocity,

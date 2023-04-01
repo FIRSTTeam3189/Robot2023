@@ -33,6 +33,9 @@ class AutoBalance
   SwerveDrive *m_swerve;
   double m_lastPitch;
   int m_withinThresholdLoops;
-  bool m_isGoingUpFirstTime = true;
+  bool m_isGoingUpFirstTime;
   units::meter_t m_lastXPosition;
+  frc::PIDController m_xController;
+  frc::PIDController m_yController;
+  bool m_isReversed;
 };

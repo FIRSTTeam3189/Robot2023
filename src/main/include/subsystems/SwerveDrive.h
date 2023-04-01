@@ -83,6 +83,7 @@ class SwerveDrive : public frc2::SubsystemBase {
   void ResetEncodersToAbsolute();
   void ResetOdometry(frc::Pose2d pose);
   void SetModuleStates(std::array<frc::SwerveModuleState, 4> desiredStates);
+  void SetPercentModuleStates(std::array<frc::SwerveModuleState, 4> desiredStates);
   void SetActiveTrajectory(frc::Trajectory trajectory);
 
   double GetRobotYaw();

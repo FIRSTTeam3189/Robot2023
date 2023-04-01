@@ -26,27 +26,26 @@
 class OISwerveDrive
     : public frc2::CommandHelper<frc2::CommandBase, OISwerveDrive> {
  public:
-  OISwerveDrive(frc::Joystick *m_bill, SwerveDrive *swerve_drive, bool isMagnitudeRot);
+    OISwerveDrive(frc::Joystick *m_bill, SwerveDrive *swerve_drive, bool isMagnitudeRot);
 
-  void Initialize() override;
+    void Initialize() override;
 
-  void Execute() override;
+    void Execute() override;
 
-  void End(bool interrupted) override;
+    void End(bool interrupted) override;
 
-  bool IsFinished() override;
+    bool IsFinished() override;
 
-  units::angular_velocity::radians_per_second_t SetDesiredRotationalVelocity();
+    units::angular_velocity::radians_per_second_t SetDesiredRotationalVelocity();
 
  private:
- frc::Joystick *m_bill;
- SwerveDrive *m_swerve_drive;
- frc2::PIDController m_rotationPIDController;
- bool m_isMagnitudeRot;
-
- bool fieldRelative = true;
- // Limits rate of change of voltage so it doesn't explode
-//  frc::SlewRateLimiter<units::scalar> m_xspeedLimiter{1 / 5_ms};
-//  frc::SlewRateLimiter<units::scalar> m_yspeedLimiter{1 / 5_ms};
- frc::SlewRateLimiter<units::scalar> m_rotLimiter{1 / 5_ms};
+    frc::Joystick *m_bill;
+    SwerveDrive *m_swerve_drive;
+    frc2::PIDController m_rotationPIDController;
+    bool m_isMagnitudeRot;
+    bool fieldRelative = true;
+    // Limits rate of change of voltage so it doesn't explode
+    //  frc::SlewRateLimiter<units::scalar> m_xspeedLimiter{1 / 5_ms};
+    //  frc::SlewRateLimiter<units::scalar> m_yspeedLimiter{1 / 5_ms};
+    frc::SlewRateLimiter<units::scalar> m_rotLimiter{1 / 5_ms};
 };

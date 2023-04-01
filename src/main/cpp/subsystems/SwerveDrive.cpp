@@ -127,6 +127,13 @@ void SwerveDrive::SetModuleStates(std::array<frc::SwerveModuleState, 4> desiredS
   m_SM.m_backRight.SetDesiredState(desiredStates[3]);
 }
 
+void SwerveDrive::SetPercentModuleStates(std::array<frc::SwerveModuleState, 4> desiredStates) {
+  m_SM.m_frontLeft.SetDesiredPercentState(desiredStates[0]);
+  m_SM.m_frontRight.SetDesiredPercentState(desiredStates[1]);
+  m_SM.m_backLeft.SetDesiredPercentState(desiredStates[2]);
+  m_SM.m_backRight.SetDesiredPercentState(desiredStates[3]);
+}
+
 double SwerveDrive::GetNormalizedYaw() {
   // Normalize angle from (-inf, inf) to (-180, 180)
   // The PIDController already uses input modulus but
@@ -353,7 +360,7 @@ frc2::SwerveControllerCommand<4> SwerveDrive::CreateSwerveCommand(frc::Trajector
     AutoConstants::autoXPIDController,
     AutoConstants::autoYPIDController, 
     AutoConstants::thetaPIDController,
-    [this](auto moduleStates) { SetModuleStates(moduleStates); },
+    [this](auto moduleStates) { SetPercentModuleStates(moduleStates); },
     {this}
   );
 
@@ -372,11 +379,10 @@ void SwerveDrive::Log2DField() {
 }
 
 void SwerveDrive::LockWheels() {
-  frc::SwerveModuleState lockedState = frc::SwerveModuleState{0.0_mps, units::radian_t{PI / 2.0}};
-  m_SM.m_frontLeft.SetDesiredState(lockedState);
-  m_SM.m_frontRight.SetDesiredState(lockedState);
-  m_SM.m_backLeft.SetDesiredState(lockedState);
-  m_SM.m_backRight.SetDesiredState(lockedState);
+  m_SM.m_frontLeft.SetDesiredState(frc::SwerveModuleState{0.0_mps, units::radian_t{PI / 4.0}});
+  m_SM.m_frontRight.SetDesiredState(frc::SwerveModuleState{0.0_mps, units::radian_t{-PI / 4.0}});
+  m_SM.m_backLeft.SetDesiredState(frc::SwerveModuleState{0.0_mps, units::radian_t{-PI / 4.0}});
+  m_SM.m_backRight.SetDesiredState(frc::SwerveModuleState{0.0_mps, units::radian_t{PI / 4.0}});
 }
 
 void SwerveDrive::LogModuleStates(SwerveModuleTelemetry telemetryArray[]) {

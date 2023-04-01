@@ -130,6 +130,7 @@ class RobotContainer {
   frc2::Trigger m_resetOdometryButton;
   frc2::Trigger m_resetEncodersToAbsoluteButton;
   frc2::Trigger m_toggleATan2RotButton;
+  bool m_isMagnitudeRot = false;
   frc2::Trigger m_updatePIDButton;
   frc2::Trigger m_autoBalanceButton;
   frc2::Trigger m_leftAimAssistButton;
@@ -140,7 +141,6 @@ class RobotContainer {
   frc2::Trigger m_spinIntakeOutButton;
   frc2::Trigger m_toggleIntakePistonsDriver;
   frc2::Trigger m_driverStopButton;
-  frc2::Trigger m_driveFastButton;
   frc2::Trigger m_ultraShootButton;
   frc2::Trigger m_lockWheelsButton;
 

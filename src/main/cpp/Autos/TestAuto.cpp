@@ -17,7 +17,7 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Elevator *elevator, Intake *intake,
     // Straight line
     case 1:
       {
-      frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 1.5, SwerveDriveConstants::kMaxAcceleration / 1.5};
+      frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2.0, SwerveDriveConstants::kMaxAcceleration / 2.0};
       config.SetKinematics(SwerveDriveConstants::kinematics);
       config.SetReversed(true);
 
@@ -26,8 +26,8 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Elevator *elevator, Intake *intake,
       // // Alternatively, import "paths" from PathWeaver as JSON files
       auto straightLineTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
         frc::Pose2d{0.0_m, 0.0_m, 0_deg},
-        {frc::Translation2d{-1.0_m * AutoConstants::TrajectoryScale, 0.0_m}}, 
-        frc::Pose2d{-2.0_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
+        {frc::Translation2d{-0.5_m * AutoConstants::TrajectoryScale, 0.0_m}}, 
+        frc::Pose2d{-1.0_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
         config);
 
       frc2::SwerveControllerCommand<4> swerveLineCommand = m_swerve->CreateSwerveCommand(straightLineTrajectory);
