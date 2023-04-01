@@ -21,7 +21,7 @@
 class ElevatorPID
     : public frc2::CommandHelper<frc2::CommandBase, ElevatorPID> {
  public:
-  ElevatorPID(Elevator *elevator, Grabber *grabber, Intake *intake, double target, bool shouldFinish, bool shouldGrab);
+  ElevatorPID(Elevator *elevator, Intake *intake, double target, bool shouldFinish);
 
   void Initialize() override;
 
@@ -33,10 +33,8 @@ class ElevatorPID
 
  private:
   Elevator *m_elevator;
-  Grabber *m_grabber;
   Intake *m_intake;
   int m_withinThresholdLoops;
   double m_target;
   bool m_shouldFinish;
-  bool m_shouldGrab;
 };

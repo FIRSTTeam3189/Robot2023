@@ -68,14 +68,14 @@ TwoCargoUltrashootBalance::TwoCargoUltrashootBalance(SwerveDrive *swerve, Elevat
         frc2::WaitCommand(0.5_s),
         RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, 0)
       ),
-      ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET, false, true)),
+      ElevatorPID(m_elevator, m_intake, ELEVATOR_HIGH_TARGET, false)),
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(.25_s), 
       ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)),
     frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(2.0_s),
-      ElevatorPID(m_elevator, m_grabber, m_intake, 0, false, false)),
+      ElevatorPID(m_elevator, m_intake, 0, false)),
     frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake}),
     RotateTo(m_swerve, 0.0),
     swerveScoringToCargoCommand,
@@ -114,14 +114,14 @@ TwoCargoUltrashootBalance::TwoCargoUltrashootBalance(SwerveDrive *swerve, Elevat
         RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, 0)
       ),
     frc2::ParallelDeadlineGroup(
-      ElevatorPID(m_elevator, m_grabber, m_intake, ELEVATOR_ULTRA_SHOOT_TARGET, false, true)),
+      ElevatorPID(m_elevator, m_intake, ELEVATOR_ULTRA_SHOOT_TARGET, false)),
       frc2::RunCommand([this]{
         if (m_elevator->GetPosition() > ELEVATOR_ULTRA_SHOOT_RELEASE_POINT) {
           m_grabber->SetSpeed(ELEVATOR_ULTRA_SHOOT_POWER);
         }},{m_elevator, m_grabber})
     ),
     frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
-    ElevatorPID(m_elevator, m_grabber, m_intake, 0, false, false),
+    ElevatorPID(m_elevator, m_intake, 0, false),
     frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
   );
 }

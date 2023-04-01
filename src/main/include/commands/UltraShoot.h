@@ -6,12 +6,17 @@
 
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+#include <frc2/command/SequentialCommandGroup.h>
+#include <frc2/command/InstantCommand.h>
+#include <frc2/command/WaitCommand.h>
+#include <frc2/command/ParallelDeadlineGroup.h>
+#include <frc2/command/RunCommand.h>
 
 #include "subsystems/Elevator.h"
 #include "subsystems/Grabber.h"
 #include "subsystems/Intake.h"
-
 #include "commands/ElevatorPID.h"
+#include "commands/RunIntake.h"
 
 /**
  * An example command.
@@ -21,17 +26,9 @@
  * Command will *not* work!
  */
 class UltraShoot
-    : public frc2::CommandHelper<frc2::CommandBase, UltraShoot> {
+    : public frc2::CommandHelper<frc2::SequentialCommandGroup, UltraShoot> {
  public:
   UltraShoot(Elevator *elevator, Intake *intake, Grabber *grabber);
-
-  void Initialize() override;
-
-  void Execute() override;
-
-  void End(bool interrupted) override;
-
-  bool IsFinished() override;
 
  private:
   Elevator *m_elevator;

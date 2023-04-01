@@ -69,14 +69,14 @@ OneCargoPickupBalance::OneCargoPickupBalance(SwerveDrive *swerveDrive, Elevator 
         frc2::WaitCommand(0.5_s),
         RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, 0)
       ),
-      ElevatorPID(m_elevator, m_grabber, m_intake, elevatorTarget, false, true)),
+      ElevatorPID(m_elevator, m_intake, elevatorTarget, false)),
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(.25_s), 
       ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)),
     frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(2.0_s),
-      ElevatorPID(m_elevator, m_grabber, m_intake, 0, false, false)),
+      ElevatorPID(m_elevator, m_intake, 0, false)),
     frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake}),
     RotateTo(m_swerve, 0.0),
     swerveScoringToCargoCommand,
