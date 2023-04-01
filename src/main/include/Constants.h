@@ -260,3 +260,6 @@ namespace AutoConstants {
 // Higher number the better
 #define GRABBER_SENSOR_CONFIDENCE 0.80
 #define GRABBER_SENSOR_PROXIMITY_THRESHOLD 1000
+
+#define CANDLE_DEVICE_ID 0
+#define CANDLE_LED_PIXEL_COUNT 300
