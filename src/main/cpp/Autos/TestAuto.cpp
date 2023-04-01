@@ -195,6 +195,67 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Elevator *elevator, Intake *intake,
       }
       break;
 
+    // Move forward and left (around charge station), rotate 45 deg counter-clockwise, intake
+    case 6:
+      {
+        frc::TrajectoryConfig slowConfig{SwerveDriveConstants::kMaxSpeed / 1.5, SwerveDriveConstants::kMaxAcceleration / 1.5};
+        slowConfig.SetKinematics(SwerveDriveConstants::kinematics);
+        slowConfig.SetReversed(true);
+
+        auto scoringToSecondCargoTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+          frc::Pose2d{0.0_m, 0.0_m, 0_deg},
+          {frc::Translation2d{-0.5_m, 0.0_m},
+          frc::Translation2d{-1.0_m, -0.1_m}}, 
+          frc::Pose2d{-1.0_m, -0.2_m, 60_deg},
+          slowConfig
+        );
+
+        auto cargoCreepForwardTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+          frc::Pose2d{-1.0_m, -0.2_m, 60_deg},
+          {frc::Translation2d{-1.1_m, -0.4_m}}, 
+          frc::Pose2d{-1.2_m, -0.6_m, 60_deg},
+          slowConfig
+        );
+
+        frc2::SwerveControllerCommand<4> swerveCargoCreepForwardCommand = m_swerve->CreateSwerveCommand(cargoCreepForwardTrajectory);
+        frc2::SwerveControllerCommand<4> swerveScoringToCargo2Command = m_swerve->CreateSwerveCommand(scoringToSecondCargoTrajectory);
+
+        AddCommands(
+          ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
+          ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
+          ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
+          frc2::WaitCommand(0.25_s),
+          swerveScoringToCargo2Command,
+          frc2::SequentialCommandGroup(
+          frc2::InstantCommand([this]{
+            m_intake->SetPistonExtension(true);
+          },{m_intake}),
+          frc2::ParallelDeadlineGroup(
+            frc2::WaitCommand(0.5_s),
+            RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, 0)
+          )
+        ),
+        frc2::ParallelDeadlineGroup(
+          frc2::WaitCommand(2.5_s),
+          RunIntake(m_intake, INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER, INTAKE_CONE_CORRECT_POWER),
+          swerveCargoCreepForwardCommand
+        ),
+        frc2::InstantCommand([this]{
+          m_intake->SetPower(0, 0, 0);
+          m_swerve->Drive(0_mps, 0_mps, 0_rad / 1_s, true);
+          m_intake->SetPistonExtension(false);
+        },{m_intake}),
+        frc2::WaitCommand(0.5_s),
+        frc2::ParallelDeadlineGroup(
+          frc2::WaitCommand(1.0_s), 
+          RunIntake(m_intake, 0, INTAKE_CONVEYOR_POWER, 0),
+          ShootFromCarriage(m_grabber, GRABBER_GRAB_SPEED)
+        ),
+        frc2::InstantCommand([this]{m_intake->SetPower(0, 0, 0); m_grabber->SetSpeed(0);},{m_intake, m_grabber})
+        );
+      }
+      break;
+
     default:
       break;
   }

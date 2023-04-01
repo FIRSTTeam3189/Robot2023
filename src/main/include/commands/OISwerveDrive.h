@@ -36,7 +36,7 @@ class OISwerveDrive
 
     bool IsFinished() override;
 
-    units::angular_velocity::radians_per_second_t SetDesiredRotationalVelocity();
+    units::angular_velocity::radians_per_second_t GetDesiredRotationalVelocity();
 
  private:
     frc::Joystick *m_bill;

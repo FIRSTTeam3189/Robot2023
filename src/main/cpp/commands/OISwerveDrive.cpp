@@ -21,7 +21,7 @@ void OISwerveDrive::Initialize() {
 
 }
 
-units::angular_velocity::radians_per_second_t OISwerveDrive::SetDesiredRotationalVelocity() {
+units::angular_velocity::radians_per_second_t OISwerveDrive::GetDesiredRotationalVelocity() {
   // Get raw (-1.0 to 1.0) joystick positions for x and y axis
   // Left, up are -1.0; right, down are 1.0
   double joystickX = -frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_RSTICK_Y), 0.05);
@@ -60,12 +60,12 @@ units::angular_velocity::radians_per_second_t OISwerveDrive::SetDesiredRotationa
 // Called repeatedly when this Command is scheduled to run
 void OISwerveDrive::Execute() {
   // Limits speed and rotation to max speed
-  const auto xSpeed = frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_Y), 0.05) * SwerveDriveConstants::kMaxSpeed;
+  auto xSpeed = frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_Y), 0.05) * SwerveDriveConstants::kMaxSpeed;
   // const auto xSpeed = -m_xspeedLimiter.Calculate(
   //               frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_Y), 0.05)) *
   //             SwerveDriveConstants::kMaxSpeed;
 
-  const auto ySpeed = -frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_X), 0.05) * SwerveDriveConstants::kMaxSpeed;
+  auto ySpeed = -frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_X), 0.05) * SwerveDriveConstants::kMaxSpeed;
   // const auto ySpeed = m_yspeedLimiter.Calculate(
   //               frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_X), 0.05)) *
   //             SwerveDriveConstants::kMaxSpeed;
@@ -77,13 +77,27 @@ void OISwerveDrive::Execute() {
   // If using atan2 rotation (robot points in direction of joystick)
   // Use the rotation velocity function
   if (m_isMagnitudeRot) {
+    // If trying to rotate fast, limit translation
     const auto rot = -m_rotLimiter.Calculate(
                 frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_RSTICK_X), 0.05)) *
               SwerveDriveConstants::maxAngularVelocity;
+    
+    if (abs((double)rot) > 1.0) {
+      xSpeed *= 0.75;
+      ySpeed *= 0.75;
+    }
+
     m_swerve_drive->Drive(xSpeed, ySpeed, rot, fieldRelative);
   } 
   else {
-    const auto rot = SetDesiredRotationalVelocity();
+    // If trying to rotate fast, limit translation
+    const auto rot = GetDesiredRotationalVelocity();
+
+    if (abs((double)rot) > 1.0) {
+      xSpeed *= 0.75;
+      ySpeed *= 0.75;
+    }
+
     m_swerve_drive->Drive(xSpeed, ySpeed, rot, fieldRelative);
   }
 }
