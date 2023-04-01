@@ -22,6 +22,7 @@ public:
    */
   void Periodic() override;
   void SetSpeed(double power);
+  bool IsPieceGrabbed();
 
 private:
   WPI_TalonFX m_motor;
@@ -30,6 +31,9 @@ private:
   frc::Color m_detectedColor;
   frc::Color m_matchedColor;
   
+  double m_encoderVelocity;
+  bool m_pieceGrabbed;
+
   static constexpr frc::Color kCubeTarget = frc::Color(0.350, 0.200, 0.450);
   static constexpr frc::Color kConeTarget = frc::Color(0.546, 0.454, 0.0);
   // Components (e.g. motor controllers and sensors) should generally be

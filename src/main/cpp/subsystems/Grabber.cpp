@@ -4,10 +4,11 @@
 
 #include "subsystems/Grabber.h"
 
-Grabber::Grabber() : m_motor(GRABBER_MOTOR_ID), m_colorSensor(frc::I2C::Port::kMXP) {
+Grabber::Grabber() : m_motor(GRABBER_MOTOR_ID), m_colorSensor(frc::I2C::Port::kMXP), m_pieceGrabbed(false), m_encoderVelocity(0.0) {
     m_motor.ConfigFactoryDefault();
     m_motor.ConfigOpenloopRamp(0);
     m_motor.ConfigClosedloopRamp(0);
+    m_motor.ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::IntegratedSensor);
     m_colorMatcher.AddColorMatch(kConeTarget);
     m_colorMatcher.AddColorMatch(kCubeTarget);
     m_colorSensor.ConfigureColorSensor(rev::ColorSensorV3::ColorResolution::k13bit, rev::ColorSensorV3::ColorMeasurementRate::k500ms);
@@ -16,6 +17,7 @@ Grabber::Grabber() : m_motor(GRABBER_MOTOR_ID), m_colorSensor(frc::I2C::Port::kM
 // This method will be called once per scheduler run
 void Grabber::Periodic() {
     m_detectedColor = m_colorSensor.GetColor();
+    m_encoderVelocity = m_motor.GetSelectedSensorVelocity();
 
     m_colorMatcher.SetConfidenceThreshold(GRABBER_SENSOR_CONFIDENCE);
     m_matchedColor = *m_colorMatcher.MatchColor(m_detectedColor);
@@ -38,9 +40,20 @@ void Grabber::Periodic() {
         frc::SmartDashboard::PutBoolean("Has Cube?", false);
     }   
 
+    if (abs(m_encoderVelocity) < 200) {
+        m_pieceGrabbed = true;
+    } else {
+        m_pieceGrabbed = false;
+    }
+    
+    frc::SmartDashboard::PutBoolean("Piece Grabbed", m_pieceGrabbed);
 
 }
 
 void Grabber::SetSpeed(double power) {
     m_motor.Set(power);
 } 
+
+bool Grabber::IsPieceGrabbed() {
+    return m_pieceGrabbed;
+}
