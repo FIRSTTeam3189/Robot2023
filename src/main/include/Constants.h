@@ -76,7 +76,7 @@ namespace SwerveDriveConstants {
     constexpr double speedP {5.0};
     constexpr double speedI {1.0};
     constexpr double speedD {0.0};
-    constexpr double angleP {1.0};
+    constexpr double angleP {2.0};
     constexpr double angleI {0.0};
     constexpr double angleD {0.0};
     // These are for robot rotation, not wheel rotation
@@ -148,7 +148,7 @@ namespace AutoConstants {
 
     // PID Controllers for x and y movement in auto mode -- theta controller is part of drive object
     constexpr double kPXController = 0.0;
-    constexpr double kPYController = kPXController;
+    constexpr double kPYController = 0.0;
 
     static frc::TrapezoidProfile<units::radians>::Constraints thetaConstraints{SwerveDriveConstants::maxAngularVelocity,
                                                                         SwerveDriveConstants::maxAngularAcceleration};

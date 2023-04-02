@@ -7,8 +7,6 @@
 UltraShoot::UltraShoot(Elevator *elevator, Intake *intake, Grabber *grabber)
 : m_elevator(elevator), m_intake(intake), m_grabber(grabber) {
   // Use addRequirements() here to declare subsystem dependencies.
-  m_intake->SetPistonExtension(true);
-  // m_elevator->SetPID(ELEVATOR_ULTRA_SHOOT_P, ELEVATOR_I, ELEVATOR_D);
   AddRequirements(elevator);
   AddRequirements(intake);
   AddRequirements(grabber);
@@ -25,7 +23,7 @@ UltraShoot::UltraShoot(Elevator *elevator, Intake *intake, Grabber *grabber)
         if (m_elevator->GetPosition() > ELEVATOR_ULTRA_SHOOT_RELEASE_POINT) {
           m_grabber->SetSpeed(ELEVATOR_ULTRA_SHOOT_POWER);
         }
-      },{m_elevator, m_elevator})
+      },{m_grabber})
     ),
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(2.0_s),

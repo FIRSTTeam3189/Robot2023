@@ -13,7 +13,7 @@ m_rollerMotor(INTAKE_ROLLER_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless),
 m_conveyorMotor(INTAKE_CONVEYOR_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless) {
 // m_leftConeCorrectMotor(INTAKE_L_CONE_CORRECT_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless),
 // m_rightConeCorrectMotor(INTAKE_R_CONE_CORRECT_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushless) {
-    m_intakePiston.SetExtended(false);
+    // m_intakePiston.SetExtended(false);
     m_rollerMotor.RestoreFactoryDefaults();
     m_conveyorMotor.RestoreFactoryDefaults();
     // m_leftConeCorrectMotor.RestoreFactoryDefaults();

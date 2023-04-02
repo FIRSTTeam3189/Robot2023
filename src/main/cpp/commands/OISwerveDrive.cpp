@@ -54,18 +54,18 @@ units::angular_velocity::radians_per_second_t OISwerveDrive::GetDesiredRotationa
     rot = units::angular_velocity::radians_per_second_t {0.0};
   }
 
-  return rot;
+  return -rot;
 }
 
 // Called repeatedly when this Command is scheduled to run
 void OISwerveDrive::Execute() {
   // Limits speed and rotation to max speed
-  auto xSpeed = frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_Y), 0.05) * SwerveDriveConstants::kMaxSpeed;
+  auto xSpeed = -frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_Y), 0.05) * SwerveDriveConstants::kMaxSpeed;
   // const auto xSpeed = -m_xspeedLimiter.Calculate(
   //               frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_Y), 0.05)) *
   //             SwerveDriveConstants::kMaxSpeed;
 
-  auto ySpeed = -frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_X), 0.05) * SwerveDriveConstants::kMaxSpeed;
+  auto ySpeed = frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_X), 0.05) * SwerveDriveConstants::kMaxSpeed;
   // const auto ySpeed = m_yspeedLimiter.Calculate(
   //               frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_X), 0.05)) *
   //             SwerveDriveConstants::kMaxSpeed;
@@ -80,12 +80,12 @@ void OISwerveDrive::Execute() {
     // If trying to rotate fast, limit translation
     const auto rot = -m_rotLimiter.Calculate(
                 frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_RSTICK_X), 0.05)) *
-              SwerveDriveConstants::maxAngularVelocity;
+              SwerveDriveConstants::maxAngularVelocity * 2.0;
     
-    if (abs((double)rot) > 1.0) {
-      xSpeed *= 0.75;
-      ySpeed *= 0.75;
-    }
+    // if (abs((double)rot) > 0.5) {
+    //   xSpeed *= 0.5;
+    //   ySpeed *= 0.5;
+    // }
 
     m_swerve_drive->Drive(xSpeed, ySpeed, rot, fieldRelative);
   } 
@@ -93,10 +93,10 @@ void OISwerveDrive::Execute() {
     // If trying to rotate fast, limit translation
     const auto rot = GetDesiredRotationalVelocity();
 
-    if (abs((double)rot) > 1.0) {
-      xSpeed *= 0.75;
-      ySpeed *= 0.75;
-    }
+    // if (abs((double)rot) > 0.5) {
+    //   xSpeed *= 0.5;
+    //   ySpeed *= 0.5;
+    // }
 
     m_swerve_drive->Drive(xSpeed, ySpeed, rot, fieldRelative);
   }

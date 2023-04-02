@@ -23,6 +23,7 @@ m_absoluteEncoder(SI.CANCoderID, "Swerve")
     m_speedMotor.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor);
     m_speedMotor.ConfigFeedbackNotContinuous(true);
     m_speedMotor.SetNeutralMode(NeutralMode::Brake);
+    m_speedMotor.SetInverted(true);
     m_speedMotor.Config_kP(0, speedP, 50);
     m_speedMotor.Config_kI(0, speedI, 50);
     m_speedMotor.Config_kD(0, speedD, 50);
@@ -132,7 +133,7 @@ void SwerveModule::SetDesiredState(const frc::SwerveModuleState &input_state) {
     m_lastTime = frc::Timer::GetFPGATimestamp();
 
     // double speedPercent = vel / (double)SwerveDriveConstants::kMaxSpeed;
-    frc::SmartDashboard::PutNumber("Target Swerve Mod Percent", (double)(ffValue / 12.0_V));
+    frc::SmartDashboard::PutNumber("Target Swerve Speed Percent", (double)(ffValue / 12.0_V));
 
     // Tells PID controller to run with calculated module speed
     // m_speedMotor.Set(TalonFXControlMode::PercentOutput, speedPercent);
@@ -151,6 +152,7 @@ void SwerveModule::SetDesiredState(const frc::SwerveModuleState &input_state) {
         turnSetpoint = m_lastAngle;
     } else {
         m_angleMotor.Set(TalonFXControlMode::Position, turnSetpoint);
+        frc::SmartDashboard::PutNumber("Target Swerve Angle Percent", m_angleMotor.GetMotorOutputPercent());
     }
 
     m_lastAngle = turnSetpoint;
@@ -262,7 +264,7 @@ frc::SwerveModulePosition SwerveModule::GetSwerveModulePosition() {
 
 void SwerveModule::UpdateModulePosition() {
     m_swervePosition.distance = FalconToMeters(m_speedMotor.GetSelectedSensorPosition());
-    m_swervePosition.angle = -frc::Rotation2d{units::degree_t{(GetRelativeAngle())}};
+    m_swervePosition.angle = frc::Rotation2d{units::degree_t{(GetRelativeAngle())}};
 }
 
 double SwerveModule::GetRelativeAngle() {

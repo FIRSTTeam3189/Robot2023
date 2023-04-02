@@ -215,14 +215,14 @@ void SwerveDrive::ResetEncodersToAbsolute() {
 frc::Pose2d SwerveDrive::GetPose() {
   UpdateOdometry();
   // Invert y-axis
-  frc::Pose2d pose = m_odometry.GetPose();
-  frc::Translation2d translation = pose.Translation();
+  // frc::Pose2d pose = m_odometry.GetPose();
+  // frc::Translation2d translation = pose.Translation();
   // units::meter_t correctedY = -translation.Y();
-  units::meter_t correctedX = -translation.X();
-  auto correctedTranslation = frc::Translation2d{correctedX, translation.Y()};
-  frc::Pose2d correctedPose = frc::Pose2d{correctedTranslation, pose.Rotation()};
-  return correctedPose;
-  // return m_odometry.GetPose();
+  // units::meter_t correctedX = -translation.X();
+  // auto correctedTranslation = frc::Translation2d{correctedX, correctedY};
+  // frc::Pose2d correctedPose = frc::Pose2d{correctedTranslation, pose.Rotation()};
+  // return correctedPose;
+  return m_odometry.GetPose();
 }
 
 void SwerveDrive::UpdateOdometry() {
@@ -237,7 +237,7 @@ void SwerveDrive::UpdateOdometry() {
   m_modulePositions[2] = m_SM.m_backLeft.GetSwerveModulePosition();
   m_modulePositions[3] = m_SM.m_backRight.GetSwerveModulePosition();
 
-  m_odometry.Update(m_pigeon.GetRotation2d(), 
+  m_odometry.Update(frc::Rotation2d{units::degree_t{GetNormalizedYaw()}}, 
                     m_modulePositions);
 }  
 
