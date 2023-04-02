@@ -74,6 +74,7 @@ void Robot::TeleopInit() {
   // teleop starts running. If you want the autonomous to
   // continue until interrupted by another command, remove
   // this line or comment it out.
+  // m_container.SetSwerveYaw(m_container.GetStoredYaw());
   if (m_autonomousCommand != nullptr) {
     m_autonomousCommand->Cancel();
     m_autonomousCommand = nullptr;
@@ -85,7 +86,6 @@ void Robot::TeleopInit() {
  */
 void Robot::TeleopPeriodic() {
   m_container.Sync();
-  m_container.CheckPOV();
 }
 
 /**

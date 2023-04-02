@@ -40,7 +40,7 @@ void Grabber::Periodic() {
         frc::SmartDashboard::PutBoolean("Has Cube?", false);
     }   
 
-    if (abs(m_encoderVelocity) < 200) {
+    if (abs(m_encoderVelocity) < 200 && m_motor.GetStatorCurrent() != 0.0) {
         m_pieceGrabbed = true;
     } else {
         m_pieceGrabbed = false;

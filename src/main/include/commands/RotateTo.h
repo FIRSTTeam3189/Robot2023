@@ -4,19 +4,36 @@
 
 #pragma once
 
+#include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
-#include <frc2/command/PIDCommand.h>
-#include "subsystems/SwerveDrive.h"
-#include "Constants.h"
 
+#include "subsystems/SwerveDrive.h"
+
+/**
+ * An example command.
+ *
+ * <p>Note that this extends CommandHelper, rather extending CommandBase
+ * directly; this is crucially important, or else the decorator functions in
+ * Command will *not* work!
+ */
 class RotateTo
-    : public frc2::CommandHelper<frc2::PIDCommand, RotateTo> {
+    : public frc2::CommandHelper<frc2::CommandBase, RotateTo> {
  public:
-  RotateTo(SwerveDrive *swerveDrive, double targetAngle);
+  RotateTo(SwerveDrive *swerve, double targetAngle);
+
+  void Initialize() override;
+
+  void Execute() override;
+
+  void End(bool interrupted) override;
 
   bool IsFinished() override;
 
  private:
-  double m_targetAngle;
   SwerveDrive *m_swerve;
+  double m_targetAngle;
+  frc2::PIDController m_rotationPIDController;
+  int m_withinThresholdLoops;
+  double m_lastError;
+  frc::Timer m_timer;
 };

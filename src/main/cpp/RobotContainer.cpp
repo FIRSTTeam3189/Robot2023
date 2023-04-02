@@ -15,12 +15,13 @@ RobotContainer::RobotContainer() {
 
   // Joystick operated - real control scheme
   m_swerve->SetDefaultCommand(OISwerveDrive(&m_bill, m_swerve, false));
-  m_grabber->SetDefaultCommand(frc2::RunCommand([this]{m_grabber->SetSpeed(-0.15);},{m_grabber}));
+  // m_grabber->SetDefaultCommand(frc2::RunCommand([this]{m_grabber->SetSpeed(-0.15);},{m_grabber}));
+  m_grabber->SetDefaultCommand(frc2::RunCommand([this]{m_grabber->SetSpeed(0.0);},{m_grabber}));
 
   m_chooser.SetDefaultOption("Default Test Auto", &m_outtake);
   m_chooser.AddOption("Test Auto: Straight Line", &m_testAuto1);
   m_chooser.AddOption("Test Auto: S With Rotation", &m_testAuto2);
-  m_chooser.AddOption("Test Auto: Straight Line W/ -Rotate", &m_testAuto3);
+  m_chooser.AddOption("Test Auto: Figure Eight", &m_testAuto3);
   m_chooser.AddOption("Test Auto: Drive Forward W/ Intake", &m_testAuto4);
   m_chooser.AddOption("Test Auto: Drive Forward and Backard W/ Rotate n Place", &m_testAuto5);
   m_chooser.AddOption("Test Auto: Intake Around Charge Station", &m_testAuto6);
@@ -147,8 +148,11 @@ void RobotContainer::ConfigureButtonBindings() {
   // m_backRightRotTestButton.WhileTrue(SingleModTest(m_swerve, SwerveModuleLocation::br, .1, ManualModuleDriveType::turn).ToPtr());
 
   m_resetOdometryButton = m_bill.Button(PS5_BUTTON_TOUCHPAD);
-  m_resetOdometryButton.OnTrue(ResetOdometry(
-    m_swerve, frc::Pose2d{0.0_m, 0.0_m, {0.0_deg}}).ToPtr());
+  m_resetOdometryButton.OnTrue(
+    frc2::SequentialCommandGroup(
+      ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, {0.0_deg}}),
+      frc2::InstantCommand([this]{m_swerve->SetRobotYaw(0.0);},{m_swerve})
+    ).ToPtr());
 
   m_toggleATan2RotButton = m_bill.Button(PS5_BUTTON_RSTICK);
   m_toggleATan2RotButton.OnTrue(
@@ -279,6 +283,9 @@ void RobotContainer::ConfigureButtonBindings() {
  
   m_lockWheelsButton = m_bill.Button(PS5_BUTTON_RTRIGGER);
   m_lockWheelsButton.WhileTrue(frc2::InstantCommand([this]{m_swerve->LockWheels();},{m_swerve}).ToPtr().Repeatedly());
+
+  // m_rotateTo0POVButton = frc2::Trigger{m_bill.POVUp(&frc::EventLoop{})};
+  // m_rotateTo0POVButton.OnTrue(RotateTo(m_swerve, 0.0).ToPtr());
 
   // ---------------------Ted's controls----------------------
   // Co-driver drives the elevator manually and continuously pulls in by default
@@ -471,64 +478,10 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 void RobotContainer::Sync() {
   // std::cout << m_elevator->ElevatorTicksToMeters(1) << "\n";
   m_swerve->SyncSmartdashBoardValues();
+  frc::SmartDashboard::PutNumber("Swerve Gyro Yaw", m_swerve->GetRobotYaw());
   // std::cout << "Syncing robot container\n";
 }
 
 void RobotContainer::ResetGyroscope() {
   m_swerve->ResetGyro();
-}
-
-void RobotContainer::CheckPOV() {
-  // Checks POV constantly on controllers
-  // USES ONLY 4 CARDINAL DIRECTIONS -- MUST BE PRESSED PRECISELY
-  if (m_bill.GetPOV() != -1) {
-    int driverPOV = m_bill.GetPOV();
-
-    switch (driverPOV) {
-      case 0: 
-        break;
-      case 90:
-        AimAssist(m_vision, m_swerve, 0.05, 0.75, 0.0).Schedule();
-        break;
-      case 180:
-        break;
-      case 270:
-        AimAssist(m_vision, m_swerve, 0.05, -0.75, 0.0).Schedule();
-        break;
-      default:
-        break;
-    }
-  }
-
-  if (m_ted.GetPOV() != -1) {
-    int codriverPOV = m_ted.GetPOV();
-
-    switch (codriverPOV) {
-      case 0:
-        if (!m_elevator->GetRunningState()) {
-          std::cout << "About to run PID\n";
-          frc2::CommandScheduler::GetInstance().Schedule(ElevatorPID(m_elevator, m_intake, ELEVATOR_HIGH_TARGET, false).ToPtr());
-          m_elevator->SetRunningState(true);
-        }
-        break;
-      case 90:
-        if (!m_elevator->GetRunningState()) {
-          std::cout << "About to run PID\n";
-          frc2::CommandScheduler::GetInstance().Schedule(ElevatorPID(m_elevator, m_intake, ELEVATOR_MID_TARGET, false).ToPtr());
-          m_elevator->SetRunningState(true);
-        }
-        break;
-      case 180:
-        if (!m_elevator->GetRunningState()) {
-          std::cout << "About to run PID\n";
-          frc2::CommandScheduler::GetInstance().Schedule(ElevatorPID(m_elevator, m_intake, ELEVATOR_LOW_TARGET, false).ToPtr());
-          m_elevator->SetRunningState(true);
-        }
-        break;
-      case 270:
-        break;
-      default:
-        break;
-    }
-  }
 }

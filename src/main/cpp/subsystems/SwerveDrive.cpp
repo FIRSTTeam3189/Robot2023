@@ -269,33 +269,33 @@ void SwerveDrive::InitSmartDashboard() {
   EntryRotationP = SwerveRotationPIDTab.Add("Rotation P", AutoConstants::thetaPIDController.GetP()).GetEntry();
   EntryRotationI = SwerveRotationPIDTab.Add("Rotation I", AutoConstants::thetaPIDController.GetI()).GetEntry();
   EntryRotationD = SwerveRotationPIDTab.Add("Rotation D", AutoConstants::thetaPIDController.GetD()).GetEntry();
-  EntryFrontLeftSpeedP = SwerveFLPIDTab.Add("Front Left Speed P", m_SM.m_frontLeft.GetSpeedP()).GetEntry();
-  EntryFrontLeftSpeedI = SwerveFLPIDTab.Add("Front Left Speed I", m_SM.m_frontLeft.GetSpeedI()).GetEntry();
-  EntryFrontLeftSpeedD = SwerveFLPIDTab.Add("Front Left Speed D", m_SM.m_frontLeft.GetSpeedD()).GetEntry();
-  EntryFrontLeftAngleP = SwerveFLPIDTab.Add("Front Left Angle P", m_SM.m_frontLeft.GetAngleP()).GetEntry();
-  EntryFrontLeftAngleI = SwerveFLPIDTab.Add("Front Left Angle I", m_SM.m_frontLeft.GetAngleI()).GetEntry();
-  EntryFrontLeftAngleD = SwerveFLPIDTab.Add("Front Left Angle D", m_SM.m_frontLeft.GetAngleD()).GetEntry();
+  // EntryFrontLeftSpeedP = SwerveFLPIDTab.Add("Front Left Speed P", m_SM.m_frontLeft.GetSpeedP()).GetEntry();
+  // EntryFrontLeftSpeedI = SwerveFLPIDTab.Add("Front Left Speed I", m_SM.m_frontLeft.GetSpeedI()).GetEntry();
+  // EntryFrontLeftSpeedD = SwerveFLPIDTab.Add("Front Left Speed D", m_SM.m_frontLeft.GetSpeedD()).GetEntry();
+  // EntryFrontLeftAngleP = SwerveFLPIDTab.Add("Front Left Angle P", m_SM.m_frontLeft.GetAngleP()).GetEntry();
+  // EntryFrontLeftAngleI = SwerveFLPIDTab.Add("Front Left Angle I", m_SM.m_frontLeft.GetAngleI()).GetEntry();
+  // EntryFrontLeftAngleD = SwerveFLPIDTab.Add("Front Left Angle D", m_SM.m_frontLeft.GetAngleD()).GetEntry();
 
-  EntryFrontRightSpeedP = SwerveFRPIDTab.Add("Front Right Speed P", m_SM.m_frontRight.GetSpeedP()).GetEntry();
-  EntryFrontRightSpeedI = SwerveFRPIDTab.Add("Front Right Speed I", m_SM.m_frontRight.GetSpeedI()).GetEntry();
-  EntryFrontRightSpeedD = SwerveFRPIDTab.Add("Front Right Speed D", m_SM.m_frontRight.GetSpeedD()).GetEntry();
-  EntryFrontRightAngleP = SwerveFRPIDTab.Add("Front Right Angle P", m_SM.m_frontRight.GetAngleP()).GetEntry();
-  EntryFrontRightAngleI = SwerveFRPIDTab.Add("Front Right Angle I", m_SM.m_frontRight.GetAngleI()).GetEntry();
-  EntryFrontRightAngleD = SwerveFRPIDTab.Add("Front Right Angle D", m_SM.m_frontRight.GetAngleD()).GetEntry();
+  // EntryFrontRightSpeedP = SwerveFRPIDTab.Add("Front Right Speed P", m_SM.m_frontRight.GetSpeedP()).GetEntry();
+  // EntryFrontRightSpeedI = SwerveFRPIDTab.Add("Front Right Speed I", m_SM.m_frontRight.GetSpeedI()).GetEntry();
+  // EntryFrontRightSpeedD = SwerveFRPIDTab.Add("Front Right Speed D", m_SM.m_frontRight.GetSpeedD()).GetEntry();
+  // EntryFrontRightAngleP = SwerveFRPIDTab.Add("Front Right Angle P", m_SM.m_frontRight.GetAngleP()).GetEntry();
+  // EntryFrontRightAngleI = SwerveFRPIDTab.Add("Front Right Angle I", m_SM.m_frontRight.GetAngleI()).GetEntry();
+  // EntryFrontRightAngleD = SwerveFRPIDTab.Add("Front Right Angle D", m_SM.m_frontRight.GetAngleD()).GetEntry();
 
-  EntryBackLeftSpeedP = SwerveBLPIDTab.Add("Back Left Speed P", m_SM.m_backLeft.GetSpeedP()).GetEntry();
-  EntryBackLeftSpeedI = SwerveBLPIDTab.Add("Back Left Speed I", m_SM.m_backLeft.GetSpeedI()).GetEntry();
-  EntryBackLeftSpeedD = SwerveBLPIDTab.Add("Back Left Speed D", m_SM.m_backLeft.GetSpeedD()).GetEntry();
-  EntryBackLeftAngleP = SwerveBLPIDTab.Add("Back Left Angle P", m_SM.m_backLeft.GetAngleP()).GetEntry();
-  EntryBackLeftAngleI = SwerveBLPIDTab.Add("Back Left Angle I", m_SM.m_backLeft.GetAngleI()).GetEntry();
-  EntryBackLeftAngleD = SwerveBLPIDTab.Add("Back Left Angle D", m_SM.m_backLeft.GetAngleD()).GetEntry();
+  // EntryBackLeftSpeedP = SwerveBLPIDTab.Add("Back Left Speed P", m_SM.m_backLeft.GetSpeedP()).GetEntry();
+  // EntryBackLeftSpeedI = SwerveBLPIDTab.Add("Back Left Speed I", m_SM.m_backLeft.GetSpeedI()).GetEntry();
+  // EntryBackLeftSpeedD = SwerveBLPIDTab.Add("Back Left Speed D", m_SM.m_backLeft.GetSpeedD()).GetEntry();
+  // EntryBackLeftAngleP = SwerveBLPIDTab.Add("Back Left Angle P", m_SM.m_backLeft.GetAngleP()).GetEntry();
+  // EntryBackLeftAngleI = SwerveBLPIDTab.Add("Back Left Angle I", m_SM.m_backLeft.GetAngleI()).GetEntry();
+  // EntryBackLeftAngleD = SwerveBLPIDTab.Add("Back Left Angle D", m_SM.m_backLeft.GetAngleD()).GetEntry();
 
-  EntryBackRightSpeedP = SwerveBRPIDTab.Add("Back Right Speed P", m_SM.m_backRight.GetSpeedP()).GetEntry();
-  EntryBackRightSpeedI = SwerveBRPIDTab.Add("Back Right Speed I", m_SM.m_backRight.GetSpeedI()).GetEntry();
-  EntryBackRightSpeedD = SwerveBRPIDTab.Add("Back Right Speed D", m_SM.m_backRight.GetSpeedD()).GetEntry();
-  EntryBackRightAngleP = SwerveBRPIDTab.Add("Back Right Angle P", m_SM.m_backRight.GetAngleP()).GetEntry();
-  EntryBackRightAngleI = SwerveBRPIDTab.Add("Back Right Angle I", m_SM.m_backRight.GetAngleI()).GetEntry();
-  EntryBackRightAngleD = SwerveBRPIDTab.Add("Back Right Angle D", m_SM.m_backRight.GetAngleD()).GetEntry();
+  // EntryBackRightSpeedP = SwerveBRPIDTab.Add("Back Right Speed P", m_SM.m_backRight.GetSpeedP()).GetEntry();
+  // EntryBackRightSpeedI = SwerveBRPIDTab.Add("Back Right Speed I", m_SM.m_backRight.GetSpeedI()).GetEntry();
+  // EntryBackRightSpeedD = SwerveBRPIDTab.Add("Back Right Speed D", m_SM.m_backRight.GetSpeedD()).GetEntry();
+  // EntryBackRightAngleP = SwerveBRPIDTab.Add("Back Right Angle P", m_SM.m_backRight.GetAngleP()).GetEntry();
+  // EntryBackRightAngleI = SwerveBRPIDTab.Add("Back Right Angle I", m_SM.m_backRight.GetAngleI()).GetEntry();
+  // EntryBackRightAngleD = SwerveBRPIDTab.Add("Back Right Angle D", m_SM.m_backRight.GetAngleD()).GetEntry();
 
   // Add all 40 swerve entries to drive tab in Shuffleboard
   EntryFrontLeftSpeed = SwerveSpeedTab.Add("Front Left Speed", 0).GetEntry();
@@ -396,33 +396,33 @@ void SwerveDrive::LogModuleStates(SwerveModuleTelemetry telemetryArray[]) {
 }
 
 void SwerveDrive::UpdatePIDValues() {
-  AutoConstants::thetaPIDController.SetP(GetEntryRotationP());
-  AutoConstants::thetaPIDController.SetI(GetEntryRotationI());
-  AutoConstants::thetaPIDController.SetD(GetEntryRotationD());
-  m_SM.m_frontLeft.SetSpeedP(GetEntryFLSpeedP());
-  m_SM.m_frontLeft.SetSpeedI(GetEntryFLSpeedI());
-  m_SM.m_frontLeft.SetSpeedD(GetEntryFLSpeedD());
-  m_SM.m_frontLeft.SetAngleP(GetEntryFLAngleP());
-  m_SM.m_frontLeft.SetAngleI(GetEntryFLAngleI());
-  m_SM.m_frontLeft.SetAngleD(GetEntryFLAngleD());
-  m_SM.m_frontRight.SetSpeedP(GetEntryFRSpeedP());
-  m_SM.m_frontRight.SetSpeedI(GetEntryFRSpeedI());
-  m_SM.m_frontRight.SetSpeedD(GetEntryFRSpeedD());
-  m_SM.m_frontRight.SetAngleP(GetEntryFRAngleP());
-  m_SM.m_frontRight.SetAngleI(GetEntryFRAngleI());
-  m_SM.m_frontRight.SetAngleD(GetEntryFRAngleD());
-  m_SM.m_backLeft.SetSpeedP(GetEntryBLSpeedP());
-  m_SM.m_backLeft.SetSpeedI(GetEntryBLSpeedI());
-  m_SM.m_backLeft.SetSpeedD(GetEntryBLSpeedD());
-  m_SM.m_backLeft.SetAngleP(GetEntryBLAngleP());
-  m_SM.m_backLeft.SetAngleI(GetEntryBLAngleI());
-  m_SM.m_backLeft.SetAngleD(GetEntryBLAngleD());
-  m_SM.m_backRight.SetSpeedP(GetEntryBRSpeedP());
-  m_SM.m_backRight.SetSpeedI(GetEntryBRSpeedI());
-  m_SM.m_backRight.SetSpeedD(GetEntryBRSpeedD());
-  m_SM.m_backRight.SetAngleP(GetEntryBRAngleP());
-  m_SM.m_backRight.SetAngleI(GetEntryBRAngleI());
-  m_SM.m_backRight.SetAngleD(GetEntryBRAngleD());
+  // AutoConstants::thetaPIDController.SetP(GetEntryRotationP());
+  // AutoConstants::thetaPIDController.SetI(GetEntryRotationI());
+  // AutoConstants::thetaPIDController.SetD(GetEntryRotationD());
+  // m_SM.m_frontLeft.SetSpeedP(GetEntryFLSpeedP());
+  // m_SM.m_frontLeft.SetSpeedI(GetEntryFLSpeedI());
+  // m_SM.m_frontLeft.SetSpeedD(GetEntryFLSpeedD());
+  // m_SM.m_frontLeft.SetAngleP(GetEntryFLAngleP());
+  // m_SM.m_frontLeft.SetAngleI(GetEntryFLAngleI());
+  // m_SM.m_frontLeft.SetAngleD(GetEntryFLAngleD());
+  // m_SM.m_frontRight.SetSpeedP(GetEntryFRSpeedP());
+  // m_SM.m_frontRight.SetSpeedI(GetEntryFRSpeedI());
+  // m_SM.m_frontRight.SetSpeedD(GetEntryFRSpeedD());
+  // m_SM.m_frontRight.SetAngleP(GetEntryFRAngleP());
+  // m_SM.m_frontRight.SetAngleI(GetEntryFRAngleI());
+  // m_SM.m_frontRight.SetAngleD(GetEntryFRAngleD());
+  // m_SM.m_backLeft.SetSpeedP(GetEntryBLSpeedP());
+  // m_SM.m_backLeft.SetSpeedI(GetEntryBLSpeedI());
+  // m_SM.m_backLeft.SetSpeedD(GetEntryBLSpeedD());
+  // m_SM.m_backLeft.SetAngleP(GetEntryBLAngleP());
+  // m_SM.m_backLeft.SetAngleI(GetEntryBLAngleI());
+  // m_SM.m_backLeft.SetAngleD(GetEntryBLAngleD());
+  // m_SM.m_backRight.SetSpeedP(GetEntryBRSpeedP());
+  // m_SM.m_backRight.SetSpeedI(GetEntryBRSpeedI());
+  // m_SM.m_backRight.SetSpeedD(GetEntryBRSpeedD());
+  // m_SM.m_backRight.SetAngleP(GetEntryBRAngleP());
+  // m_SM.m_backRight.SetAngleI(GetEntryBRAngleI());
+  // m_SM.m_backRight.SetAngleD(GetEntryBRAngleD());
 }
 
 void SwerveDrive::SyncSmartdashBoardValues() {

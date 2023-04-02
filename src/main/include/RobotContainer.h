@@ -72,7 +72,6 @@ class RobotContainer {
   frc2::Command* GetAutonomousCommand();
   void Sync();
   void ResetGyroscope();
-  void CheckPOV();
 
  private:
   // The robot's subsystems and commands are defined here...
@@ -146,6 +145,10 @@ class RobotContainer {
   frc2::Trigger m_driverStopButton;
   frc2::Trigger m_ultraShootButton;
   frc2::Trigger m_lockWheelsButton;
+  // frc2::Trigger m_rotateTo0POVButton;
+  // frc2::Trigger m_rotateTo90POVButton;
+  // frc2::Trigger m_rotateTo180POVButton;
+  // frc2::Trigger m_rotateTo270POVButton;
 
   // Co-driver's controls
   frc2::Trigger m_elevatorLowLevelButton;

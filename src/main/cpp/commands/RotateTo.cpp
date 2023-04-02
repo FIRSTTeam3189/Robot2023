@@ -4,34 +4,47 @@
 
 #include "commands/RotateTo.h"
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.
-// For more information, see:
-// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-RotateTo::RotateTo(SwerveDrive *swerveDrive, double targetAngle)
-    : m_targetAngle(targetAngle), m_swerve(swerveDrive),
-      CommandHelper{frc2::PIDController{10.0, 0.1, 0},
-                    // This should return the measurement
-                    [swerveDrive] { return swerveDrive->GetNormalizedYaw(); },
-                    // This should return the setpoint (can also be a constant)
-                    targetAngle,
-                    // This uses the output
-                    [swerveDrive](double output) {
-                      // Use the output here
-                      if (output > 0) {
-                        swerveDrive->Drive(0_mps, 0_mps, 
-                                         units::radians_per_second_t{(-output / SwerveDriveConstants::DEGToRAD)}, true);
-                      } else {
-                        swerveDrive->Drive(0_mps, 0_mps, 
-                                         units::radians_per_second_t{(-output / SwerveDriveConstants::DEGToRAD)}, true);
-                      }
-                    }, 
-                    {swerveDrive}} 
-  {
-    m_controller.EnableContinuousInput(-180, 180);
-    AddRequirements(swerveDrive);
+RotateTo::RotateTo(SwerveDrive *swerve, double targetAngle)
+:
+m_swerve(swerve),
+m_targetAngle(targetAngle),
+m_rotationPIDController(SwerveDriveConstants::rotP, SwerveDriveConstants::rotI, SwerveDriveConstants::rotD),
+m_withinThresholdLoops(0),
+m_lastError(9999999.999999) {
+  // Use addRequirements() here to declare subsystem dependencies.
+  AddRequirements(swerve);
+  m_rotationPIDController.SetTolerance(1.0);
+  m_rotationPIDController.EnableContinuousInput(0, 360);
+}
+
+// Called when the command is initially scheduled.
+void RotateTo::Initialize() {
+  m_timer.Reset();
+  m_timer.Start();
+}
+
+// Called repeatedly when this Command is scheduled to run
+void RotateTo::Execute() {
+  units::angular_velocity::radians_per_second_t rot = 
+    units::radians_per_second_t{m_rotationPIDController.Calculate(m_swerve->GetNormalizedYaw(), m_targetAngle)
+    * SwerveDriveConstants::maxAngularVelocity};
+  
+  if (abs(m_lastError) < 2.5) {
+    m_withinThresholdLoops++;
+  } else {
+    m_withinThresholdLoops = 0;
   }
+
+  m_lastError = m_swerve->GetNormalizedYaw() - m_targetAngle;
+  m_swerve->PercentDrive(0.0_mps, 0.0_mps, -rot, true);
+}
+
+// Called once the command ends or is interrupted.
+void RotateTo::End(bool interrupted) {
+  m_timer.Reset();
+}
 
 // Returns true when the command should end.
 bool RotateTo::IsFinished() {
-  return (abs(-m_swerve->GetNormalizedYaw() - m_targetAngle) < 7.5);
+  return (m_withinThresholdLoops >= 10 || m_timer.HasElapsed(1.5_s));
 }
