@@ -11,7 +11,7 @@ RotateTo::RotateTo(SwerveDrive *swerveDrive, double targetAngle)
     : m_targetAngle(targetAngle), m_swerve(swerveDrive),
       CommandHelper{frc2::PIDController{10.0, 0.1, 0},
                     // This should return the measurement
-                    [swerveDrive] { return -swerveDrive->GetNormalizedYaw(); },
+                    [swerveDrive] { return swerveDrive->GetNormalizedYaw(); },
                     // This should return the setpoint (can also be a constant)
                     targetAngle,
                     // This uses the output

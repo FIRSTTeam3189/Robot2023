@@ -19,10 +19,13 @@ RobotContainer::RobotContainer() {
 
   m_chooser.SetDefaultOption("Default Test Auto", &m_outtake);
   m_chooser.AddOption("Test Auto: Straight Line", &m_testAuto1);
-  m_chooser.AddOption("Test Auto: Straight Line W/ +Rotate", &m_testAuto2);
+  m_chooser.AddOption("Test Auto: S With Rotation", &m_testAuto2);
   m_chooser.AddOption("Test Auto: Straight Line W/ -Rotate", &m_testAuto3);
   m_chooser.AddOption("Test Auto: Drive Forward W/ Intake", &m_testAuto4);
   m_chooser.AddOption("Test Auto: Drive Forward and Backard W/ Rotate n Place", &m_testAuto5);
+  m_chooser.AddOption("Test Auto: Intake Around Charge Station", &m_testAuto6);
+  m_chooser.AddOption("Test Auto: S Without Rotation", &m_testAuto7);
+  m_chooser.AddOption("Test Auto: N/A", &m_testAuto8);
   m_chooser.AddOption("Outtake", &m_outtake);
   m_chooser.AddOption("Balance", &m_balance);
   m_chooser.AddOption("One Cargo High", &m_oneCargoHigh);

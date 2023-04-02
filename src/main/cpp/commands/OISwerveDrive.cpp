@@ -44,7 +44,7 @@ units::angular_velocity::radians_per_second_t OISwerveDrive::GetDesiredRotationa
                 m_rotLimiter.Calculate(m_rotationPIDController.Calculate(m_swerve_drive->GetNormalizedYaw(), goalAngle))
                 * SwerveDriveConstants::maxAngularVelocity};
 
-  frc::SmartDashboard::PutNumber("Wrapped Gyro Yaw", m_swerve_drive->GetNormalizedYaw());
+  // frc::SmartDashboard::PutNumber("Wrapped Gyro Yaw", m_swerve_drive->GetNormalizedYaw());
   frc::SmartDashboard::PutNumber("Swerve Gyro Yaw", m_swerve_drive->GetRobotYaw());
   frc::SmartDashboard::PutNumber("Theta PID output", m_rotationPIDController.Calculate(m_swerve_drive->GetNormalizedYaw(), goalAngle))
                 * SwerveDriveConstants::maxAngularVelocity;

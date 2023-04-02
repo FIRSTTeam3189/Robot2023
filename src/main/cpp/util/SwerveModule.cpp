@@ -184,7 +184,7 @@ double SwerveModule::NormalizeTo0To360(double currentAngle, double targetAngle) 
     double upperBound;
     // Offset from current angle to lower bound
     int lowerOffset = (int)currentAngle % 360;
-    frc::SmartDashboard::PutNumber("Normalize Lower Offset", lowerOffset);
+    // frc::SmartDashboard::PutNumber("Normalize Lower Offset", lowerOffset);
     /* If angle is positive, angle will be set from 0 to 360, else -360 to 0
     * These degree numbers are relative to input angle
     * This is because WPILib optimize expects a continuous input from a PIDController
@@ -202,11 +202,11 @@ double SwerveModule::NormalizeTo0To360(double currentAngle, double targetAngle) 
       // Target angle is now normalized between either 0 to 360 or -360 to 0
       while (targetAngle < lowerBound) {
           targetAngle += 360;
-          frc::SmartDashboard::PutNumber("Increasing to bound", targetAngle);
+        //   frc::SmartDashboard::PutNumber("Increasing to bound", targetAngle);
       }
       while (targetAngle > upperBound) {
           targetAngle -= 360;
-          frc::SmartDashboard::PutNumber("Decreasing to bound", targetAngle);
+        //   frc::SmartDashboard::PutNumber("Decreasing to bound", targetAngle);
       }
       if (targetAngle - currentAngle > 180) {
           targetAngle -= 360;

@@ -88,6 +88,9 @@ class RobotContainer {
   TestAuto m_testAuto3{m_swerve, m_elevator, m_intake, m_grabber, 3};
   TestAuto m_testAuto4{m_swerve, m_elevator, m_intake, m_grabber, 4};
   TestAuto m_testAuto5{m_swerve, m_elevator, m_intake, m_grabber, 5};
+  TestAuto m_testAuto6{m_swerve, m_elevator, m_intake, m_grabber, 6};
+  TestAuto m_testAuto7{m_swerve, m_elevator, m_intake, m_grabber, 7};
+  TestAuto m_testAuto8{m_swerve, m_elevator, m_intake, m_grabber, 8};
   Outtake m_outtake{m_intake, m_swerve};
   Balance m_balance{m_swerve};
   OneCargo m_oneCargoHigh{m_swerve, m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET};
