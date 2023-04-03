@@ -17,6 +17,7 @@
 #include "commands/AutoBalance.h"
 #include "commands/RotateTo.h"
 #include "Constants.h"
+#include "RobotParameters.h"
 
 #include <iostream>
 

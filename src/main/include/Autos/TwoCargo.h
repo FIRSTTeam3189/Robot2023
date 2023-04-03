@@ -18,6 +18,7 @@
 #include "commands/ElevatorPID.h"
 #include "Autos/OneCargoPickupOne.h"
 #include "Constants.h"
+#include "RobotParameters.h"
 
 #include <iostream>
 

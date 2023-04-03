@@ -20,7 +20,7 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Elevator *elevator, Intake *intake,
     case 1:
       {
       frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 4.0, SwerveDriveConstants::kMaxAcceleration / 4.0};
-      config.SetKinematics(SwerveDriveConstants::kinematics);
+      config.SetKinematics(SwerveDriveParameters::kinematics);
       config.SetReversed(false);
 
       // // std::cout << "Straight Line\n";
@@ -48,7 +48,7 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Elevator *elevator, Intake *intake,
     case 2:
       {
       frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 1.5, SwerveDriveConstants::kMaxAcceleration / 1.5};
-      config.SetKinematics(SwerveDriveConstants::kinematics);
+      config.SetKinematics(SwerveDriveParameters::kinematics);
       config.SetReversed(false);
 
       std::cout << "Test +rotate\n";
@@ -72,7 +72,7 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Elevator *elevator, Intake *intake,
     case 3:
       {
       frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 1.5, SwerveDriveConstants::kMaxAcceleration / 1.5};
-      config.SetKinematics(SwerveDriveConstants::kinematics);
+      config.SetKinematics(SwerveDriveParameters::kinematics);
       config.SetReversed(false);
 
       auto figureEightTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
@@ -106,7 +106,7 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Elevator *elevator, Intake *intake,
     case 4:
       {
         frc::TrajectoryConfig slowConfig{SwerveDriveConstants::kMaxSpeed / 1.5, SwerveDriveConstants::kMaxAcceleration / 1.5};
-        slowConfig.SetKinematics(SwerveDriveConstants::kinematics);
+        slowConfig.SetKinematics(SwerveDriveParameters::kinematics);
         slowConfig.SetReversed(false);
 
         auto cargoCreepForwardTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
@@ -153,7 +153,7 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Elevator *elevator, Intake *intake,
     case 5:
       {
       frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 1.5, SwerveDriveConstants::kMaxAcceleration / 1.5};
-      config.SetKinematics(SwerveDriveConstants::kinematics);
+      config.SetKinematics(SwerveDriveParameters::kinematics);
       config.SetReversed(false);
 
       // // std::cout << "Straight Line\n";
@@ -193,7 +193,7 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Elevator *elevator, Intake *intake,
     case 6:
       {
         frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 1.0, SwerveDriveConstants::kMaxAcceleration / 1.0};
-        config.SetKinematics(SwerveDriveConstants::kinematics);
+        config.SetKinematics(SwerveDriveParameters::kinematics);
         config.SetReversed(false);
 
         auto scoringToSecondCargoTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
@@ -205,7 +205,7 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Elevator *elevator, Intake *intake,
         );
 
         frc::TrajectoryConfig slowConfig{SwerveDriveConstants::kMaxSpeed / 3.0, SwerveDriveConstants::kMaxAcceleration / 3.0};
-        slowConfig.SetKinematics(SwerveDriveConstants::kinematics);
+        slowConfig.SetKinematics(SwerveDriveParameters::kinematics);
         slowConfig.SetReversed(false);
 
         auto cargoCreepForwardTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
@@ -264,7 +264,7 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Elevator *elevator, Intake *intake,
     case 7:
       {
         frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2.0, SwerveDriveConstants::kMaxAcceleration / 2.0};
-        config.SetKinematics(SwerveDriveConstants::kinematics);
+        config.SetKinematics(SwerveDriveParameters::kinematics);
         config.SetReversed(false);
 
         auto sTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
@@ -286,7 +286,7 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Elevator *elevator, Intake *intake,
     case 8:
       {
         frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2.0, SwerveDriveConstants::kMaxAcceleration / 2.0};
-        config.SetKinematics(SwerveDriveConstants::kinematics);
+        config.SetKinematics(SwerveDriveParameters::kinematics);
         config.SetReversed(false);
 
         auto specialTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(

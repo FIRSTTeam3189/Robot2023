@@ -13,7 +13,7 @@ TwoCargoUltrashootBalance::TwoCargoUltrashootBalance(SwerveDrive *swerve, Elevat
   // AddCommands(FooCommand{}, BarCommand{});
 
   frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed, SwerveDriveConstants::kMaxAcceleration};
-  config.SetKinematics(SwerveDriveConstants::kinematics);
+  config.SetKinematics(SwerveDriveParameters::kinematics);
   config.SetReversed(true);
 
   auto scoringToCargoTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
@@ -23,7 +23,7 @@ TwoCargoUltrashootBalance::TwoCargoUltrashootBalance(SwerveDrive *swerve, Elevat
     config);
 
   frc::TrajectoryConfig slowConfig{SwerveDriveConstants::kMaxSpeed / 2.5, SwerveDriveConstants::kMaxAcceleration / 2.5};
-  slowConfig.SetKinematics(SwerveDriveConstants::kinematics);
+  slowConfig.SetKinematics(SwerveDriveParameters::kinematics);
   slowConfig.SetReversed(true);
 
   auto cargoCreepForwardTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(

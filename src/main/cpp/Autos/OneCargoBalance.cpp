@@ -12,7 +12,7 @@ OneCargoBalance::OneCargoBalance(SwerveDrive *swerveDrive, Elevator *elevator, G
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
   frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed, SwerveDriveConstants::kMaxAcceleration};
-  config.SetKinematics(SwerveDriveConstants::kinematics);
+  config.SetKinematics(SwerveDriveParameters::kinematics);
   config.SetReversed(true);
 
   // std::cout << "Scoring to charge\n";

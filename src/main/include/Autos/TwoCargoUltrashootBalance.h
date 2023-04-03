@@ -20,6 +20,7 @@
 #include "commands/UltraShoot.h"
 #include "Autos/OneCargoPickupBalance.h"
 #include "Constants.h"
+#include "RobotParameters.h"
 
 #include <iostream>
 

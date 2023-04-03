@@ -19,6 +19,7 @@
 #include "commands/AimAssist.h"
 #include "Autos/OneCargoPickupOne.h"
 #include "Constants.h"
+#include "RobotParameters.h"
 
 #include <iostream>
 

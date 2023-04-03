@@ -28,7 +28,7 @@ void Robot::RobotInit() {
  * This function is called every 20 ms, no matter the mode. Use
  * this for items like diagnostics that you want to run during disabled,
  * autonomous, teleoperated and test.
- *wgrated updating.
+ * wgrated updating.
  */
 void Robot::RobotPeriodic() {
   // std::cout << "About to run command scheduler instance\n";

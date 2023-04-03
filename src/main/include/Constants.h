@@ -40,14 +40,6 @@ namespace SwerveDriveConstants {
     // This has x-positive as forward, y-positive as right
     constexpr auto xDistanceFromCenter {0.282575_m};
     constexpr auto yDistanceFromCenter {0.282575_m};
-
-    // Kinematics object for both drive and auto
-    static frc::SwerveDriveKinematics<4> kinematics{
-        frc::Translation2d{+xDistanceFromCenter, -yDistanceFromCenter},
-        frc::Translation2d{+xDistanceFromCenter, +yDistanceFromCenter},
-        frc::Translation2d{-xDistanceFromCenter, -yDistanceFromCenter},
-        frc::Translation2d{-xDistanceFromCenter, +yDistanceFromCenter}
-    };
     
     // 0-max ramp time, current limit in amps
     constexpr double loopRampRate {.1};
@@ -149,14 +141,7 @@ namespace AutoConstants {
     // Y and rotation are inverted
     // PID Controllers for x and y movement in auto mode -- theta controller is part of drive object
     constexpr double kPXController = 0.0;
-    constexpr double kPYController = -0.0;
-
-    static frc::TrapezoidProfile<units::radians>::Constraints thetaConstraints{SwerveDriveConstants::maxAngularVelocity,
-                                                                        SwerveDriveConstants::maxAngularAcceleration};
-
-    static frc2::PIDController autoXPIDController{kPXController, 0.0, 0.0};
-    static frc2::PIDController autoYPIDController{kPYController, 0.0, 0.0};
-    static frc::ProfiledPIDController<units::radians> thetaPIDController {autoRotP, autoRotI, autoRotD, thetaConstraints};                                                               
+    constexpr double kPYController = -0.0;                                                     
 };
 
 // PS5 Controls

@@ -23,6 +23,7 @@
 #include <iostream>
 
 #include "util/SwerveModule.h"
+#include "RobotParameters.h"
 #include "Constants.h"
 
 // hold instances of swerve modules and translation vectors
