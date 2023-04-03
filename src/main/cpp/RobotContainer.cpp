@@ -95,6 +95,11 @@ void RobotContainer::ConfigureButtonBindings() {
     frc2::InstantCommand([this]{m_intake->SetPower(0, 0, 0); m_grabber->SetSpeed(0);},{m_intake, m_grabber})
   ).ToPtr());
 
+  // ----------------------------------------------- POV Button Example ----------------------------------------------------------------------------
+// m_Trigger = frc2::Trigger(m_controller.POVUp(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop()));
+// m_Trigger.OnTrue/WhileTrue(frc2::Command);
+  // ------------------------------------------------------------------------------------------------------------------------------------------------
+
   // m_spinIntakeOutButton.WhileTrue(RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, -INTAKE_CONE_CORRECT_POWER).ToPtr());
 
   // m_toggleIntakePistonsDriver = m_bill.Button(PS5_BUTTON_LTRIGGER);
