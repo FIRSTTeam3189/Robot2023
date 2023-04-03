@@ -11,6 +11,7 @@
 
 #include "subsystems/Intake.h"
 #include "subsystems/SwerveDrive.h"
+#include "RobotParameters.h"
 
 class Outtake
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,

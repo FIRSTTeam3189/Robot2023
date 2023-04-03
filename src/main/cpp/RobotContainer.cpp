@@ -16,37 +16,127 @@ RobotContainer::RobotContainer() {
   // Joystick operated - real control scheme
   m_swerve->SetDefaultCommand(OISwerveDrive(&m_bill, m_swerve, false));
   // m_grabber->SetDefaultCommand(frc2::RunCommand([this]{m_grabber->SetSpeed(-0.15);},{m_grabber}));
-  m_grabber->SetDefaultCommand(frc2::RunCommand([this]{m_grabber->SetSpeed(0.0);},{m_grabber}));
 
-  m_chooser.SetDefaultOption("Default Test Auto", &m_outtake);
-  m_chooser.AddOption("Test Auto: Straight Line", &m_testAuto1);
-  m_chooser.AddOption("Test Auto: S With Rotation", &m_testAuto2);
-  m_chooser.AddOption("Test Auto: Figure Eight", &m_testAuto3);
-  m_chooser.AddOption("Test Auto: Drive Forward W/ Intake", &m_testAuto4);
-  m_chooser.AddOption("Test Auto: Drive Forward and Backard W/ Rotate n Place", &m_testAuto5);
-  m_chooser.AddOption("Test Auto: Intake Around Charge Station", &m_testAuto6);
-  m_chooser.AddOption("Test Auto: S Without Rotation", &m_testAuto7);
-  m_chooser.AddOption("Test Auto: Special", &m_testAuto8);
-  m_chooser.AddOption("Outtake", &m_outtake);
-  m_chooser.AddOption("Balance", &m_balance);
-  m_chooser.AddOption("One Cargo High", &m_oneCargoHigh);
-  m_chooser.AddOption("One Cargo Mid", &m_oneCargoMid);
-  m_chooser.AddOption("One Cargo High + Balance", &m_oneCargoHighBalance);
-  m_chooser.AddOption("One Cargo Mid + Balance", &m_oneCargoMidBalance);
-  m_chooser.AddOption("One Cargo High + Pickup + Balance Red Side", &m_oneCargoHighPickupBalanceRed);
-  m_chooser.AddOption("One Cargo High + Pickup + Balance Blue Side", &m_oneCargoHighPickupBalanceBlue);
-  m_chooser.AddOption("One Cargo Mid + Pickup + Balance Red Side", &m_oneCargoMidPickupBalanceRed);
-  m_chooser.AddOption("One Cargo Mid + Pickup + Balance Blue Side", &m_oneCargoMidPickupBalanceBlue);
-  m_chooser.AddOption("One Cargo High + Pickup One", &m_oneCargoHighPickupOne);
-  m_chooser.AddOption("One Cargo Mid + Pickup One", &m_oneCargoMidPickupOne);
-  m_chooser.AddOption("Two Cargo", &m_twoCargo);
-  // m_chooser.AddOption("Two Cargo With Vision", &m_twoPieceWithVision);
-  m_chooser.AddOption("Two Cargo Red + Balance + Ultrashoot", &m_twoCargoRedUltrashoot);
-  m_chooser.AddOption("Two Cargo Blue + Balance + Ultrashoot", &m_twoCargoBlueUltrashoot);
+  // m_chooser.SetDefaultOption("Default Test Auto", &m_outtake);
+  // m_chooser.AddOption("Test Auto: Straight Line", &m_testAuto1);
+  // m_chooser.AddOption("Test Auto: S With Rotation", &m_testAuto2);
+  // m_chooser.AddOption("Test Auto: Figure Eight", &m_testAuto3);
+  // m_chooser.AddOption("Test Auto: Drive Forward W/ Intake", &m_testAuto4);
+  // m_chooser.AddOption("Test Auto: Drive Forward and Backard W/ Rotate n Place", &m_testAuto5);
+  // m_chooser.AddOption("Test Auto: Intake Around Charge Station", &m_testAuto6);
+  // m_chooser.AddOption("Test Auto: S Without Rotation", &m_testAuto7);
+  // m_chooser.AddOption("Test Auto: Special", &m_testAuto8);
+  // m_chooser.AddOption("Outtake", &m_outtake);
+  // m_chooser.AddOption("Balance", &m_balance);
+  // m_chooser.AddOption("One Cargo High", &m_oneCargoHigh);
+  // m_chooser.AddOption("One Cargo Mid", &m_oneCargoMid);
+  // m_chooser.AddOption("One Cargo High + Balance", &m_oneCargoHighBalance);
+  // m_chooser.AddOption("One Cargo Mid + Balance", &m_oneCargoMidBalance);
+  // m_chooser.AddOption("One Cargo High + Pickup + Balance Red Side", &m_oneCargoHighPickupBalanceRed);
+  // m_chooser.AddOption("One Cargo High + Pickup + Balance Blue Side", &m_oneCargoHighPickupBalanceBlue);
+  // m_chooser.AddOption("One Cargo Mid + Pickup + Balance Red Side", &m_oneCargoMidPickupBalanceRed);
+  // m_chooser.AddOption("One Cargo Mid + Pickup + Balance Blue Side", &m_oneCargoMidPickupBalanceBlue);
+  // m_chooser.AddOption("One Cargo High + Pickup One", &m_oneCargoHighPickupOne);
+  // m_chooser.AddOption("One Cargo Mid + Pickup One", &m_oneCargoMidPickupOne);
+  // m_chooser.AddOption("Two Cargo", &m_twoCargo);
+  // // m_chooser.AddOption("Two Cargo With Vision", &m_twoPieceWithVision);
+  // m_chooser.AddOption("Two Cargo Red + Balance + Ultrashoot", &m_twoCargoRedUltrashoot);
+  // m_chooser.AddOption("Two Cargo Blue + Balance + Ultrashoot", &m_twoCargoBlueUltrashoot);
+
+  /*
+  * Emplace all the possible auto commands into auto event map on RoboRIO startup
+  * The key is the string associated with the event, and this string
+  * should match the string entered into the PathPlanner event marker
+  * These events will then be called during PathPlanner paths
+  * The value is a std::sharedptr<frc2::Command>,
+  * which is a pointer to the command that should be executed when its
+  * associated key is called
+  */ 
+
+  AutoParameters::eventMap.emplace(
+    "intake_pistons_out", 
+    std::make_shared<frc2::SequentialCommandGroup>(
+      frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
+      frc2::ParallelDeadlineGroup(
+        frc2::WaitCommand(0.25_s),
+        RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, 0)
+      )
+    )
+  );
+
+  AutoParameters::eventMap.emplace(
+    "intake_pistons_in", 
+    std::make_shared<frc2::InstantCommand>(
+      frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
+    )
+  );
+
+  AutoParameters::eventMap.emplace(
+    "score_low", 
+    std::make_shared<frc2::SequentialCommandGroup>(
+      ElevatorPID(m_elevator, m_intake, ELEVATOR_LOW_TARGET, false),
+      frc2::ParallelDeadlineGroup(
+        frc2::WaitCommand(.25_s), 
+        ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)
+      ),
+      frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber})
+    )
+  );
+
+  AutoParameters::eventMap.emplace(
+    "score_mid", 
+    std::make_shared<frc2::SequentialCommandGroup>(
+      ElevatorPID(m_elevator, m_intake, ELEVATOR_MID_TARGET, false),
+      frc2::ParallelDeadlineGroup(
+        frc2::WaitCommand(.25_s), 
+        ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)
+      ),
+      frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber})
+    )
+  );
+
+  AutoParameters::eventMap.emplace(
+    "score_high", 
+    std::make_shared<frc2::SequentialCommandGroup>(
+      ElevatorPID(m_elevator, m_intake, ELEVATOR_HIGH_TARGET, false),
+      frc2::ParallelDeadlineGroup(
+        frc2::WaitCommand(.25_s), 
+        ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)
+      ),
+      frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber})
+    )
+  );
+  
+  AutoParameters::eventMap.emplace(
+    "elevator_to_0", 
+    std::make_shared<frc2::ParallelDeadlineGroup>(
+      frc2::WaitCommand(2.0_s),
+      ElevatorPID(m_elevator, m_intake, 0, false)
+    )
+  );
+
+  AutoParameters::eventMap.emplace(
+    "grab", 
+    std::make_shared<frc2::SequentialCommandGroup>(
+      frc2::InstantCommand([this]{
+        m_intake->SetPower(0.0, INTAKE_CONVEYOR_POWER, 0);
+        m_grabber->SetSpeed(GRABBER_GRAB_SPEED);
+      },{m_intake, m_grabber}),
+      frc2::ParallelDeadlineGroup(
+        frc2::WaitCommand(0.35_s),
+        ElevatorPID(m_elevator, m_intake, 200, false)
+      ),
+      frc2::WaitCommand(0.125_s),
+      frc2::InstantCommand([this]{
+        m_intake->SetPower(0, 0, 0);
+        m_grabber->SetSpeed(0);
+      },{m_intake, m_grabber}).ToPtr()
+    )
+  );
 
   frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
-  AutoConstants::thetaPIDController.EnableContinuousInput(units::radian_t{-PI}, units::radian_t{PI});
-  AutoConstants::thetaPIDController.SetTolerance(units::radian_t{1.0 / 30.0});
+  AutoParameters::thetaPIDController.EnableContinuousInput(units::radian_t{-PI}, units::radian_t{PI});
+  AutoParameters::thetaPIDController.SetTolerance(units::radian_t{1.0 / 30.0});
   // std::cout << "Robot container constructed\n";
 }
 
@@ -174,7 +264,7 @@ void RobotContainer::ConfigureButtonBindings() {
   m_resetEncodersToAbsoluteButton.WhileTrue(AutoBalance(m_swerve).ToPtr());
   
   // frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2, SwerveDriveConstants::kMaxAcceleration / 2};
-  // config.SetKinematics(SwerveDriveConstants::kinematics);
+  // config.SetKinematics(SwerveDriveParameters::kinematics);
 
   // frc::Trajectory leftTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
   //   frc::Pose2d{0.0_m, 0.0_m, 0_deg},

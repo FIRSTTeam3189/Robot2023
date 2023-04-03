@@ -22,7 +22,7 @@ TrajectoryAimAssist::TrajectoryAimAssist(Vision *vision, SwerveDrive *swerve, do
   // if (m_visionData.detectionID != DetectionType::None) {
   //   auto m_pose = m_swerve->GetPose();
   //   frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed, SwerveDriveConstants::kMaxAcceleration};
-  //   config.SetKinematics(SwerveDriveConstants::kinematics);
+  //   config.SetKinematics(SwerveDriveParameters::kinematics);
 
   //   units::meter_t xDistance = units::meter_t{m_visionData.translationMatrix[0] - m_targetXDistance};
   //   units::meter_t yDistance = units::meter_t{m_visionData.translationMatrix[1] - m_targetYDistance};

@@ -26,6 +26,7 @@
 #include "commands/AutoBalance.h"
 #include "commands/ShootFromCarriage.h"
 #include "Autos/Balance.h"
+#include "RobotParameters.h"
 
 #include <iostream>
 

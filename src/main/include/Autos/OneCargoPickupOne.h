@@ -19,6 +19,7 @@
 #include "commands/RotateTo.h"
 #include "Autos/OneCargo.h"
 #include "Constants.h"
+#include "RobotParameters.h"
 
 #include <iostream>
 

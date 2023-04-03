@@ -20,6 +20,7 @@
 #include "commands/RunIntake.h"
 #include "commands/ResetOdometry.h"
 #include "Constants.h"
+#include "RobotParameters.h"
 
 #include <iostream>
 

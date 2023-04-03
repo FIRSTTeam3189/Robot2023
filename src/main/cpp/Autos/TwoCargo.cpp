@@ -12,7 +12,7 @@ TwoCargo::TwoCargo(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabbe
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
   frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed, SwerveDriveConstants::kMaxAcceleration};
-  config.SetKinematics(SwerveDriveConstants::kinematics);
+  config.SetKinematics(SwerveDriveParameters::kinematics);
   config.SetReversed(false);
 
   auto scoringToCargoTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
@@ -22,7 +22,7 @@ TwoCargo::TwoCargo(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabbe
     config);
 
   frc::TrajectoryConfig slowConfig{SwerveDriveConstants::kMaxSpeed / 2.5, SwerveDriveConstants::kMaxAcceleration / 4.0};
-  slowConfig.SetKinematics(SwerveDriveConstants::kinematics);
+  slowConfig.SetKinematics(SwerveDriveParameters::kinematics);
   slowConfig.SetReversed(false);
 
   auto cargoCreepForwardTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
@@ -99,7 +99,7 @@ TwoCargo::TwoCargo(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabbe
     // ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
     // ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
     // frc2::WaitCommand(0.125_s),
-    // frc2::InstantCommand([this]{AutoConstants::autoXPIDController.SetP(1.0);},{}),
+    // frc2::InstantCommand([this]{AutoParameters::autoXPIDController.SetP(1.0);},{}),
     swerveScoringToCargoCommand,
     ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
     ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
@@ -161,7 +161,7 @@ TwoCargo::TwoCargo(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabbe
     frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
     ElevatorPID(m_elevator, m_intake, 0, false),
     frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
-    // frc2::InstantCommand([this]{AutoConstants::autoXPIDController.SetP(5.0);},{})
+    // frc2::InstantCommand([this]{AutoParameters::autoXPIDController.SetP(5.0);},{})
   );
 
   // AddCommands(

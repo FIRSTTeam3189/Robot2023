@@ -54,9 +54,10 @@
 #include "subsystems/Elevator.h"
 #include "subsystems/Intake.h"
 #include "subsystems/Grabber.h"
+#include "subsystems/Vision.h"
+#include "RobotParameters.h"
 
 #include <iostream>
-#include "subsystems/Vision.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -81,31 +82,31 @@ class RobotContainer {
   Grabber *m_grabber = new Grabber();
   Intake *m_intake = new Intake();
 
-  // Add autonomous routines to chooser
-  TestAuto m_testAuto1{m_swerve, m_elevator, m_intake, m_grabber, 1};
-  TestAuto m_testAuto2{m_swerve, m_elevator, m_intake, m_grabber, 2};
-  TestAuto m_testAuto3{m_swerve, m_elevator, m_intake, m_grabber, 3};
-  TestAuto m_testAuto4{m_swerve, m_elevator, m_intake, m_grabber, 4};
-  TestAuto m_testAuto5{m_swerve, m_elevator, m_intake, m_grabber, 5};
-  TestAuto m_testAuto6{m_swerve, m_elevator, m_intake, m_grabber, 6};
-  TestAuto m_testAuto7{m_swerve, m_elevator, m_intake, m_grabber, 7};
-  TestAuto m_testAuto8{m_swerve, m_elevator, m_intake, m_grabber, 8};
-  Outtake m_outtake{m_intake, m_swerve};
-  Balance m_balance{m_swerve};
-  OneCargo m_oneCargoHigh{m_swerve, m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET};
-  OneCargo m_oneCargoMid{m_swerve, m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET};
-  OneCargoBalance m_oneCargoHighBalance{m_swerve, m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET};
-  OneCargoBalance m_oneCargoMidBalance{m_swerve, m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET};
-  OneCargoPickupBalance m_oneCargoHighPickupBalanceRed{m_swerve, m_elevator, m_grabber, m_intake, true, ELEVATOR_HIGH_TARGET};
-  OneCargoPickupBalance m_oneCargoHighPickupBalanceBlue{m_swerve, m_elevator, m_grabber, m_intake, false, ELEVATOR_HIGH_TARGET};
-  OneCargoPickupBalance m_oneCargoMidPickupBalanceRed{m_swerve, m_elevator, m_grabber, m_intake, true, ELEVATOR_MID_TARGET};
-  OneCargoPickupBalance m_oneCargoMidPickupBalanceBlue{m_swerve, m_elevator, m_grabber, m_intake, false, ELEVATOR_MID_TARGET};
-  OneCargoPickupOne m_oneCargoHighPickupOne{m_swerve, m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET};
-  OneCargoPickupOne m_oneCargoMidPickupOne{m_swerve, m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET};
-  TwoCargo m_twoCargo{m_swerve, m_elevator, m_grabber, m_intake};
-  // TwoPieceWithVision m_twoPieceWithVision{m_swerve, m_elevator, m_grabber, m_intake, m_vision};
-  TwoCargoUltrashootBalance m_twoCargoRedUltrashoot{m_swerve, m_elevator, m_grabber, m_intake, true};
-  TwoCargoUltrashootBalance m_twoCargoBlueUltrashoot{m_swerve, m_elevator, m_grabber, m_intake, false};
+  // // Add autonomous routines to chooser
+  // TestAuto m_testAuto1{m_swerve, m_elevator, m_intake, m_grabber, 1};
+  // TestAuto m_testAuto2{m_swerve, m_elevator, m_intake, m_grabber, 2};
+  // TestAuto m_testAuto3{m_swerve, m_elevator, m_intake, m_grabber, 3};
+  // TestAuto m_testAuto4{m_swerve, m_elevator, m_intake, m_grabber, 4};
+  // TestAuto m_testAuto5{m_swerve, m_elevator, m_intake, m_grabber, 5};
+  // TestAuto m_testAuto6{m_swerve, m_elevator, m_intake, m_grabber, 6};
+  // TestAuto m_testAuto7{m_swerve, m_elevator, m_intake, m_grabber, 7};
+  // TestAuto m_testAuto8{m_swerve, m_elevator, m_intake, m_grabber, 8};
+  // Outtake m_outtake{m_intake, m_swerve};
+  // Balance m_balance{m_swerve};
+  // OneCargo m_oneCargoHigh{m_swerve, m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET};
+  // OneCargo m_oneCargoMid{m_swerve, m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET};
+  // OneCargoBalance m_oneCargoHighBalance{m_swerve, m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET};
+  // OneCargoBalance m_oneCargoMidBalance{m_swerve, m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET};
+  // OneCargoPickupBalance m_oneCargoHighPickupBalanceRed{m_swerve, m_elevator, m_grabber, m_intake, true, ELEVATOR_HIGH_TARGET};
+  // OneCargoPickupBalance m_oneCargoHighPickupBalanceBlue{m_swerve, m_elevator, m_grabber, m_intake, false, ELEVATOR_HIGH_TARGET};
+  // OneCargoPickupBalance m_oneCargoMidPickupBalanceRed{m_swerve, m_elevator, m_grabber, m_intake, true, ELEVATOR_MID_TARGET};
+  // OneCargoPickupBalance m_oneCargoMidPickupBalanceBlue{m_swerve, m_elevator, m_grabber, m_intake, false, ELEVATOR_MID_TARGET};
+  // OneCargoPickupOne m_oneCargoHighPickupOne{m_swerve, m_elevator, m_grabber, m_intake, ELEVATOR_HIGH_TARGET};
+  // OneCargoPickupOne m_oneCargoMidPickupOne{m_swerve, m_elevator, m_grabber, m_intake, ELEVATOR_MID_TARGET};
+  // TwoCargo m_twoCargo{m_swerve, m_elevator, m_grabber, m_intake};
+  // // TwoPieceWithVision m_twoPieceWithVision{m_swerve, m_elevator, m_grabber, m_intake, m_vision};
+  // TwoCargoUltrashootBalance m_twoCargoRedUltrashoot{m_swerve, m_elevator, m_grabber, m_intake, true};
+  // TwoCargoUltrashootBalance m_twoCargoBlueUltrashoot{m_swerve, m_elevator, m_grabber, m_intake, false};
 
   frc::SendableChooser<frc2::Command*> m_chooser;
 

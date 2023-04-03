@@ -14,6 +14,7 @@
 #include "commands/ResetOdometry.h"
 #include "commands/DriveToPose.h"
 #include "Constants.h"
+#include "RobotParameters.h"
 
 class Balance
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,

@@ -24,7 +24,7 @@ m_modulePositions(
   m_SM.m_frontRight.GetSwerveModulePosition(),
   m_SM.m_backLeft.GetSwerveModulePosition(),
   m_SM.m_backRight.GetSwerveModulePosition()),
-m_odometry(SwerveDriveConstants::kinematics, m_pigeon.GetRotation2d(), m_modulePositions, initialPose)
+m_odometry(SwerveDriveParameters::kinematics, m_pigeon.GetRotation2d(), m_modulePositions, initialPose)
 {
   // Implementation of subsystem constructor goes here.
   // Create Shuffleboard outputs
@@ -63,11 +63,11 @@ void SwerveDrive::PercentDrive(
   bool fieldRelative) {
   UpdateOdometry();
   
-  auto states = SwerveDriveConstants::kinematics.ToSwerveModuleStates(
+  auto states = SwerveDriveParameters::kinematics.ToSwerveModuleStates(
     fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
                         xSpeed, ySpeed, rot, -m_pigeon.GetRotation2d())
                         : frc::ChassisSpeeds{xSpeed, ySpeed, rot});
-  SwerveDriveConstants::kinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed);
+  SwerveDriveParameters::kinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed);
 
   auto [fl, fr, bl, br] = states;
 
@@ -93,11 +93,11 @@ void SwerveDrive::Drive(
   bool fieldRelative) {
   UpdateOdometry();
   
-  auto states = SwerveDriveConstants::kinematics.ToSwerveModuleStates(
+  auto states = SwerveDriveParameters::kinematics.ToSwerveModuleStates(
     fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
                         xSpeed, ySpeed, rot, -m_pigeon.GetRotation2d())
                         : frc::ChassisSpeeds{xSpeed, ySpeed, rot});
-  SwerveDriveConstants::kinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed);
+  SwerveDriveParameters::kinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed);
 
   auto [fl, fr, bl, br] = states;
   
@@ -264,11 +264,11 @@ void SwerveDrive::ResetOdometry(frc::Pose2d pose) {
 }
 
 double SwerveDrive::Calculate(double measurement, double setpoint) {
-  return AutoConstants::thetaPIDController.Calculate(units::radian_t{measurement}, units::radian_t{setpoint});
+  return AutoParameters::thetaPIDController.Calculate(units::radian_t{measurement}, units::radian_t{setpoint});
 }
 
 void SwerveDrive::EnableContinuousInput(double minimumInput, double maximumInput) {
-  AutoConstants::thetaPIDController.EnableContinuousInput(units::radian_t{minimumInput}, units::radian_t{maximumInput});
+  AutoParameters::thetaPIDController.EnableContinuousInput(units::radian_t{minimumInput}, units::radian_t{maximumInput});
 }
 
 void SwerveDrive::Stop() {
@@ -281,9 +281,9 @@ void SwerveDrive::Stop() {
 void SwerveDrive::InitSmartDashboard() {
   // Add swerve PID values to PID tabs
   frc::SmartDashboard::PutNumber("Robot yaw", GetNormalizedYaw());
-  EntryRotationP = SwerveRotationPIDTab.Add("Rotation P", AutoConstants::thetaPIDController.GetP()).GetEntry();
-  EntryRotationI = SwerveRotationPIDTab.Add("Rotation I", AutoConstants::thetaPIDController.GetI()).GetEntry();
-  EntryRotationD = SwerveRotationPIDTab.Add("Rotation D", AutoConstants::thetaPIDController.GetD()).GetEntry();
+  EntryRotationP = SwerveRotationPIDTab.Add("Rotation P", AutoParameters::thetaPIDController.GetP()).GetEntry();
+  EntryRotationI = SwerveRotationPIDTab.Add("Rotation I", AutoParameters::thetaPIDController.GetI()).GetEntry();
+  EntryRotationD = SwerveRotationPIDTab.Add("Rotation D", AutoParameters::thetaPIDController.GetD()).GetEntry();
   // EntryFrontLeftSpeedP = SwerveFLPIDTab.Add("Front Left Speed P", m_SM.m_frontLeft.GetSpeedP()).GetEntry();
   // EntryFrontLeftSpeedI = SwerveFLPIDTab.Add("Front Left Speed I", m_SM.m_frontLeft.GetSpeedI()).GetEntry();
   // EntryFrontLeftSpeedD = SwerveFLPIDTab.Add("Front Left Speed D", m_SM.m_frontLeft.GetSpeedD()).GetEntry();
@@ -371,10 +371,10 @@ frc2::SwerveControllerCommand<4> SwerveDrive::CreateSwerveCommand(frc::Trajector
   frc2::SwerveControllerCommand<4> swerveCommand(
     trajectory, 
     [this]() { return GetPose(); },
-    SwerveDriveConstants::kinematics,
-    AutoConstants::autoXPIDController,
-    AutoConstants::autoYPIDController, 
-    AutoConstants::thetaPIDController,
+    SwerveDriveParameters::kinematics,
+    AutoParameters::autoXPIDController,
+    AutoParameters::autoYPIDController, 
+    AutoParameters::thetaPIDController,
     [this](auto moduleStates) { SetPercentModuleStates(moduleStates); },
     {this}
   );
@@ -411,9 +411,9 @@ void SwerveDrive::LogModuleStates(SwerveModuleTelemetry telemetryArray[]) {
 }
 
 void SwerveDrive::UpdatePIDValues() {
-  // AutoConstants::thetaPIDController.SetP(GetEntryRotationP());
-  // AutoConstants::thetaPIDController.SetI(GetEntryRotationI());
-  // AutoConstants::thetaPIDController.SetD(GetEntryRotationD());
+  // AutoParameters::thetaPIDController.SetP(GetEntryRotationP());
+  // AutoParameters::thetaPIDController.SetI(GetEntryRotationI());
+  // AutoParameters::thetaPIDController.SetD(GetEntryRotationD());
   // m_SM.m_frontLeft.SetSpeedP(GetEntryFLSpeedP());
   // m_SM.m_frontLeft.SetSpeedI(GetEntryFLSpeedI());
   // m_SM.m_frontLeft.SetSpeedD(GetEntryFLSpeedD());

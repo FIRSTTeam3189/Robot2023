@@ -13,7 +13,7 @@ OneCargoPickupOne::OneCargoPickupOne(SwerveDrive *swerveDrive, Elevator *elevato
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
   frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed, SwerveDriveConstants::kMaxAcceleration};
-  config.SetKinematics(SwerveDriveConstants::kinematics);
+  config.SetKinematics(SwerveDriveParameters::kinematics);
   config.SetReversed(true);
 
   // std::cout << "Scoring to cargo\n";
@@ -24,7 +24,7 @@ OneCargoPickupOne::OneCargoPickupOne(SwerveDrive *swerveDrive, Elevator *elevato
     config);
 
   frc::TrajectoryConfig slowConfig{SwerveDriveConstants::kMaxSpeed / 1.5, SwerveDriveConstants::kMaxAcceleration / 1.5};
-  slowConfig.SetKinematics(SwerveDriveConstants::kinematics);
+  slowConfig.SetKinematics(SwerveDriveParameters::kinematics);
   slowConfig.SetReversed(true);
 
   auto cargoCreepForwardTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
