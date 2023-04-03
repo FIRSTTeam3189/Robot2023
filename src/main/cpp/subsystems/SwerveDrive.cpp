@@ -56,6 +56,16 @@ void SwerveDrive::ResetGyro() {
   m_pigeon.SetYaw(0.0);
 }
 
+void SwerveDrive::PercentDrive(frc::ChassisSpeeds speeds) {
+  auto states = SwerveDriveParameters::kinematics.ToSwerveModuleStates(speeds);
+  SwerveDriveParameters::kinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed);
+  auto [fl, fr, bl, br] = states;
+  m_SM.m_frontLeft.SetDesiredPercentState(states[0]);
+  m_SM.m_frontRight.SetDesiredPercentState(states[1]);
+  m_SM.m_backLeft.SetDesiredPercentState(states[2]);
+  m_SM.m_backRight.SetDesiredPercentState(states[3]);
+}
+
 void SwerveDrive::PercentDrive(
   units::meters_per_second_t xSpeed,
   units::meters_per_second_t ySpeed,

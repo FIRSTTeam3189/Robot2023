@@ -57,7 +57,11 @@
 #include "subsystems/Vision.h"
 #include "RobotParameters.h"
 
+#include <pathplanner/lib/auto/SwerveAutoBuilder.h>
+#include <pathplanner/lib/PathPlanner.h>
+
 #include <iostream>
+#include <vector>
 
 /**
  * This class is where the bulk of the robot should be declared.  Since

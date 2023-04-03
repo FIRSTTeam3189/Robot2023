@@ -232,6 +232,64 @@ RobotContainer::RobotContainer() {
 
   // -----------------------------END OF AUTO EVENTS--------------------------
 
+  // Load paths
+  std::vector<pathplanner::PathPlannerTrajectory> testLineGroup = pathplanner::PathPlanner::loadPathGroup("Test - Line", {pathplanner::PathConstraints(4_mps, 3_mps_sq)});
+  std::vector<pathplanner::PathPlannerTrajectory> testSGroup = pathplanner::PathPlanner::loadPathGroup("Test - S", {pathplanner::PathConstraints(4_mps, 3_mps_sq)});
+  std::vector<pathplanner::PathPlannerTrajectory> testLineRotateGroup = pathplanner::PathPlanner::loadPathGroup("Test - Line + Rotate", {pathplanner::PathConstraints(4_mps, 3_mps_sq)});
+  std::vector<pathplanner::PathPlannerTrajectory> testLineIntakeGroup = pathplanner::PathPlanner::loadPathGroup("Test - Line + Intake", {pathplanner::PathConstraints(4_mps, 3_mps_sq)});
+  std::vector<pathplanner::PathPlannerTrajectory> testSRotateGroup = pathplanner::PathPlanner::loadPathGroup("Test - S + Rotate", {pathplanner::PathConstraints(4_mps, 3_mps_sq)});
+  std::vector<pathplanner::PathPlannerTrajectory> specialGroup = pathplanner::PathPlanner::loadPathGroup("Special", {pathplanner::PathConstraints(4_mps, 3_mps_sq)});
+  std::vector<pathplanner::PathPlannerTrajectory> figureEightGroup = pathplanner::PathPlanner::loadPathGroup("Figure Eight", {pathplanner::PathConstraints(4_mps, 3_mps_sq)});
+  std::vector<pathplanner::PathPlannerTrajectory> twoScoreHighMidCubesGroup = pathplanner::PathPlanner::loadPathGroup("Two Score High-Mid Cube", {pathplanner::PathConstraints(4_mps, 3_mps_sq)});
+  std::vector<pathplanner::PathPlannerTrajectory> oneScoreTaxiGroup = pathplanner::PathPlanner::loadPathGroup("One Score + Taxi", {pathplanner::PathConstraints(4_mps, 3_mps_sq)});
+  std::vector<pathplanner::PathPlannerTrajectory> oneScoreBalanceGroup = pathplanner::PathPlanner::loadPathGroup("One Score + Balance", {pathplanner::PathConstraints(4_mps, 3_mps_sq)});
+  std::vector<pathplanner::PathPlannerTrajectory> twoScoreUltrashootGroup = pathplanner::PathPlanner::loadPathGroup("One Score + Pickup + Balance + Ultrashoot", {pathplanner::PathConstraints(4_mps, 3_mps_sq)});
+  std::vector<pathplanner::PathPlannerTrajectory> twoScoreWideSweepGroup = pathplanner::PathPlanner::loadPathGroup("Two Score Wide Sweep", {pathplanner::PathConstraints(4_mps, 3_mps_sq)});
+  std::vector<pathplanner::PathPlannerTrajectory> fiveScoreGroup = pathplanner::PathPlanner::loadPathGroup("Five Score", {pathplanner::PathConstraints(4_mps, 3_mps_sq)});
+
+  // Make auto builder
+  pathplanner::SwerveAutoBuilder autoBuilder(
+    [this]() { return m_swerve->GetPose(); }, // Function to supply current robot pose
+    [this](auto initPose) { m_swerve->ResetOdometry(initPose); }, // Function used to reset odometry at the beginning of auto
+    pathplanner::PIDConstants(AutoConstants::kPXController, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+    pathplanner::PIDConstants(AutoConstants::autoRotP, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
+    [this](auto speeds) { m_swerve->PercentDrive(speeds); }, // Output function that accepts field relative ChassisSpeeds
+    AutoParameters::eventMap, // Our event map
+    { m_swerve }, // Drive requirements, usually just a single drive subsystem
+    true // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+  );
+
+  // Create actual auto commands
+  frc2::CommandPtr lineCommand = autoBuilder.fullAuto(testLineGroup);
+  frc2::CommandPtr sCommand = autoBuilder.fullAuto(testSGroup);
+  frc2::CommandPtr lineRotateCommand = autoBuilder.fullAuto(testLineRotateGroup);
+  frc2::CommandPtr lineIntakeCommand = autoBuilder.fullAuto(testLineIntakeGroup);
+  frc2::CommandPtr sRotateCommand = autoBuilder.fullAuto(testSRotateGroup);
+  frc2::CommandPtr specialCommand = autoBuilder.fullAuto(specialGroup);
+  frc2::CommandPtr figureEightCommand = autoBuilder.fullAuto(figureEightGroup);
+  frc2::CommandPtr twoScoreHighMidCubesCommand = autoBuilder.fullAuto(twoScoreHighMidCubesGroup);
+  frc2::CommandPtr oneScoreTaxiCommand = autoBuilder.fullAuto(oneScoreTaxiGroup);
+  frc2::CommandPtr oneScoreBalanceCommand = autoBuilder.fullAuto(oneScoreBalanceGroup);
+  frc2::CommandPtr twoScoreUltrashootCommand = autoBuilder.fullAuto(twoScoreUltrashootGroup);
+  frc2::CommandPtr twoScoreWideSweepCommand = autoBuilder.fullAuto(twoScoreWideSweepGroup);
+  frc2::CommandPtr fiveScoreCommand = autoBuilder.fullAuto(fiveScoreGroup);
+
+  // Add auto commands to auto chooser
+  m_chooser.SetDefaultOption("N/A", nullptr);
+  m_chooser.AddOption("Test: line", lineCommand.get());
+  m_chooser.AddOption("Test: s", sCommand.get());
+  m_chooser.AddOption("Test: line + rotate", lineRotateCommand.get());
+  m_chooser.AddOption("Test: line + intake", lineIntakeCommand.get());
+  m_chooser.AddOption("Test: s + rotate", sRotateCommand.get());
+  m_chooser.AddOption("Special", specialCommand.get());
+  m_chooser.AddOption("Figure eight", figureEightCommand.get());
+  m_chooser.AddOption("Two score: high/mid cubes", twoScoreHighMidCubesCommand.get());
+  m_chooser.AddOption("One score + taxi", oneScoreTaxiCommand.get());
+  m_chooser.AddOption("One score + balance", oneScoreBalanceCommand.get());
+  m_chooser.AddOption("Two score + ultrashoot", twoScoreUltrashootCommand.get());
+  m_chooser.AddOption("Two Score: wide sweep high/mid cubes", twoScoreWideSweepCommand.get());
+  m_chooser.AddOption("Five score", fiveScoreCommand.get());
+
   frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
   AutoParameters::thetaPIDController.EnableContinuousInput(units::radian_t{-PI}, units::radian_t{PI});
   AutoParameters::thetaPIDController.SetTolerance(units::radian_t{1.0 / 30.0});
