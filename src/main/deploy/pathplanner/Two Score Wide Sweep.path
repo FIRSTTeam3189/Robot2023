@@ -29,22 +29,22 @@
     },
     {
       "anchorPoint": {
-        "x": 6.333636994197067,
-        "y": 4.595858326332038
+        "x": 6.044589300717064,
+        "y": 5.058334635900041
       },
       "prevControl": {
-        "x": 5.254525605205059,
-        "y": 4.566953556984038
+        "x": 5.53767118594551,
+        "y": 5.0716745862887676
       },
       "nextControl": {
-        "x": 7.412748383189076,
-        "y": 4.624763095680037
+        "x": 6.410716379125066,
+        "y": 5.048699712784041
       },
-      "holonomicAngle": 0.0,
+      "holonomicAngle": 180.0,
       "isReversal": false,
       "velOverride": null,
-      "isLocked": true,
-      "isStopPoint": true,
+      "isLocked": false,
+      "isStopPoint": false,
       "stopEvent": {
         "names": [
           "intake_pistons_out",
@@ -57,24 +57,53 @@
     },
     {
       "anchorPoint": {
+        "x": 7.489827768117077,
+        "y": 5.000525097204041
+      },
+      "prevControl": {
+        "x": 7.104430843477074,
+        "y": 5.096874328364041
+      },
+      "nextControl": {
+        "x": 8.376240694789086,
+        "y": 4.778921865536039
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "intake_pistons_out"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
         "x": 6.863557765577071,
         "y": 4.586223403216038
       },
       "prevControl": {
-        "x": 7.141471440216205,
-        "y": 4.62096261254593
+        "x": 7.191986314369668,
+        "y": 4.569380913534366
       },
       "nextControl": {
-        "x": 6.632319610793068,
-        "y": 4.557318633868038
+        "x": 6.487795764053068,
+        "y": 4.605493249448038
       },
-      "holonomicAngle": 0,
+      "holonomicAngle": 180.0,
       "isReversal": false,
       "velOverride": 1.0,
-      "isLocked": true,
-      "isStopPoint": false,
+      "isLocked": false,
+      "isStopPoint": true,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "intake_pistons_in"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
@@ -111,12 +140,5 @@
   "maxVelocity": 4.0,
   "maxAcceleration": 3.0,
   "isReversed": null,
-  "markers": [
-    {
-      "position": 2.0,
-      "names": [
-        "intake_pistons_in"
-      ]
-    }
-  ]
+  "markers": []
 }

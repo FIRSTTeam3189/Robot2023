@@ -9,7 +9,7 @@ LEDSystem::LEDSystem(int brightness) : m_candleControl(CANDLE_DEVICE_ID), m_cand
     m_candleConfig.brightnessScalar = brightness;
     m_candleControl.ConfigAllSettings(m_candleConfig);
     // The Full Setup
-    m_ledSections.at(LEDSection::All) = {0, 155};
+    m_ledSections.at(LEDSection::All) = {0, 154};
     // Candle length 8
     m_ledSections.at(LEDSection::Candle) = {0, 8};
     // length 11
@@ -28,12 +28,12 @@ LEDSystem::LEDSystem(int brightness) : m_candleControl(CANDLE_DEVICE_ID), m_cand
     m_ledSections.at(LEDSection::LUnderGlow) = {87, 112};
     // length 19
     m_ledSections.at(LEDSection::LBackElevatorStrip) = {112, 131};
-    // length 11
-    m_ledSections.at(LEDSection::LFrontElevatorStrip) = {131, 142};
+    // length 10
+    m_ledSections.at(LEDSection::LFrontElevatorStrip) = {131, 141};
     // length 7
-    m_ledSections.at(LEDSection::LFrontStrip) = {142, 149};
+    m_ledSections.at(LEDSection::LFrontStrip) = {141, 148};
     // length 6
-    m_ledSections.at(LEDSection::LIntakeCrossStrip) = {149, 155};
+    m_ledSections.at(LEDSection::LIntakeCrossStrip) = {148, 154};
 }
 
 // This method will be called once per scheduler run
