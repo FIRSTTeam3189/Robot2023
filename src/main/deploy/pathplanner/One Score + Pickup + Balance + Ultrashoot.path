@@ -33,12 +33,12 @@
         "y": 4.595858326332038
       },
       "prevControl": {
-        "x": 5.254525605205059,
-        "y": 4.566953556984038
+        "x": 5.2545256052050595,
+        "y": 4.566953556983986
       },
       "nextControl": {
-        "x": 7.412748383189076,
-        "y": 4.624763095680037
+        "x": 6.342749222925908,
+        "y": 4.596102403887275
       },
       "holonomicAngle": 0.0,
       "isReversal": false,
@@ -57,66 +57,60 @@
     },
     {
       "anchorPoint": {
-        "x": 6.863557765577071,
-        "y": 4.586223403216038
+        "x": 7.0755260741290735,
+        "y": 4.624763095680038
       },
       "prevControl": {
-        "x": 7.141471440216205,
-        "y": 4.62096261254593
+        "x": 6.911449245780712,
+        "y": 4.624763095680038
       },
       "nextControl": {
-        "x": 6.632319610793068,
-        "y": 4.557318633868038
+        "x": 7.489827768117077,
+        "y": 4.624763095680038
       },
       "holonomicAngle": 0,
       "isReversal": false,
       "velOverride": 1.0,
-      "isLocked": true,
-      "isStopPoint": false,
+      "isLocked": false,
+      "isStopPoint": true,
       "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
+        "names": [
+          "stop_intake",
+          "intake_pistons_in",
+          "grab"
+        ],
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }
     },
     {
       "anchorPoint": {
-        "x": 1.5739849748930288,
-        "y": 4.412794787128036
+        "x": 3.944176061429048,
+        "y": 2.7652229342920234
       },
       "prevControl": {
-        "x": 4.338191907153046,
-        "y": 4.470604325824036
+        "x": 6.76720853441707,
+        "y": 2.5725244719720215
       },
       "nextControl": null,
-      "holonomicAngle": -180.0,
+      "holonomicAngle": 180.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Intake Pistons Out",
-          "Score Mid",
-          "Elevator To 0",
-          "Intake Pistons In"
+          "balance",
+          "intake_pistons_out",
+          "ultra_shoot",
+          "intake_pistons_in"
         ],
         "executionBehavior": "parallel",
-        "waitBehavior": "after",
+        "waitBehavior": "none",
         "waitTime": 0
       }
     }
   ],
-  "maxVelocity": 4.0,
-  "maxAcceleration": 3.0,
-  "isReversed": null,
-  "markers": [
-    {
-      "position": 2.0,
-      "names": [
-        "intake_pistons_in"
-      ]
-    }
-  ]
+  "markers": []
 }

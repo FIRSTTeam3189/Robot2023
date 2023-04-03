@@ -1,0 +1,81 @@
+{
+  "waypoints": [
+    {
+      "anchorPoint": {
+        "x": 1.5739849748930288,
+        "y": 2.745953088060023
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.8726675914890312,
+        "y": 2.736318164944023
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "intake_pistons_out",
+          "score_high",
+          "elevator_to_0",
+          "intake_pistions_in"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "before",
+        "waitTime": 5.0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 2.855429749321039,
+        "y": 2.7748578574080227
+      },
+      "prevControl": {
+        "x": 2.364048670405035,
+        "y": 2.755588011176023
+      },
+      "nextControl": {
+        "x": 3.346810828237043,
+        "y": 2.7941277036400223
+      },
+      "holonomicAngle": 160.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 3.9152712920810475,
+        "y": 2.7748578574080227
+      },
+      "prevControl": {
+        "x": 3.626223598601045,
+        "y": 2.765222934292024
+      },
+      "nextControl": null,
+      "holonomicAngle": 160.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "balance"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    }
+  ],
+  "markers": []
+}
