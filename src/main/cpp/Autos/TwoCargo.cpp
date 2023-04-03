@@ -13,31 +13,31 @@ TwoCargo::TwoCargo(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabbe
   // AddCommands(FooCommand{}, BarCommand{});
   frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed, SwerveDriveConstants::kMaxAcceleration};
   config.SetKinematics(SwerveDriveConstants::kinematics);
-  config.SetReversed(true);
+  config.SetReversed(false);
 
   auto scoringToCargoTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
     frc::Pose2d{0.0_m, 0.0_m, 0_deg},
-    {frc::Translation2d{-2.845_m * AutoConstants::TrajectoryScale, 0.0_m}}, 
-    frc::Pose2d{-5.50_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
+    {frc::Translation2d{2.6_m * AutoConstants::TrajectoryScale, 0.0_m}}, 
+    frc::Pose2d{5.2_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
     config);
 
-  frc::TrajectoryConfig slowConfig{SwerveDriveConstants::kMaxSpeed / 2.5, SwerveDriveConstants::kMaxAcceleration / 1.5};
+  frc::TrajectoryConfig slowConfig{SwerveDriveConstants::kMaxSpeed / 2.5, SwerveDriveConstants::kMaxAcceleration / 4.0};
   slowConfig.SetKinematics(SwerveDriveConstants::kinematics);
-  slowConfig.SetReversed(true);
+  slowConfig.SetReversed(false);
 
   auto cargoCreepForwardTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-    frc::Pose2d{-5.50_m, 0.0_m, 0_deg},
-    {frc::Translation2d{-5.60_m * AutoConstants::TrajectoryScale, 0.0_m}}, 
-    frc::Pose2d{-5.69_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
+    frc::Pose2d{0.0_m, 0.0_m, 0_deg},
+    {frc::Translation2d{0.25_m * AutoConstants::TrajectoryScale, 0.0_m}}, 
+    frc::Pose2d{0.5_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
     slowConfig
   );
 
-  config.SetReversed(true);
+  config.SetReversed(false);
   std::cout << "Cargo to scoring\n";
   auto cargoToScoringTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-    frc::Pose2d{-5.69_m * AutoConstants::TrajectoryScale, 0.0_m, 180_deg},
-    {frc::Translation2d{-2.845_m * AutoConstants::TrajectoryScale, 0.0_m}}, 
-    frc::Pose2d{0.0_m * AutoConstants::TrajectoryScale, 0.0_m, 180_deg},
+    frc::Pose2d{0.0_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
+    {frc::Translation2d{2.5_m * AutoConstants::TrajectoryScale, 0.0_m}}, 
+    frc::Pose2d{5.5_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
     config);
 
   // cargoToScoringTrajectory.TransformBy(frc::Transform2d{frc::Pose2d{0_m, 0_m, 0_deg}, m_swerve->GetPose()});
@@ -72,8 +72,11 @@ TwoCargo::TwoCargo(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabbe
     ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
     ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
     ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
-    frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);
-    std::cout << "Starting one cargo\n";},{m_swerve}),
+    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
+    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
+    frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
+    frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
+    frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
     frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
     frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
     frc2::WaitCommand(0.25_s),
@@ -93,10 +96,25 @@ TwoCargo::TwoCargo(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabbe
       ElevatorPID(m_elevator, m_intake, 0, false)),
     frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake}),
     RotateTo(m_swerve, 0.0),
+    // ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
+    // ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
+    // frc2::WaitCommand(0.125_s),
+    // frc2::InstantCommand([this]{AutoConstants::autoXPIDController.SetP(1.0);},{}),
     swerveScoringToCargoCommand,
+    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
+    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
+    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
+    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
+    frc2::WaitCommand(0.125_s),
+    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
+    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
+    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
+    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
+    frc2::WaitCommand(0.625_s),
     frc2::SequentialCommandGroup(
       frc2::InstantCommand([this]{
         m_intake->SetPistonExtension(true);
+        m_swerve->SetRobotYaw(0.0);
       },{m_intake}),
       frc2::ParallelDeadlineGroup(
         frc2::WaitCommand(0.5_s),
@@ -114,14 +132,22 @@ TwoCargo::TwoCargo(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabbe
       m_intake->SetPistonExtension(false);
     },{m_intake}),
     frc2::WaitCommand(0.5_s),
-    frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(1.0_s), 
-      RunIntake(m_intake, 0, INTAKE_CONVEYOR_POWER, 0),
-      ShootFromCarriage(m_grabber, GRABBER_GRAB_SPEED)
-    ),
     frc2::InstantCommand([this]{m_intake->SetPower(0, 0, 0); m_grabber->SetSpeed(0);},{m_intake, m_grabber}),
     RotateTo(m_swerve, 180.0),
-    swerveCargoToScoringCommand,
+    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
+    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
+    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}),
+    ResetOdometry(m_swerve, frc::Pose2d{0_m, 0_m, frc::Rotation2d{0_deg}}), 
+    frc2::WaitCommand(0.125_s),
+    frc2::ParallelDeadlineGroup(
+      swerveCargoToScoringCommand,
+      frc2::ParallelDeadlineGroup(
+        frc2::WaitCommand(1.0_s), 
+        RunIntake(m_intake, 0, INTAKE_CONVEYOR_POWER, 0),
+        ShootFromCarriage(m_grabber, GRABBER_GRAB_SPEED)
+      )
+    ),
+    frc2::InstantCommand([this]{m_swerve->PercentDrive(0_mps, 0_mps, 0_rad / 1_s, true);},{m_swerve}),
     frc2::SequentialCommandGroup(
       frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
       frc2::ParallelDeadlineGroup(
@@ -135,6 +161,7 @@ TwoCargo::TwoCargo(SwerveDrive *swerveDrive, Elevator *elevator, Grabber *grabbe
     frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
     ElevatorPID(m_elevator, m_intake, 0, false),
     frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
+    // frc2::InstantCommand([this]{AutoConstants::autoXPIDController.SetP(5.0);},{})
   );
 
   // AddCommands(

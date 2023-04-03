@@ -29,7 +29,7 @@ void RotateTo::Execute() {
     units::radians_per_second_t{m_rotationPIDController.Calculate(m_swerve->GetNormalizedYaw(), m_targetAngle)
     * SwerveDriveConstants::maxAngularVelocity};
   
-  if (abs(m_lastError) < 2.5) {
+  if (abs(m_lastError) < 1.0) {
     m_withinThresholdLoops++;
   } else {
     m_withinThresholdLoops = 0;
@@ -46,5 +46,5 @@ void RotateTo::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool RotateTo::IsFinished() {
-  return (m_withinThresholdLoops >= 10 || m_timer.HasElapsed(1.5_s));
+  return (m_withinThresholdLoops >= 10 || m_timer.HasElapsed(1.25_s));
 }

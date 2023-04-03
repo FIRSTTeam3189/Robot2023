@@ -53,7 +53,7 @@ double SwerveDrive::GetRobotYaw() {
 }
 
 void SwerveDrive::ResetGyro() {
-  m_pigeon.Reset();
+  m_pigeon.SetYaw(0.0);
 }
 
 void SwerveDrive::PercentDrive(
@@ -70,6 +70,14 @@ void SwerveDrive::PercentDrive(
   SwerveDriveConstants::kinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed);
 
   auto [fl, fr, bl, br] = states;
+
+  double AdvantageScopeDesiredStates[] = 
+    {(double)fl.angle.Degrees(), (double)fl.speed,
+     (double)fr.angle.Degrees(), (double)fr.speed,
+     (double)bl.angle.Degrees(), (double)bl.speed,
+     (double)br.angle.Degrees(), (double)br.speed};
+
+  frc::SmartDashboard::PutNumberArray("AdvantageScope Desired States", AdvantageScopeDesiredStates);
 
   m_SM.m_frontLeft.SetDesiredPercentState(states[0]);
   m_SM.m_frontRight.SetDesiredPercentState(states[1]);
@@ -237,7 +245,14 @@ void SwerveDrive::UpdateOdometry() {
   m_modulePositions[2] = m_SM.m_backLeft.GetSwerveModulePosition();
   m_modulePositions[3] = m_SM.m_backRight.GetSwerveModulePosition();
 
-  m_odometry.Update(frc::Rotation2d{units::degree_t{GetNormalizedYaw()}}, 
+  frc::SmartDashboard::PutNumber("Fl distance", (double)m_modulePositions[0].distance);
+  frc::SmartDashboard::PutNumber("Fr distance", (double)m_modulePositions[1].distance);
+  frc::SmartDashboard::PutNumber("Bl distance", (double)m_modulePositions[2].distance);
+  frc::SmartDashboard::PutNumber("Br distance", (double)m_modulePositions[3].distance);
+  // m_odometry.Update(frc::Rotation2d{units::degree_t{GetNormalizedYaw()}}, 
+  //                   m_modulePositions);
+  
+  m_odometry.Update(m_pigeon.GetRotation2d(), 
                     m_modulePositions);
 }  
 

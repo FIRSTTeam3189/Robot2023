@@ -26,7 +26,7 @@ RobotContainer::RobotContainer() {
   m_chooser.AddOption("Test Auto: Drive Forward and Backard W/ Rotate n Place", &m_testAuto5);
   m_chooser.AddOption("Test Auto: Intake Around Charge Station", &m_testAuto6);
   m_chooser.AddOption("Test Auto: S Without Rotation", &m_testAuto7);
-  m_chooser.AddOption("Test Auto: N/A", &m_testAuto8);
+  m_chooser.AddOption("Test Auto: Special", &m_testAuto8);
   m_chooser.AddOption("Outtake", &m_outtake);
   m_chooser.AddOption("Balance", &m_balance);
   m_chooser.AddOption("One Cargo High", &m_oneCargoHigh);
@@ -484,4 +484,5 @@ void RobotContainer::Sync() {
 
 void RobotContainer::ResetGyroscope() {
   m_swerve->ResetGyro();
+  m_swerve->ResetOdometry(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}});
 }

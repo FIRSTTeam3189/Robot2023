@@ -56,6 +56,7 @@ void Robot::DisabledPeriodic() {
 void Robot::AutonomousInit() {
   // std::cout << "About to get autonomous command\n";
   m_autonomousCommand = m_container.GetAutonomousCommand();
+  m_container.ResetGyroscope();
   // std::cout << "Got auto command\n";
 
   // Make sure auto exists

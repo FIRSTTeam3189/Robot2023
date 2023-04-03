@@ -4,6 +4,7 @@
 
 #include "Autos/TestAuto.h"
 #include <iostream>
+#include <frc2/command/RunCommand.h>
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.
 // For more information, see:
@@ -18,7 +19,7 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Elevator *elevator, Intake *intake,
     // Straight line
     case 1:
       {
-      frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 1.0, SwerveDriveConstants::kMaxAcceleration / 1.0};
+      frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 4.0, SwerveDriveConstants::kMaxAcceleration / 4.0};
       config.SetKinematics(SwerveDriveConstants::kinematics);
       config.SetReversed(false);
 
@@ -28,13 +29,17 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Elevator *elevator, Intake *intake,
       auto straightLineTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
         frc::Pose2d{0.0_m, 0.0_m, 0_deg},
         {frc::Translation2d{1.0_m * AutoConstants::TrajectoryScale, 0.0_m}},
-        frc::Pose2d{2.0_m * AutoConstants::TrajectoryScale, 0.0_m, 0_deg},
+        frc::Pose2d{2.0_m * AutoConstants::TrajectoryScale, 0.01_m, 180_deg},
         config);
 
       frc2::SwerveControllerCommand<4> swerveLineCommand = m_swerve->CreateSwerveCommand(straightLineTrajectory);
 
       AddCommands(
         swerveLineCommand
+        // frc2::ParallelDeadlineGroup(
+        //   frc2::WaitCommand(3.0_s),
+        //   frc2::RunCommand([this]{m_swerve->PercentDrive(5.0_mps, 0.0_mps, 0.0_rad / 1_s, true);},{m_swerve})
+        // )
       );
       }
       break;
@@ -193,9 +198,9 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Elevator *elevator, Intake *intake,
 
         auto scoringToSecondCargoTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
           frc::Pose2d{0.0_m, 0.0_m, 0_deg},
-          {frc::Translation2d{2.5_m, 0.0_m},
-          frc::Translation2d{3.5_m, 0.0_m}}, 
-          frc::Pose2d{4.5_m, 0.0_m, 0_deg},
+          {frc::Translation2d{1.5_m, 0.0_m},
+          frc::Translation2d{3.0_m, 0.0_m}}, 
+          frc::Pose2d{4.0_m, 0.0_m, 0_deg},
           config
         );
 
@@ -206,7 +211,7 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Elevator *elevator, Intake *intake,
         auto cargoCreepForwardTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
           frc::Pose2d{0.0_m, 0.0_m, 0_deg},
           {frc::Translation2d{0.5_m, 0.0_m}}, 
-          frc::Pose2d{1.5_m, 0.0_m, 0_deg},
+          frc::Pose2d{1.0_m, 0.0_m, 0_deg},
           slowConfig
         );
 
@@ -277,21 +282,36 @@ TestAuto::TestAuto(SwerveDrive *swerveDrive, Elevator *elevator, Intake *intake,
       }
       break;
 
-    // S-shape with rotation
+    // Special shape
     case 8:
       {
         frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed / 2.0, SwerveDriveConstants::kMaxAcceleration / 2.0};
         config.SetKinematics(SwerveDriveConstants::kinematics);
         config.SetReversed(false);
 
-        auto sTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-          frc::Pose2d{0.0_m, 0.0_m, 0_deg},
-          {frc::Translation2d{1.0_m * AutoConstants::TrajectoryScale, 0.0_m},
-           frc::Translation2d{1.0_m, -1.0_m}},
-          frc::Pose2d{2.0_m * AutoConstants::TrajectoryScale, -1.0_m, 180_deg},
-          config);
+        auto specialTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+        frc::Pose2d{0.0_m, 0.0_m, 0_deg},
+        {
+          frc::Translation2d{-0.4_m * AutoConstants::TrajectoryScale, 0.1_m * AutoConstants::TrajectoryScale}, 
+          frc::Translation2d{-0.6_m * AutoConstants::TrajectoryScale, 0.3_m * AutoConstants::TrajectoryScale},
+          frc::Translation2d{-0.6_m * AutoConstants::TrajectoryScale, 0.6_m * AutoConstants::TrajectoryScale}, 
+          frc::Translation2d{-0.4_m * AutoConstants::TrajectoryScale, 0.8_m * AutoConstants::TrajectoryScale},
+          frc::Translation2d{0.0_m * AutoConstants::TrajectoryScale, 0.8_m * AutoConstants::TrajectoryScale}, 
+          frc::Translation2d{0.4_m * AutoConstants::TrajectoryScale, 0.4_m * AutoConstants::TrajectoryScale},
+          frc::Translation2d{1.8_m * AutoConstants::TrajectoryScale, 0.25_m * AutoConstants::TrajectoryScale}, 
+          frc::Translation2d{2.0_m * AutoConstants::TrajectoryScale, 0.0_m * AutoConstants::TrajectoryScale},
+          frc::Translation2d{1.8_m * AutoConstants::TrajectoryScale, -0.25_m * AutoConstants::TrajectoryScale}, 
+          frc::Translation2d{0.4_m * AutoConstants::TrajectoryScale, -0.4_m * AutoConstants::TrajectoryScale},
+          frc::Translation2d{0.0_m * AutoConstants::TrajectoryScale, -0.8_m * AutoConstants::TrajectoryScale}, 
+          frc::Translation2d{-0.3_m * AutoConstants::TrajectoryScale, -0.8_m * AutoConstants::TrajectoryScale},
+          frc::Translation2d{-0.6_m * AutoConstants::TrajectoryScale, -0.6_m * AutoConstants::TrajectoryScale}, 
+          frc::Translation2d{-0.6_m * AutoConstants::TrajectoryScale, -0.3_m * AutoConstants::TrajectoryScale},
+          frc::Translation2d{-0.4_m * AutoConstants::TrajectoryScale, -0.1_m * AutoConstants::TrajectoryScale}
+        },
+        frc::Pose2d{0.0_m, 0.0_m, 0_deg},
+        config);
 
-        frc2::SwerveControllerCommand<4> swerveCommand = m_swerve->CreateSwerveCommand(sTrajectory);
+        frc2::SwerveControllerCommand<4> swerveCommand = m_swerve->CreateSwerveCommand(specialTrajectory);
 
         AddCommands(
           swerveCommand

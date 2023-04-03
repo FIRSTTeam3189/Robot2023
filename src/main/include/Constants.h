@@ -141,14 +141,15 @@ namespace AutoConstants {
     // Ramsete controller (trajectory following) parameters
     constexpr auto kRamseteB = 2.0 * 1_rad * 1_rad / (1_m * 1_m);
     constexpr auto kRamseteZeta = 0.7 / 1_rad;
-    constexpr double autoRotP {-4.0};
+    constexpr double autoRotP {-5.0};
     constexpr double autoRotI {0.0};
     constexpr double autoRotD {0.0};
     constexpr int autoBalanceSettleLoops = 25;
 
+    // Y and rotation are inverted
     // PID Controllers for x and y movement in auto mode -- theta controller is part of drive object
-    constexpr double kPXController = 3.0;
-    constexpr double kPYController = 3.0;
+    constexpr double kPXController = 0.0;
+    constexpr double kPYController = -0.0;
 
     static frc::TrapezoidProfile<units::radians>::Constraints thetaConstraints{SwerveDriveConstants::maxAngularVelocity,
                                                                         SwerveDriveConstants::maxAngularAcceleration};

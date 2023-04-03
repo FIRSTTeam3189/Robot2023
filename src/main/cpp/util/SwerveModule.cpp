@@ -264,7 +264,7 @@ frc::SwerveModulePosition SwerveModule::GetSwerveModulePosition() {
 
 void SwerveModule::UpdateModulePosition() {
     m_swervePosition.distance = FalconToMeters(m_speedMotor.GetSelectedSensorPosition());
-    m_swervePosition.angle = frc::Rotation2d{units::degree_t{(GetRelativeAngle())}};
+    m_swervePosition.angle = -frc::Rotation2d{units::degree_t{(GetRelativeAngle())}};
 }
 
 double SwerveModule::GetRelativeAngle() {
