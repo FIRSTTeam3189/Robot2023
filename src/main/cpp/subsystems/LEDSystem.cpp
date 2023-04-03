@@ -4,7 +4,7 @@
 
 #include "subsystems/LEDSystem.h"
 
-LEDSystem::LEDSystem(int brightness) : m_candleControl(CANDLE_DEVICE_ID), m_animation(NULL), m_candleConfig(), m_ledSections() {
+LEDSystem::LEDSystem(int brightness) : m_candleControl(CANDLE_DEVICE_ID), m_candleConfig(), m_animation(NULL), m_ledSections() {
     m_candleConfig.stripType = ctre::phoenix::led::LEDStripType::RGB;
     m_candleConfig.brightnessScalar = brightness;
     m_candleControl.ConfigAllSettings(m_candleConfig);
@@ -39,7 +39,7 @@ LEDSystem::LEDSystem(int brightness) : m_candleControl(CANDLE_DEVICE_ID), m_anim
 // This method will be called once per scheduler run
 void LEDSystem::Periodic() {}
 
-void LEDSystem::SetAnimation(LEDAnimationType newAnimation, LEDSection section = LEDSection::All, int r = 0, int g = 0, int b = 0) {
+void LEDSystem::SetAnimation(LEDAnimationType newAnimation, LEDSection section, int r, int g, int b) {
     auto len = m_ledSections[section].second - m_ledSections[section].first;
     switch (newAnimation) {
     case LEDAnimationType::ColorFlow:
@@ -96,11 +96,11 @@ void LEDSystem::SetAnimation(LEDAnimationType newAnimation, LEDSection section =
     }
 }
 
-void LEDSystem::SetColor(int r, int g, int b, LEDSection section = LEDSection::All) {
+void LEDSystem::SetColor(int r, int g, int b, LEDSection section) {
     m_candleControl.SetLEDs(r, g, b, 0, m_ledSections[section].first, m_ledSections[section].second);
 }
 
-void LEDSystem::ClearColor(LEDSection section = LEDSection::All) {
+void LEDSystem::ClearColor(LEDSection section) {
     m_candleControl.SetLEDs(0, 0, 0, 0, m_ledSections[section].first, m_ledSections[section].second);
 }
 

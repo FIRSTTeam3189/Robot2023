@@ -53,6 +53,8 @@ RobotContainer::RobotContainer() {
   * associated key is called
   */ 
 
+  // --------------------------------START OF AUTO EVENTS---------------------------------
+
   AutoParameters::eventMap.emplace(
     "intake_pistons_out", 
     std::make_shared<frc2::SequentialCommandGroup>(
@@ -74,36 +76,42 @@ RobotContainer::RobotContainer() {
   AutoParameters::eventMap.emplace(
     "score_low", 
     std::make_shared<frc2::SequentialCommandGroup>(
-      ElevatorPID(m_elevator, m_intake, ELEVATOR_LOW_TARGET, false),
-      frc2::ParallelDeadlineGroup(
-        frc2::WaitCommand(.25_s), 
-        ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)
-      ),
-      frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber})
+      frc2::SequentialCommandGroup(
+        ElevatorPID(m_elevator, m_intake, ELEVATOR_LOW_TARGET, false),
+        frc2::ParallelDeadlineGroup(
+          frc2::WaitCommand(.25_s), 
+          ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)
+        ),
+        frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber})
+      )
     )
   );
 
   AutoParameters::eventMap.emplace(
     "score_mid", 
     std::make_shared<frc2::SequentialCommandGroup>(
-      ElevatorPID(m_elevator, m_intake, ELEVATOR_MID_TARGET, false),
-      frc2::ParallelDeadlineGroup(
-        frc2::WaitCommand(.25_s), 
-        ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)
-      ),
-      frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber})
+      frc2::SequentialCommandGroup(
+        ElevatorPID(m_elevator, m_intake, ELEVATOR_MID_TARGET, false),
+        frc2::ParallelDeadlineGroup(
+          frc2::WaitCommand(.25_s), 
+          ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)
+        ),
+        frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber})
+      )
     )
   );
 
   AutoParameters::eventMap.emplace(
     "score_high", 
     std::make_shared<frc2::SequentialCommandGroup>(
-      ElevatorPID(m_elevator, m_intake, ELEVATOR_HIGH_TARGET, false),
-      frc2::ParallelDeadlineGroup(
-        frc2::WaitCommand(.25_s), 
-        ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)
-      ),
-      frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber})
+      frc2::SequentialCommandGroup(
+        ElevatorPID(m_elevator, m_intake, ELEVATOR_HIGH_TARGET, false),
+        frc2::ParallelDeadlineGroup(
+          frc2::WaitCommand(.25_s), 
+          ShootFromCarriage(m_grabber, GRABBER_DROP_SPEED)
+        ),
+        frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber})
+      )
     )
   );
   
@@ -118,21 +126,111 @@ RobotContainer::RobotContainer() {
   AutoParameters::eventMap.emplace(
     "grab", 
     std::make_shared<frc2::SequentialCommandGroup>(
-      frc2::InstantCommand([this]{
-        m_intake->SetPower(0.0, INTAKE_CONVEYOR_POWER, 0);
-        m_grabber->SetSpeed(GRABBER_GRAB_SPEED);
-      },{m_intake, m_grabber}),
-      frc2::ParallelDeadlineGroup(
-        frc2::WaitCommand(0.35_s),
-        ElevatorPID(m_elevator, m_intake, 200, false)
-      ),
-      frc2::WaitCommand(0.125_s),
-      frc2::InstantCommand([this]{
-        m_intake->SetPower(0, 0, 0);
-        m_grabber->SetSpeed(0);
-      },{m_intake, m_grabber}).ToPtr()
+      frc2::SequentialCommandGroup(
+        frc2::InstantCommand([this]{
+          m_intake->SetPower(0.0, INTAKE_CONVEYOR_POWER, 0);
+          m_grabber->SetSpeed(GRABBER_GRAB_SPEED);
+        },{m_intake, m_grabber}),
+        frc2::ParallelDeadlineGroup(
+          frc2::WaitCommand(0.35_s),
+          ElevatorPID(m_elevator, m_intake, 200, false)
+        ),
+        frc2::WaitCommand(0.125_s),
+        frc2::InstantCommand([this]{
+          m_intake->SetPower(0, 0, 0);
+          m_grabber->SetSpeed(0);
+        },{m_intake, m_grabber})
+      )
     )
   );
+
+  AutoParameters::eventMap.emplace(
+    "run_intake_in", 
+    std::make_shared<frc2::ParallelDeadlineGroup>(
+      frc2::ParallelDeadlineGroup(
+        RunIntake(m_intake, INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER, 0),
+        ShootFromCarriage(m_grabber, GRABBER_GRAB_SPEED)
+      )
+    )
+  );
+
+  AutoParameters::eventMap.emplace(
+    "run_intake_out", 
+    std::make_shared<frc2::ParallelDeadlineGroup>(
+      frc2::ParallelDeadlineGroup(
+        RunIntake(m_intake, -0.50, -0.50, -INTAKE_CONE_CORRECT_POWER),
+        ShootFromCarriage(m_grabber, 0.25)
+      )
+    )
+  );
+
+  AutoParameters::eventMap.emplace(
+    "ultra_shoot", 
+    std::make_shared<frc2::SequentialCommandGroup>(
+      frc2::SequentialCommandGroup(
+        frc2::ParallelDeadlineGroup(
+          ElevatorPID(m_elevator, m_intake, ELEVATOR_ULTRA_SHOOT_TARGET, false),
+          frc2::RunCommand([this]{
+            if (m_elevator->GetPosition() > ELEVATOR_ULTRA_SHOOT_RELEASE_POINT) {
+              m_grabber->SetSpeed(ELEVATOR_ULTRA_SHOOT_POWER);
+            }
+          },{m_grabber})
+        ),
+        frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber})
+      )
+    )
+  );
+
+  AutoParameters::eventMap.emplace(
+    "reset_odometry", 
+    std::make_shared<frc2::SequentialCommandGroup>(
+      frc2::SequentialCommandGroup(
+        ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}}),
+        frc2::WaitCommand(0.05_s),
+        ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}}),
+        frc2::WaitCommand(0.05_s),
+        ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}}),
+        frc2::WaitCommand(0.05_s)
+      )
+    )
+  );
+
+  AutoParameters::eventMap.emplace(
+    "set_yaw_0", 
+    std::make_shared<frc2::SequentialCommandGroup>(
+      frc2::SequentialCommandGroup(
+        frc2::InstantCommand([this]{m_swerve->SetRobotYaw(0.0);},{m_swerve}),
+        frc2::WaitCommand(0.05_s),
+        frc2::InstantCommand([this]{m_swerve->SetRobotYaw(0.0);},{m_swerve}),
+        frc2::WaitCommand(0.05_s),
+        frc2::InstantCommand([this]{m_swerve->SetRobotYaw(0.0);},{m_swerve}),
+        frc2::WaitCommand(0.05_s)
+      )
+    )
+  );
+
+  AutoParameters::eventMap.emplace(
+    "set_yaw_180", 
+    std::make_shared<frc2::SequentialCommandGroup>(
+      frc2::SequentialCommandGroup(
+        frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
+        frc2::WaitCommand(0.05_s),
+        frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
+        frc2::WaitCommand(0.05_s),
+        frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
+        frc2::WaitCommand(0.05_s)
+      )
+    )
+  );
+
+   AutoParameters::eventMap.emplace(
+    "stop_intake", 
+    std::make_shared<RunIntake>(
+      m_intake, 0, 0, 0
+    )
+  );
+
+  // -----------------------------END OF AUTO EVENTS--------------------------
 
   frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
   AutoParameters::thetaPIDController.EnableContinuousInput(units::radian_t{-PI}, units::radian_t{PI});
