@@ -104,7 +104,7 @@
         "names": [
           "intake_pistons_in"
         ],
-        "executionBehavior": "parallel",
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }

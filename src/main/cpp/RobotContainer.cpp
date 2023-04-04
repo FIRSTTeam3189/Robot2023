@@ -223,10 +223,17 @@ RobotContainer::RobotContainer() {
     )
   );
 
-   AutoParameters::eventMap.emplace(
+  AutoParameters::eventMap.emplace(
     "stop_intake", 
     std::make_shared<RunIntake>(
       m_intake, 0, 0, 0
+    )
+  );
+
+  AutoParameters::eventMap.emplace(
+    "print", 
+    std::make_shared<frc2::InstantCommand>(
+      frc2::InstantCommand([this]{std::cout << "Event triggered\n";},{})
     )
   );
 
@@ -248,7 +255,7 @@ RobotContainer::RobotContainer() {
   std::vector<pathplanner::PathPlannerTrajectory> fiveScoreGroup = pathplanner::PathPlanner::loadPathGroup("Five Score", {pathplanner::PathConstraints(4_mps, 3_mps_sq)});
 
   // Make auto builder
-  pathplanner::SwerveAutoBuilder autoBuilder(
+  m_autoBuilder = new pathplanner::SwerveAutoBuilder(
     [this]() { return m_swerve->GetPose(); }, // Function to supply current robot pose
     [this](auto initPose) { m_swerve->ResetOdometry(initPose); }, // Function used to reset odometry at the beginning of auto
     pathplanner::PIDConstants(AutoConstants::kPXController, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
@@ -260,35 +267,37 @@ RobotContainer::RobotContainer() {
   );
 
   // Create actual auto commands
-  frc2::CommandPtr lineCommand = autoBuilder.fullAuto(testLineGroup);
-  frc2::CommandPtr sCommand = autoBuilder.fullAuto(testSGroup);
-  frc2::CommandPtr lineRotateCommand = autoBuilder.fullAuto(testLineRotateGroup);
-  frc2::CommandPtr lineIntakeCommand = autoBuilder.fullAuto(testLineIntakeGroup);
-  frc2::CommandPtr sRotateCommand = autoBuilder.fullAuto(testSRotateGroup);
-  frc2::CommandPtr specialCommand = autoBuilder.fullAuto(specialGroup);
-  frc2::CommandPtr figureEightCommand = autoBuilder.fullAuto(figureEightGroup);
-  frc2::CommandPtr twoScoreHighMidCubesCommand = autoBuilder.fullAuto(twoScoreHighMidCubesGroup);
-  frc2::CommandPtr oneScoreTaxiCommand = autoBuilder.fullAuto(oneScoreTaxiGroup);
-  frc2::CommandPtr oneScoreBalanceCommand = autoBuilder.fullAuto(oneScoreBalanceGroup);
-  frc2::CommandPtr twoScoreUltrashootCommand = autoBuilder.fullAuto(twoScoreUltrashootGroup);
-  frc2::CommandPtr twoScoreWideSweepCommand = autoBuilder.fullAuto(twoScoreWideSweepGroup);
-  frc2::CommandPtr fiveScoreCommand = autoBuilder.fullAuto(fiveScoreGroup);
+  // frc2::CommandPtr lineCommand = autoBuilder.fullAuto(testLineGroup);
+  // frc2::CommandPtr sCommand = autoBuilder.fullAuto(testSGroup);
+  // frc2::CommandPtr lineRotateCommand = autoBuilder.fullAuto(testLineRotateGroup);
+  // frc2::CommandPtr lineIntakeCommand = autoBuilder.fullAuto(testLineIntakeGroup);
+  // frc2::CommandPtr sRotateCommand = autoBuilder.fullAuto(testSRotateGroup);
+  // frc2::CommandPtr specialCommand = autoBuilder.fullAuto(specialGroup);
+  // frc2::CommandPtr figureEightCommand = autoBuilder.fullAuto(figureEightGroup);
+  // frc2::CommandPtr twoScoreHighMidCubesCommand = autoBuilder.fullAuto(twoScoreHighMidCubesGroup);
+  // frc2::CommandPtr oneScoreTaxiCommand = autoBuilder.fullAuto(oneScoreTaxiGroup);
+  // frc2::CommandPtr oneScoreBalanceCommand = autoBuilder.fullAuto(oneScoreBalanceGroup);
+  // frc2::CommandPtr twoScoreUltrashootCommand = autoBuilder.fullAuto(twoScoreUltrashootGroup);
+  // frc2::CommandPtr twoScoreWideSweepCommand = autoBuilder.fullAuto(twoScoreWideSweepGroup);
+  // frc2::CommandPtr fiveScoreCommand = autoBuilder.fullAuto(fiveScoreGroup);
+
+  // m_lineCommand = autoBuilder.fullAuto(testLineGroup);
 
   // Add auto commands to auto chooser
   m_chooser.SetDefaultOption("N/A", nullptr);
-  m_chooser.AddOption("Test: line", lineCommand.get());
-  m_chooser.AddOption("Test: s", sCommand.get());
-  m_chooser.AddOption("Test: line + rotate", lineRotateCommand.get());
-  m_chooser.AddOption("Test: line + intake", lineIntakeCommand.get());
-  m_chooser.AddOption("Test: s + rotate", sRotateCommand.get());
-  m_chooser.AddOption("Special", specialCommand.get());
-  m_chooser.AddOption("Figure eight", figureEightCommand.get());
-  m_chooser.AddOption("Two score: high/mid cubes", twoScoreHighMidCubesCommand.get());
-  m_chooser.AddOption("One score + taxi", oneScoreTaxiCommand.get());
-  m_chooser.AddOption("One score + balance", oneScoreBalanceCommand.get());
-  m_chooser.AddOption("Two score + ultrashoot", twoScoreUltrashootCommand.get());
-  m_chooser.AddOption("Two Score: wide sweep high/mid cubes", twoScoreWideSweepCommand.get());
-  m_chooser.AddOption("Five score", fiveScoreCommand.get());
+  m_chooser.AddOption("Test: line", m_autoBuilder->fullAuto(testLineGroup).Unwrap().get());
+  // m_chooser.AddOption("Test: s", sCommand.get());
+  // m_chooser.AddOption("Test: line + rotate", lineRotateCommand.get());
+  // m_chooser.AddOption("Test: line + intake", lineIntakeCommand.get());
+  // m_chooser.AddOption("Test: s + rotate", sRotateCommand.get());
+  // m_chooser.AddOption("Special", specialCommand.get());
+  // m_chooser.AddOption("Figure eight", figureEightCommand.get());
+  // m_chooser.AddOption("Two score: high/mid cubes", twoScoreHighMidCubesCommand.get());
+  // m_chooser.AddOption("One score + taxi", oneScoreTaxiCommand.get());
+  // m_chooser.AddOption("One score + balance", oneScoreBalanceCommand.get());
+  // m_chooser.AddOption("Two score + ultrashoot", twoScoreUltrashootCommand.get());
+  // m_chooser.AddOption("Two Score: wide sweep high/mid cubes", twoScoreWideSweepCommand.get());
+  // m_chooser.AddOption("Five score", fiveScoreCommand.get());
 
   frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
   AutoParameters::thetaPIDController.EnableContinuousInput(units::radian_t{-PI}, units::radian_t{PI});
@@ -736,4 +745,8 @@ void RobotContainer::Sync() {
 void RobotContainer::ResetGyroscope() {
   m_swerve->ResetGyro();
   m_swerve->ResetOdometry(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}});
+}
+
+frc2::CommandPtr RobotContainer::GetStraightLineAuto() {
+  return m_autoBuilder->fullAuto(pathplanner::PathPlanner::loadPathGroup("Test - Line", {pathplanner::PathConstraints(4_mps, 3_mps_sq)}));
 }

@@ -79,6 +79,7 @@ class RobotContainer {
   void ResetGyroscope();
 
  private:
+  frc2::CommandPtr GetStraightLineAuto();
   // The robot's subsystems and commands are defined here...
   Vision *m_vision = new Vision();
   SwerveDrive *m_swerve = new SwerveDrive();
@@ -113,7 +114,7 @@ class RobotContainer {
   // TwoCargoUltrashootBalance m_twoCargoBlueUltrashoot{m_swerve, m_elevator, m_grabber, m_intake, false};
 
   frc::SendableChooser<frc2::Command*> m_chooser;
-
+  pathplanner::SwerveAutoBuilder *m_autoBuilder = nullptr;
   // Bill controls drivetrain + intake etc. (lower half)
   // Ted controls output + aiming etc. (upper half)
   // frc::Joystick m_ted{1};
