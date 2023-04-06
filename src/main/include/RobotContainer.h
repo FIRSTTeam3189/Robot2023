@@ -8,6 +8,7 @@
 #include <frc2/command/CommandPtr.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc2/command/button/CommandJoystick.h>
+#include <frc2/command/button/CommandPS4Controller.h>
 #include <frc2/command/RunCommand.h>
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/ParallelRaceGroup.h>
@@ -66,8 +67,6 @@ class RobotContainer {
   frc2::Command* GetAutonomousCommand();
   void Sync();
   void ResetGyroscope();
-  void BuildEventMap();
-  void CreateAutoPaths();
 
  private:
   // The robot's subsystems and commands are defined here...
@@ -87,37 +86,7 @@ class RobotContainer {
   frc2::CommandJoystick m_bill{PS5_BILL_CONTROLLER_PORT};
   frc2::CommandJoystick m_ted{PS5_TED_CONTROLLER_PORT};
 
-  // Driver's controls
-  frc2::Trigger m_translateLeftButton;
-  frc2::Trigger m_rotateTo0Button;
-  frc2::Trigger m_translateRightButton;
-  frc2::Trigger m_rotateTo180Button;
-  frc2::Trigger m_resetOdometryButton;
-  frc2::Trigger m_resetEncodersToAbsoluteButton;
-  frc2::Trigger m_toggleATan2RotButton;
-  frc2::Trigger m_updatePIDButton;
-  frc2::Trigger m_autoBalanceButton;
-  frc2::Trigger m_leftAimAssistButton;
-  frc2::Trigger m_centerAimAssistButton;
-  frc2::Trigger m_slideStationAimAssistButton;
-  frc2::Trigger m_rightAimAssistButton;
-  frc2::Trigger m_intakeButton;
-  frc2::Trigger m_outtakeButton;
-  frc2::Trigger m_toggleIntakePistonsDriver;
-  frc2::Trigger m_driverStopButton;
-  frc2::Trigger m_ultraShootButton;
-  frc2::Trigger m_lockWheelsButton;
-  
-  // Co-driver's controls
-  frc2::Trigger m_elevatorLowLevelButton;
-  frc2::Trigger m_elevatorMidLevelButton;
-  frc2::Trigger m_elevatorHighLevelButton;
-  frc2::Trigger m_cancelElevatorPIDControl;
-  frc2::Trigger m_coneCorrectButton;
-  frc2::Trigger m_shootButton;
-  frc2::Trigger m_grabButton;
-  frc2::Trigger m_codriverStopButton;
-  frc2::Trigger m_runConveyorButton;
-
   void ConfigureButtonBindings();
+  void BuildEventMap();
+  void CreateAutoPaths();
 };

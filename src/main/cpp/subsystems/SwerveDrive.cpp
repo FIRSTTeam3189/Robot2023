@@ -55,7 +55,6 @@ void SwerveDrive::ResetGyro() {
 void SwerveDrive::PercentDrive(frc::ChassisSpeeds speeds) {
   auto states = SwerveDriveParameters::kinematics.ToSwerveModuleStates(speeds);
   SwerveDriveParameters::kinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed);
-  auto [fl, fr, bl, br] = states;
   m_SM.m_frontLeft.SetDesiredPercentState(states[0]);
   m_SM.m_frontRight.SetDesiredPercentState(states[1]);
   m_SM.m_backLeft.SetDesiredPercentState(states[2]);
@@ -228,6 +227,13 @@ frc::Pose2d SwerveDrive::GetPose() {
   return m_odometry.GetPose();
 }
 
+frc::Pose2d SwerveDrive::GetCorrectedPose() {
+  UpdateOdometry();
+  auto pose = m_odometry.GetPose();
+  frc::Pose2d correctedPose{{pose.X(), -pose.Y()}, pose.Rotation()};
+  return correctedPose;
+}
+
 void SwerveDrive::UpdateOdometry() {
   // Update odometry values with current rotation and states
   m_SM.m_frontLeft.UpdateModulePosition();
@@ -353,22 +359,6 @@ void SwerveDrive::SetActiveTrajectory(frc::Trajectory trajectory) {
   m_activeTrajectory = trajectory;
 }
 
-frc2::SwerveControllerCommand<4> SwerveDrive::CreateSwerveCommand(frc::Trajectory trajectory) {
-  // Pose's rotation and y values need to be inverted
-  frc2::SwerveControllerCommand<4> swerveCommand(
-    trajectory, 
-    [this]() { return GetPose(); },
-    SwerveDriveParameters::kinematics,
-    AutoParameters::autoXPIDController,
-    AutoParameters::autoYPIDController, 
-    AutoParameters::thetaPIDController,
-    [this](auto moduleStates) { SetPercentModuleStates(moduleStates); },
-    {this}
-  );
-
-  return swerveCommand;
-}
-
 void SwerveDrive::Log2DField() {
   // Uses Field2d class as it implements sendable for 2d poses
   // Also supports trajectories, game pieces, etc. as field objects
@@ -379,10 +369,10 @@ void SwerveDrive::Log2DField() {
 }
 
 void SwerveDrive::LockWheels() {
-  m_SM.m_frontLeft.SetDesiredState(frc::SwerveModuleState{0.0_mps, units::radian_t{PI / 4.0}});
-  m_SM.m_frontRight.SetDesiredState(frc::SwerveModuleState{0.0_mps, units::radian_t{-PI / 4.0}});
-  m_SM.m_backLeft.SetDesiredState(frc::SwerveModuleState{0.0_mps, units::radian_t{-PI / 4.0}});
-  m_SM.m_backRight.SetDesiredState(frc::SwerveModuleState{0.0_mps, units::radian_t{PI / 4.0}});
+  m_SM.m_frontLeft.SetDesiredState(frc::SwerveModuleState{0.0_mps, units::radian_t{pi/ 4.0}});
+  m_SM.m_frontRight.SetDesiredState(frc::SwerveModuleState{0.0_mps, units::radian_t{-pi/ 4.0}});
+  m_SM.m_backLeft.SetDesiredState(frc::SwerveModuleState{0.0_mps, units::radian_t{-pi/ 4.0}});
+  m_SM.m_backRight.SetDesiredState(frc::SwerveModuleState{0.0_mps, units::radian_t{pi/ 4.0}});
 }
 
 void SwerveDrive::LogModuleStates(SwerveModuleTelemetry telemetryArray[]) {

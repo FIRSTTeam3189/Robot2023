@@ -20,23 +20,23 @@
  * they are needed.
  */
 // Don't do this
-#define PI 3.141592653
+#define pi 3.141592653
 
 namespace SwerveDriveConstants {
     // PID, sensor IDs passed in via structs in namespace
     constexpr double MPSToRPM {600.0};
     constexpr double DEGToRAD {57.2957795131};
-    constexpr double wheelRadius = 2;
-    constexpr double wheelRadiusMeters = 0.0508;
-    constexpr double wheelCircumferenceMeters = 2.0 * PI * wheelRadiusMeters;
-    constexpr double encoderSpeedGearRatio = 8.1;
-    constexpr double encoderTurnGearRatio = 15.43;
-    constexpr int falconEncoderTicksPerRevolution = 2048;
-    constexpr int cancoderTicksPerRevolution = 4096;
+    constexpr double wheelRadius {2.0};
+    constexpr double wheelRadiusMeters {0.0508};
+    constexpr double wheelCircumferenceMeters {2.0 * pi* wheelRadiusMeters};
+    constexpr double encoderSpeedGearRatio {8.1};
+    constexpr double encoderTurnGearRatio {15.43};
+    constexpr int falconEncoderTicksPerRevolution {2048};
+    constexpr int cancoderTicksPerRevolution {4096};
     constexpr units::second_t kDt {0.020};
-    constexpr auto swerveConstantSpinSpeed = 1.0_rad / 1.0_s;
-    constexpr units::meter_t leftTranslateSpeed{-0.5_mps};
-    constexpr units::meter_t rightTranslateSpeed{0.5_mps};
+    constexpr auto swerveConstantSpinSpeed {1.0_rad / 1.0_s};
+    constexpr auto leftTranslateSpeed {-0.5_mps};
+    constexpr auto rightTranslateSpeed {0.5_mps};
 
     // Coordinate plane distance in meters to each swerve drive
     // This has x-positive as forward, y-positive as right
@@ -48,24 +48,15 @@ namespace SwerveDriveConstants {
     constexpr double ampLimit {35.0};
 
     // SysID robot characterization values -- **varies by robot**
-    constexpr auto ks = 0.408_V;
-    constexpr auto kv = 3.206 * 1_V * 1_s / 1_m;
-    constexpr auto ka = 3.409 * 1_V * 1_s * 1_s / 1_m;
-
-    // Distance traveled by robot per encoder tick
-    // constexpr double driveEncoderDistancePerPulse = 
-    //     (wheelRadiusMeters * PI) / 
-    //     (static_cast<double>(falconEncoderTicksPerRevolution) * encoderSpeedGearRatio);
-
-    // constexpr double turnEncoderDistancePerPulse = 
-    //     (2 * PI) / 
-    //     (static_cast<double>(cancoderTicksPerRevolution) * encoderTurnGearRatio);
+    constexpr auto ks {0.408_V};
+    constexpr auto kv {3.206 * 1_V * 1_s / 1_m};
+    constexpr auto ka {3.409 * 1_V * 1_s * 1_s / 1_m};
 
     // Robot maxes - approximated and varies by robot
-    constexpr auto kMaxSpeed = 4.0_mps;
-    constexpr auto kMaxAcceleration = 3.0_mps_sq;
-    constexpr units::radians_per_second_t maxAngularVelocity {PI};
-    constexpr units::radians_per_second_squared_t maxAngularAcceleration {PI / 4};
+    constexpr auto kMaxSpeed {4.0_mps};
+    constexpr auto kMaxAcceleration {3.0_mps_sq};
+    constexpr units::radians_per_second_t maxAngularVelocity {pi};
+    constexpr units::radians_per_second_squared_t maxAngularAcceleration {pi/ 4};
 
     constexpr double speedP {5.0};
     constexpr double speedI {0.0};
@@ -131,19 +122,19 @@ namespace SwerveDriveConstants {
 
 namespace AutoConstants {
     // Multiplier for trajectory translation values
-    constexpr auto TrajectoryScale = 1.0;
+    constexpr auto TrajectoryScale {1.0};
     // Ramsete controller (trajectory following) parameters
-    constexpr auto kRamseteB = 2.0 * 1_rad * 1_rad / (1_m * 1_m);
-    constexpr auto kRamseteZeta = 0.7 / 1_rad;
+    constexpr auto kRamseteB {2.0 * 1_rad * 1_rad / (1_m * 1_m)};
+    constexpr auto kRamseteZeta {0.7 / 1_rad};
     constexpr double autoRotP {-5.0};
     constexpr double autoRotI {0.0};
     constexpr double autoRotD {0.0};
-    constexpr int autoBalanceSettleLoops = 25;
+    constexpr int autoBalanceSettleLoops {25};
 
     // Y and rotation are inverted
     // PID Controllers for x and y movement in auto mode -- theta controller is part of drive object
-    constexpr double kPXController = 0.0;
-    constexpr double kPYController = -0.0;                                                     
+    constexpr double kPXController {0.0};
+    constexpr double kPYController {-0.0};                                                     
 };
 
 // PS5 Controls
@@ -195,7 +186,7 @@ namespace AutoConstants {
 #define ELEVATOR_MAX_SPEED 3.0_mps
 #define ELEVATOR_MAX_ACCELERATION 3.0_mps_sq
 #define ELEVATOR_GEAR_RATIO 20.0
-#define ELEVATOR_OUTPUT_CIRCUMFERENCE (PI * 0.04552)
+#define ELEVATOR_OUTPUT_CIRCUMFERENCE (pi* 0.04552)
 // Elevator feedforward constants
 #define ELEVATOR_KS 0.17186_V
 #define ELEVATOR_KG 0.41493_V
@@ -208,6 +199,7 @@ namespace AutoConstants {
 #define ELEVATOR_LOW_TARGET 1200
 #define ELEVATOR_MID_TARGET 1900
 #define ELEVATOR_HIGH_TARGET 2800
+#define ELEVATOR_DOUBLE_SUBSTATION_TARGET 2000
 #define ELEVATOR_STOP_DISTANCE 100
 #define ELEVATOR_INTERIOR_GRAB_TARGET 200
 #define ELEVATOR_LOWER_LIMIT_SWITCH_ID 0 

@@ -96,16 +96,13 @@ class SwerveDrive : public frc2::SubsystemBase {
   void ResetGyro();
   double GetNormalizedYaw();
   frc::Pose2d GetPose();
+  frc::Pose2d GetCorrectedPose();
   void DriveFast();
   void LockWheels();
-  frc2::SwerveControllerCommand<4> CreateSwerveCommand(frc::Trajectory trajectory);
 
   // Access functions for rotation PID controller
   double Calculate(double measurement, double setpoint);
   void EnableContinuousInput(double minimumInput, double maximumInput);
-
-  // Kinematics and odometry to pass into library
-  frc::SwerveDriveOdometry<4> m_odometry;
   
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -128,6 +125,7 @@ class SwerveDrive : public frc2::SubsystemBase {
 
   // Create wpi::array of swerve positions
   wpi::array<frc::SwerveModulePosition, 4> m_modulePositions;
+  frc::SwerveDriveOdometry<4> m_odometry;
   frc::Trajectory m_activeTrajectory{};
   frc::Field2d m_fieldObject{};
   frc::Pose2d initialPose = frc::Pose2d{};

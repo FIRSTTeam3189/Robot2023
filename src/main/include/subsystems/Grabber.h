@@ -26,9 +26,8 @@ public:
 
 private:
   WPI_TalonFX m_motor;
-  
-  double m_encoderVelocity;
   bool m_pieceGrabbed;
+  double m_encoderVelocity;
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 };

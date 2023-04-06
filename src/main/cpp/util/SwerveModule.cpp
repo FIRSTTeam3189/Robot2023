@@ -6,6 +6,8 @@
 #include "util/SwerveModule.h"
 
 SwerveModule::SwerveModule(SwerveInfo SI) :
+m_speedMotor(SI.speedMotorID, "Swerve"),
+m_angleMotor(SI.angleMotorID, "Swerve"),
 SI(SI),
 speedP(SI.speedMotorPID.p),
 speedI(SI.speedMotorPID.i),
@@ -13,8 +15,6 @@ speedD(SI.speedMotorPID.d),
 angleP(SI.angleMotorPID.p),
 angleI(SI.angleMotorPID.i),
 angleD(SI.angleMotorPID.d),
-m_speedMotor(SI.speedMotorID, "Swerve"),
-m_angleMotor(SI.angleMotorID, "Swerve"),
 m_angleOffset(SI.encoderOffset),
 m_absoluteEncoder(SI.CANCoderID, "Swerve")
 {
@@ -143,7 +143,6 @@ frc::SwerveModuleState SwerveModule::OptimizeAngle(frc::SwerveModuleState desire
     double targetAngle = NormalizeTo0To360(
                         currentAngle.Degrees().value(), 
                         desiredState.angle.Degrees().value());
-    frc::SmartDashboard::PutNumber("Optimize target angle", targetAngle);
 
     auto targetSpeed = desiredState.speed;
     double delta = targetAngle - currentAngle.Degrees().value();
@@ -151,8 +150,12 @@ frc::SwerveModuleState SwerveModule::OptimizeAngle(frc::SwerveModuleState desire
     if (std::abs(delta) > 90) {
         targetSpeed = -targetSpeed;
         // If difference is positive, subtract 180 deg and reverse; if negative, vice versa
-        targetAngle = delta > 90 ? (targetAngle -= 180) : (targetAngle += 180);
-        frc::SmartDashboard::PutNumber("Optimized target angle", targetAngle);
+        if (delta > 90) {
+            targetAngle -= 180;
+        } else {
+            targetAngle += 180;
+        }
+        // targetAngle = delta > 90 ? (targetAngle -= 180) : (targetAngle += 180);
     }
     auto targetAngleRad = units::radian_t{targetAngle / SwerveDriveConstants::DEGToRAD};
     return frc::SwerveModuleState{targetSpeed, targetAngleRad};

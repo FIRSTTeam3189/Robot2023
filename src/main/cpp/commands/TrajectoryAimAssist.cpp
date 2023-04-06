@@ -9,8 +9,8 @@
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 TrajectoryAimAssist::TrajectoryAimAssist(Vision *vision, SwerveDrive *swerve, double targetXDistance, double targetYDistance, double targetRotAngle)
 : m_vision(vision), 
-  m_visionData(m_vision->GetData()),
   m_swerve(swerve), 
+  m_visionData(m_vision->GetData()),
   m_targetXDistance(targetXDistance),
   m_targetYDistance(targetYDistance),
   m_targetRotAngle(targetRotAngle) {
