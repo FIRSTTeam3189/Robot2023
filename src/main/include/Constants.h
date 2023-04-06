@@ -35,6 +35,8 @@ namespace SwerveDriveConstants {
     constexpr int cancoderTicksPerRevolution = 4096;
     constexpr units::second_t kDt {0.020};
     constexpr auto swerveConstantSpinSpeed = 1.0_rad / 1.0_s;
+    constexpr units::meter_t leftTranslateSpeed{-0.5_mps};
+    constexpr units::meter_t rightTranslateSpeed{0.5_mps};
 
     // Coordinate plane distance in meters to each swerve drive
     // This has x-positive as forward, y-positive as right
@@ -179,6 +181,8 @@ namespace AutoConstants {
 #define INTAKE_ROLLER_POWER 1.00
 #define INTAKE_CONVEYOR_POWER 0.25
 #define INTAKE_CONE_CORRECT_POWER 0.1
+#define OUTTAKE_ROLLER_POWER -0.5
+#define OUTTAKE_CONVEYOR_POWER -0.5
 
 #define ELEVATOR_MOTOR 17
 #define ELEVATOR_P 238.62
@@ -204,8 +208,8 @@ namespace AutoConstants {
 #define ELEVATOR_LOW_TARGET 1200
 #define ELEVATOR_MID_TARGET 1900
 #define ELEVATOR_HIGH_TARGET 2800
-#define ELEVATOR_SLOW_DISTANCE 250
 #define ELEVATOR_STOP_DISTANCE 100
+#define ELEVATOR_INTERIOR_GRAB_TARGET 200
 #define ELEVATOR_LOWER_LIMIT_SWITCH_ID 0 
 #define ELEVATOR_UPPER_LIMIT_SWITCH_ID 1
 #define ELEVATOR_ULTRA_SHOOT_TARGET 2900
@@ -234,18 +238,8 @@ namespace AutoConstants {
 #define GRABBER_MOTOR_ID 18
 #define GRABBER_DROP_SPEED 0.5
 #define GRABBER_GRAB_SPEED -0.50
-// #define GRABBER_REJECT_SPEED 0
-// #define GRABBER_LOW_CUBE_SPEED 0
-// #define GRABBER_MID_CUBE_SPEED 0
-// #define GRABBER_HIGH_CUBE_SPEED 0
-// #define GRABBER_LOW_CONE_SPEED 0
-// #define GRABBER_MID_CONE_SPEED 0
-// #define GRABBER_HIGH_CONE_SPEED 0
 #define GRABBER_CARRY_SPEED -0.15
-#define GRABBER_COLOR_SENSOR_DEVICE_ID 0
-// Higher number the better
-#define GRABBER_SENSOR_CONFIDENCE 0.80
-#define GRABBER_SENSOR_PROXIMITY_THRESHOLD 1000
+#define GRABBER_OUTTAKE_SPEED 0.25
 
 #define CANDLE_DEVICE_ID 0
 #define CANDLE_LED_PIXEL_COUNT 300

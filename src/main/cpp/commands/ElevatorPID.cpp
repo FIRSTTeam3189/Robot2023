@@ -9,7 +9,6 @@ ElevatorPID::ElevatorPID(Elevator *elevator, Intake *intake, double target, bool
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(elevator);
   AddRequirements(intake);
-  std::cout << "PID\n";
 }
 
 // Called when the command is initially scheduled.
@@ -17,30 +16,25 @@ void ElevatorPID::Initialize() {
   if (m_target > 300.0) {
     m_intake->SetPistonExtension(true);
   }
-  
-    if (m_target == 0.0) {
-      m_elevator->SetPID(50.0, 0.0, 0.0);
-    } else {
-      m_elevator->SetPID(ELEVATOR_P + 200.0, ELEVATOR_I, ELEVATOR_D);
-    }
+  if (m_target == 0.0) {
+    m_elevator->SetPID(50.0, 0.0, 0.0);
+  } else {
+    m_elevator->SetPID(ELEVATOR_P + 200.0, ELEVATOR_I, ELEVATOR_D);
+  }
 }
 
 // Called repeatedly when this Command is scheduled to run
 void ElevatorPID::Execute() {
-  // std::cout << "PID running\n";
+  // Continuously tracks if elevator is close to target
+  // If it is, elevator will start counting up loops where its within tolerance
+  // After a certain amount of loops within tolerance, the command ends
   m_elevator->GoToPosition(m_target);
   if (m_elevator->AtSetpoint()) {
     m_shouldFinish = true;
     m_withinThresholdLoops++;
-    // Maybe retract intake when PID command is done -- test first
-    // m_intake->SetPistonExtension(false);
   } else {
     m_withinThresholdLoops = 0;
     m_shouldFinish = false;
-  }
-
-  if(m_elevator->GetPosition() == 0) {
-    // m_intake->SetPistonExtension(false);
   }
 }
 
@@ -48,13 +42,9 @@ void ElevatorPID::Execute() {
 void ElevatorPID::End(bool interrupted) {}
 
 // Returns true when the command should end.
-// Ends command when elevator is close to its target
+// Ends command when elevator is close to its target for a certain amount of time
 bool ElevatorPID::IsFinished() {
-  // return m_elevator->AtSetpoint();
-  // return m_shouldFinish;
-  std::cout << "Threshold loops " << m_withinThresholdLoops << " should finish " << m_shouldFinish << "\n";
   if (m_withinThresholdLoops >= ELEVATOR_SETTLE_LOOPS && m_shouldFinish) {
-    m_elevator->SetRunningState(false);
     return true;
   }
   return false;

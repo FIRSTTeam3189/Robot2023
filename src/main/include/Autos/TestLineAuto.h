@@ -6,20 +6,15 @@
 
 #include <frc2/command/CommandHelper.h>
 #include <frc2/command/SequentialCommandGroup.h>
-#include <frc2/command/InstantCommand.h>
-#include <frc2/command/ParallelDeadlineGroup.h>
 
-#include "subsystems/Intake.h"
-#include "subsystems/SwerveDrive.h"
-#include "RobotParameters.h"
+#include <pathplanner/lib/auto/SwerveAutoBuilder.h>
+#include <pathplanner/lib/PathPlanner.h>
 
-class Outtake
+class TestLineAuto
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
-                                 Outtake> {
+                                 TestLineAuto> {
  public:
-  Outtake(Intake *intake, SwerveDrive *swerve);
+  TestLineAuto(pathplanner::SwerveAutoBuilder *builder);
 
  private:
-  Intake *m_intake;
-  SwerveDrive *m_swerve;
 };

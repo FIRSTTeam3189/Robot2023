@@ -26,6 +26,4 @@ private:
   Piston m_intakePiston;
   rev::CANSparkMax m_rollerMotor;
   rev::CANSparkMax m_conveyorMotor;
-  // rev::CANSparkMax m_leftConeCorrectMotor;
-  // rev::CANSparkMax m_rightConeCorrectMotor;
 };

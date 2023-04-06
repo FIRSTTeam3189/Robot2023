@@ -30,13 +30,10 @@ m_odometry(SwerveDriveParameters::kinematics, m_pigeon.GetRotation2d(), m_module
   // Create Shuffleboard outputs
   InitSmartDashboard();
   SyncSmartdashBoardValues();
-  // m_pigeon.Reset();
-  // std::cout << "Swerve drive created\n";
 }
 
 void SwerveDrive::Periodic() {
   // Implementation of subsystem periodic method goes here.
-  // std::cout << "Swerve periodic method called\n";
   UpdateOdometry();
 }
 
@@ -48,7 +45,6 @@ void SwerveDrive::DriveFast() {
 }
 
 double SwerveDrive::GetRobotYaw() {
-  // Returns gyroscope rotation to be used by command
   return m_pigeon.GetYaw();
 }
 
@@ -131,9 +127,6 @@ void SwerveDrive::Drive(
      (double)bl.angle.Degrees(), (double)bl.speed,
      (double)br.angle.Degrees(), (double)br.speed};
 
-  // frc::SmartDashboard::PutNumber("Front Right PID Error", m_SM.m_frontRight.m_angleMotor.GetClosedLoopError());
-  // frc::SmartDashboard::PutNumber("Front Right Current Turn", m_SM.m_frontRight.m_angleMotor.GetSelectedSensorPosition());
-  // frc::SmartDashboard::PutNumber("Front Right Turn Target", m_SM.m_frontRight.m_angleMotor.GetClosedLoopTarget());
   frc::SmartDashboard::PutNumberArray("AdvantageScope Desired States", AdvantageScopeDesiredStates);
   SetModuleStates(states);
 }
@@ -232,14 +225,6 @@ void SwerveDrive::ResetEncodersToAbsolute() {
 
 frc::Pose2d SwerveDrive::GetPose() {
   UpdateOdometry();
-  // Invert y-axis
-  // frc::Pose2d pose = m_odometry.GetPose();
-  // frc::Translation2d translation = pose.Translation();
-  // units::meter_t correctedY = -translation.Y();
-  // units::meter_t correctedX = -translation.X();
-  // auto correctedTranslation = frc::Translation2d{correctedX, correctedY};
-  // frc::Pose2d correctedPose = frc::Pose2d{correctedTranslation, pose.Rotation()};
-  // return correctedPose;
   return m_odometry.GetPose();
 }
 
@@ -259,9 +244,7 @@ void SwerveDrive::UpdateOdometry() {
   frc::SmartDashboard::PutNumber("Fr distance", (double)m_modulePositions[1].distance);
   frc::SmartDashboard::PutNumber("Bl distance", (double)m_modulePositions[2].distance);
   frc::SmartDashboard::PutNumber("Br distance", (double)m_modulePositions[3].distance);
-  // m_odometry.Update(frc::Rotation2d{units::degree_t{GetNormalizedYaw()}}, 
-  //                   m_modulePositions);
-  
+
   m_odometry.Update(m_pigeon.GetRotation2d(), 
                     m_modulePositions);
 }  
@@ -364,12 +347,6 @@ void SwerveDrive::InitSmartDashboard() {
   EntryBackRightRelativeAngle = SwerveRelativeAngleTab.Add("Back Right Relative Angle", 0).GetEntry();
 
   frc::SmartDashboard::PutData(this);
-
-  // Puts absolute encoder values separately
-  // frc::SmartDashboard::PutNumber("FL Swerve Module Rotation", m_SM.m_frontLeft.GetAbsolutePosition());
-  // frc::SmartDashboard::PutNumber("FR Swerve Module Rotation", m_SM.m_frontRight.GetAbsolutePosition());
-  // frc::SmartDashboard::PutNumber("BL Swerve Module Rotation", m_SM.m_backLeft.GetAbsolutePosition());
-  // frc::SmartDashboard::PutNumber("BR Swerve Module Rotation", m_SM.m_backRight.GetAbsolutePosition());
 }
 
 void SwerveDrive::SetActiveTrajectory(frc::Trajectory trajectory) {
@@ -395,8 +372,6 @@ frc2::SwerveControllerCommand<4> SwerveDrive::CreateSwerveCommand(frc::Trajector
 void SwerveDrive::Log2DField() {
   // Uses Field2d class as it implements sendable for 2d poses
   // Also supports trajectories, game pieces, etc. as field objects
-  // auto rot = -m_odometry.GetPose().Rotation();
-  // m_fieldObject.SetRobotPose(frc::Pose2d{m_odometry.GetPose().Translation(), rot});
   m_fieldObject.SetRobotPose(GetPose());
   auto trajectoryObject = m_fieldObject.GetObject("Trajectory");
   trajectoryObject->SetTrajectory(m_activeTrajectory);
@@ -561,24 +536,3 @@ std::function<double(void)> SwerveDrive::GetEntryBRSpeedDFunc() { return std::bi
 std::function<double(void)> SwerveDrive::GetEntryBRAnglePFunc() { return std::bind(&nt::GenericEntry::GetDouble, EntryBackRightAngleP, 0); }
 std::function<double(void)> SwerveDrive::GetEntryBRAngleIFunc() { return std::bind(&nt::GenericEntry::GetDouble, EntryBackRightAngleI, 0); }
 std::function<double(void)> SwerveDrive::GetEntryBRAngleDFunc() { return std::bind(&nt::GenericEntry::GetDouble, EntryBackRightAngleD, 0); }
-
-/*
-void SwerveDrive::SaveConfig() {
- 
-}
-
-void SwerveDrive::LoadConfig() {
-
-}
-
-void SwerveDrive::SetConfig(double speedP, double speedI, double speedD,
-                            double angleP, double angleI, double angleD) 
-{
-config.speedP = speedP;
-config.speedI = speedI;
-config.speedD = speedD;
-config.angleP = angleP;
-config.angleI = angleI;
-config.angleD = angleD;
-} 
-*/

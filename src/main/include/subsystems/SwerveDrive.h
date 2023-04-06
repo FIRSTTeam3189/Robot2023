@@ -106,17 +106,6 @@ class SwerveDrive : public frc2::SubsystemBase {
 
   // Kinematics and odometry to pass into library
   frc::SwerveDriveOdometry<4> m_odometry;
-
-  /*
-  double getSpeedP();
-
-  double getEntrySpeedP();
-
-  void SaveConfig();
-  void LoadConfig();
-  void SetConfig(double speedP, double speedI, double speedD,
-                 double angleP, double angleI, double angleD);
-  */
   
   /**
    * Will be called periodically whenever the CommandScheduler runs.
@@ -143,11 +132,6 @@ class SwerveDrive : public frc2::SubsystemBase {
   frc::Field2d m_fieldObject{};
   frc::Pose2d initialPose = frc::Pose2d{};
   
-  // Config file location and instance
-  /*
-  const std::string config_file_location = "";
-  SwerveConfig config;
-  */
   // Swerve tab we are writing to
   frc::ShuffleboardTab &SwerveRotationPIDTab = frc::Shuffleboard::GetTab("Rotation PID Values");
 

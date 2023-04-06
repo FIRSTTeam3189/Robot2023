@@ -24,36 +24,14 @@ void AutoBalance::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void AutoBalance::Execute() {
-  // Auto balance command for charge station -- simple bang bang control
-  // Keep driving forward/backward until balance is about level
-  // If balance tips rapidly, reverse slightly and rotate bot to lock wheels
-  auto speed = 0.0_mps;
-  auto rot = units::angular_velocity::radians_per_second_t{0.0};
-
-  // Uses field relative PID and checking for whether robot is forward or backward instead
+  // Uses robot relative PID and checking for whether robot is forward or backward
   double pitch = m_isReversed ? m_swerve->GetPitch() : -m_swerve->GetPitch();
   double roll = m_isReversed ? m_swerve->GetRoll() : -m_swerve->GetRoll();
   auto xOutput = m_xController.Calculate(pitch, 0.0);
   auto yOutput = m_yController.Calculate(roll, 0.0);
 
-  // if (m_isGoingUpFirstTime)
-  //   speed = 6.0_mps;
-  // // Signage depends on Pigeon mount orientation
-  // if (pitch > 4.0) {
-  //   speed = 2.5_mps;
-  // } else if (pitch < -4.0) {
-  //   speed = -1.5_mps;
-  //   m_isGoingUpFirstTime = false;
-  // }
- 
-  // if (pitch - m_lastPitch < -0.1) {
-  //   speed = -.25_mps;
-  //   rot = units::angular_velocity::radians_per_second_t{0.25};
-  // } else if (pitch - m_lastPitch > 0.1) {
-  //   speed = .25_mps;
-  //   rot = units::angular_velocity::radians_per_second_t{0.25};
-  // }
-
+  // If bridge is balanced, start counting up loops where it's balanced
+  // End command after certain amount of time balanced
   if (abs(m_lastPitch) < 2.5 && abs((double)m_swerve->m_odometry.GetPose().X() - (double)m_lastXPosition) < 0.1) {
     m_withinThresholdLoops++;
   } else {
@@ -62,8 +40,7 @@ void AutoBalance::Execute() {
 
   m_lastPitch = pitch;
   m_lastXPosition = m_swerve->m_odometry.GetPose().X();
-  // m_swerve->PercentDrive(speed, 0.0_mps, rot, true);
-  m_swerve->PercentDrive(units::meters_per_second_t{xOutput}, units::meters_per_second_t{yOutput}, 0.0 * 1_rad / 1_s, false);
+  m_swerve->PercentDrive(units::meters_per_second_t{xOutput}, units::meters_per_second_t{yOutput}, 0.0 * 1_rad / 1_s, false); // Note it drives ROBOT relative, not field relative
 }
 
 // Called once the command ends or is interrupted.
@@ -73,6 +50,7 @@ void AutoBalance::End(bool interrupted) {}
 bool AutoBalance::IsFinished() {
   // Ends balance command if robot is level and didn't move much since last command schedule
   if (m_withinThresholdLoops >= AutoConstants::autoBalanceSettleLoops) {
+    // Turn wheels in x shape to lock on charge station
     m_swerve->LockWheels();
     return true;
   }

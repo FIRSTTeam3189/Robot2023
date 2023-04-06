@@ -29,30 +29,20 @@ class Elevator : public frc2::SubsystemBase {
   bool AtSetpoint();
   void SetPID(double kP, double kI, double kD);
   double ElevatorTicksToMeters(double encoderTicks);
-  bool GetRunningState();
-  void SetRunningState(bool isRunning);
 
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 
   rev::CANSparkMax m_motor;
-  // WPI_TalonFX m_motor;
-
-  // rev::SparkMaxAbsoluteEncoder m_encoder;
   rev::SparkMaxRelativeEncoder m_encoder;
-  // rev::SparkMaxAlternateEncoder m_encoder;
-  // rev::SparkMaxPIDController m_PIDcontroller;
   frc::TrapezoidProfile<units::meters>::Constraints m_constraints{ELEVATOR_MAX_SPEED, ELEVATOR_MAX_ACCELERATION};
   frc::ProfiledPIDController<units::meters> m_controller{ELEVATOR_P, ELEVATOR_I, ELEVATOR_D, m_constraints, 20_ms};
   frc::ElevatorFeedforward ff{ELEVATOR_KS, ELEVATOR_KG, ELEVATOR_KV, ELEVATOR_KA};
-  // frc::DigitalInput m_lowerLimitSwitch;
-  // frc::DigitalInput m_upperLimitSwitch;
   rev::SparkMaxLimitSwitch m_lowerLimitSwitch;
   rev::SparkMaxLimitSwitch m_upperLimitSwitch;
   double m_target;
   double m_power;
-  bool m_isRunning = false;
   units::meters_per_second_t m_lastSpeed;
   units::second_t m_lastTime;
 };

@@ -113,9 +113,7 @@ class SwerveModule {
     double m_angleOffset;
     double m_lastAngle;
   
-    // Create swerve module position for odometry
     frc::SwerveModulePosition m_swervePosition{0_m, frc::Rotation2d{}};
-    // frc::SimpleMotorFeedforward<units::meters> ff{SwerveDriveConstants::ks, SwerveDriveConstants::kv, SwerveDriveConstants::ka};
     frc::SimpleMotorFeedforward<units::meters> ff{ks, kv, ka};
     WPI_CANCoder m_absoluteEncoder; 
     units::meters_per_second_t m_lastSpeed;

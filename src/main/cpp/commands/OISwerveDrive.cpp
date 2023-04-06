@@ -12,8 +12,6 @@ OISwerveDrive::OISwerveDrive(frc::Joystick *m_bill, SwerveDrive *swerve_drive, b
   m_rotationPIDController.SetTolerance(1.0);
   m_rotationPIDController.EnableContinuousInput(0, 360);
   m_swerve_drive->EnableContinuousInput(-180, 180);
-  // Ensures that drive command continues once it's toggled
-  // m_swerve_drive->SetDefaultCommand(OISwerveDrive(m_bill, m_swerve_drive));
 }
 
 // Called when the command is initially scheduled.
@@ -44,7 +42,6 @@ units::angular_velocity::radians_per_second_t OISwerveDrive::GetDesiredRotationa
                 m_rotLimiter.Calculate(m_rotationPIDController.Calculate(m_swerve_drive->GetNormalizedYaw(), goalAngle))
                 * SwerveDriveConstants::maxAngularVelocity};
 
-  // frc::SmartDashboard::PutNumber("Wrapped Gyro Yaw", m_swerve_drive->GetNormalizedYaw());
   frc::SmartDashboard::PutNumber("Theta PID output", m_rotationPIDController.Calculate(m_swerve_drive->GetNormalizedYaw(), goalAngle))
                 * SwerveDriveConstants::maxAngularVelocity;
   
@@ -59,12 +56,10 @@ units::angular_velocity::radians_per_second_t OISwerveDrive::GetDesiredRotationa
 // Called repeatedly when this Command is scheduled to run
 void OISwerveDrive::Execute() {
   // Limits speed and rotation to max speed
-  // auto xSpeed = -frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_Y), 0.05) * SwerveDriveConstants::kMaxSpeed;
   const auto xSpeed = -m_xspeedLimiter.Calculate(
                 frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_Y), 0.05)) *
               SwerveDriveConstants::kMaxSpeed;
 
-  // auto ySpeed = frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_X), 0.05) * SwerveDriveConstants::kMaxSpeed;
   const auto ySpeed = m_yspeedLimiter.Calculate(
                 frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_X), 0.05)) *
               SwerveDriveConstants::kMaxSpeed;
@@ -76,7 +71,6 @@ void OISwerveDrive::Execute() {
   // If using atan2 rotation (robot points in direction of joystick)
   // Use the rotation velocity function
   if (m_isMagnitudeRot) {
-    // If trying to rotate fast, limit translation
     const auto rot = -m_rotLimiter.Calculate(
                 frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_RSTICK_X), 0.05)) *
               SwerveDriveConstants::maxAngularVelocity * 2.0;
@@ -84,9 +78,7 @@ void OISwerveDrive::Execute() {
     m_swerve_drive->Drive(xSpeed, ySpeed, rot, fieldRelative);
   } 
   else {
-    // If trying to rotate fast, limit translation
     const auto rot = GetDesiredRotationalVelocity();
-
     m_swerve_drive->PercentDrive(xSpeed, ySpeed, rot, fieldRelative);
   }
 }

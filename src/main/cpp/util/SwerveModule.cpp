@@ -27,15 +27,12 @@ m_absoluteEncoder(SI.CANCoderID, "Swerve")
     m_speedMotor.Config_kP(0, speedP, 50);
     m_speedMotor.Config_kI(0, speedI, 50);
     m_speedMotor.Config_kD(0, speedD, 50);
-    // m_speedMotor.ConfigClosedloopRamp(SwerveDriveConstants::loopRampRate);
     m_speedMotor.ConfigClosedloopRamp(0);
     m_speedMotor.ConfigOpenloopRamp(0.01);
     m_speedMotor.ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration{
                                             true, SwerveDriveConstants::ampLimit, SwerveDriveConstants::ampLimit + 5.0, 0.1});
 
     m_angleMotor.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor);
-    // m_angleMotor.ConfigRemoteFeedbackFilter(m_absoluteEncoder.GetDeviceNumber(), RemoteSensorSource::RemoteSensorSource_CANCoder, 0);
-    // m_angleMotor.ConfigSelectedFeedbackSensor(FeedbackDevice::RemoteSensor0);
     // Allows PIDController to treat two angles as the same point on a circle
     m_angleMotor.ConfigIntegratedSensorAbsoluteRange(AbsoluteSensorRange::Unsigned_0_to_360);
     m_angleMotor.ConfigIntegratedSensorInitializationStrategy(SensorInitializationStrategy::BootToAbsolutePosition);
@@ -47,7 +44,7 @@ m_absoluteEncoder(SI.CANCoderID, "Swerve")
     // Limits acceleration of motors and current drawn
     m_angleMotor.ConfigOpenloopRamp(SwerveDriveConstants::loopRampRate);
     // Enable current limiting, set current to limit down to as ampLimit, current to start limiting to as the same, and
-    // time before limiting to 1 second (arbitrary)
+    // time before limiting to .1 second (arbitrary)
     m_angleMotor.ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration{
                                             true, SwerveDriveConstants::ampLimit, SwerveDriveConstants::ampLimit + 10.0, 0.1});
 
@@ -56,11 +53,6 @@ m_absoluteEncoder(SI.CANCoderID, "Swerve")
     m_absoluteEncoder.ConfigSensorInitializationStrategy(SensorInitializationStrategy::BootToAbsolutePosition);
     ResetSpeedEncoder();
     ResetAngleToAbsolute();
-    // m_anglePIDController.SetTolerance({.5});
-    // Absolute position currently working weirdly
-    // m_absoluteEncoder.SetPositionToAbsolute(); 
-    // Configs distance per encoder pulse -- necessary for movement by position
-    // Doesn't exist for test encoders -> m_speedEncoder.SetDistancePerPulse(1 / 4096);
 }
 
 void SwerveModule::Stop() {
@@ -120,34 +112,23 @@ void SwerveModule::SetDesiredState(const frc::SwerveModuleState &input_state) {
     const auto state = OptimizeAngle(
         input_state, units::degree_t{FalconToDegrees(m_angleMotor.GetSelectedSensorPosition())});
     
-    // const auto state = input_state;
     double vel = state.speed.value();
-    
     auto acceleration = (state.speed - m_lastSpeed) /
       (frc::Timer::GetFPGATimestamp() - m_lastTime);
 
     units::volt_t ffValue = std::clamp(ff.Calculate(state.speed, acceleration), -12.0_V, 12.0_V);
     m_speedMotor.Set(TalonFXControlMode::PercentOutput, (ffValue / 12.0_V));
-
     m_lastSpeed = state.speed;
     m_lastTime = frc::Timer::GetFPGATimestamp();
-
-    // double speedPercent = vel / (double)SwerveDriveConstants::kMaxSpeed;
     frc::SmartDashboard::PutNumber("Target Swerve Speed Percent", (double)(ffValue / 12.0_V));
-
-    // Tells PID controller to run with calculated module speed
-    // m_speedMotor.Set(TalonFXControlMode::PercentOutput, speedPercent);
     
     // Calculate position to set angle PID to
     double turnSetpoint = DegreesToFalcon(state.angle.Degrees().value());
-    // double turnSetpoint = -25000.0;
+
     // If robot wants to barely move or rotate module, stop motors
     // Also sets next setpoint as current angle so no rotation happens
-    // std::cout << "Velocity in mps: " << vel << " Turn difference: " << (m_lastAngle - turnSetpoint) << std::endl;
-
     // Keep wheels in current spot instead of resetting to 0
     if (fabs(vel) < .025 && (m_lastAngle - turnSetpoint) < 5.0) {
-        // std::cout << "Stopping motors";
         Stop();
         turnSetpoint = m_lastAngle;
     } else {
@@ -162,7 +143,6 @@ frc::SwerveModuleState SwerveModule::OptimizeAngle(frc::SwerveModuleState desire
     double targetAngle = NormalizeTo0To360(
                         currentAngle.Degrees().value(), 
                         desiredState.angle.Degrees().value());
-    // double targetAngle = desiredState.angle.Degrees().value();
     frc::SmartDashboard::PutNumber("Optimize target angle", targetAngle);
 
     auto targetSpeed = desiredState.speed;
@@ -201,12 +181,9 @@ double SwerveModule::NormalizeTo0To360(double currentAngle, double targetAngle) 
     frc::SmartDashboard::PutNumber("Normalize Upper Bound", upperBound);
       // Target angle is now normalized between either 0 to 360 or -360 to 0
       while (targetAngle < lowerBound) {
-          targetAngle += 360;
-        //   frc::SmartDashboard::PutNumber("Increasing to bound", targetAngle);
-      }
+          targetAngle += 360;      }
       while (targetAngle > upperBound) {
           targetAngle -= 360;
-        //   frc::SmartDashboard::PutNumber("Decreasing to bound", targetAngle);
       }
       if (targetAngle - currentAngle > 180) {
           targetAngle -= 360;

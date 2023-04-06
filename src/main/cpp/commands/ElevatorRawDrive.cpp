@@ -15,11 +15,6 @@ void ElevatorRawDrive::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
 void ElevatorRawDrive::Execute() {
-  // Extend intake if using elevator fast
-  // if(abs(m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y)) > 0.2) {
-  //   m_intake->SetPistonExtension(true);
-  // }
-
   if (-m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y) > 0.05) {
       m_elevator->Drive((-m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y)));
   } else if (-m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y) < -0.05) {
@@ -27,9 +22,6 @@ void ElevatorRawDrive::Execute() {
   } else {
     m_elevator->Drive(0);
   }
-  
-  // m_elevator->Drive(m_power);
-  // m_grabber->SetSpeed(GRABBER_CARRY_SPEED);
 }
 
 // Called once the command ends or is interrupted.

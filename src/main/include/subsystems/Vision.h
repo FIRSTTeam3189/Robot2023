@@ -36,7 +36,6 @@ public:
   void Periodic() override;
   VisionData GetData();
   void Toggle();
-  static double Round(double value, double roundAmount);
 
 private:
   nt::IntegerTopic m_IDTopic;

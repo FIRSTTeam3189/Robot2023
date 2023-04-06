@@ -12,7 +12,6 @@ ResetOdometry::ResetOdometry(SwerveDrive *swerve_drive, frc::Pose2d pose)
 
 // Called when the command is initially scheduled.
 void ResetOdometry::Initialize() {
-  // m_swerve_drive->ResetGyro();
   m_swerve_drive->ResetOdometry(m_pose);
   m_isFinished = true;
 }
