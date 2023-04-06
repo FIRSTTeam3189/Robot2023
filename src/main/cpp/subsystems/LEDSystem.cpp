@@ -4,9 +4,10 @@
 
 #include "subsystems/LEDSystem.h"
 
-LEDSystem::LEDSystem(int brightness) : m_candleControl(CANDLE_DEVICE_ID), m_candleConfig(), m_animation(NULL), m_ledSections() {
+LEDSystem::LEDSystem() : m_candleControl(CANDLE_DEVICE_ID), m_candleConfig(), m_animation(NULL), m_ledSections(), m_grabberAnimationRunning(false),
+m_modeShouldChangeColor(true), m_lastMode(false), m_shouldStartup(true), m_startupRunning(false), m_currentModeRGB({0, 0, 0}) {
     m_candleConfig.stripType = ctre::phoenix::led::LEDStripType::RGB;
-    m_candleConfig.brightnessScalar = brightness;
+    m_candleConfig.brightnessScalar = LED_BRIGHTNESS;
     m_candleControl.ConfigAllSettings(m_candleConfig);
     // The Full Setup
     m_ledSections.at(LEDSection::All) = {0, 154};
@@ -38,23 +39,47 @@ LEDSystem::LEDSystem(int brightness) : m_candleControl(CANDLE_DEVICE_ID), m_cand
     m_ledSections.at(LEDSection::RSide) = {8, 87};
     // length of left side
     m_ledSections.at(LEDSection::LSide) = {86, 154};
-
-    StartingAnimation();
 }
 
 // This method will be called once per scheduler run
 void LEDSystem::Periodic() {
-    auto grabbed = frc::SmartDashboard::GetBoolean("Piece Grabbed", false);
-    if (grabbed) {
-        SetAnimation(LEDAnimationType::ColorFlow, LEDSection::LBackElevatorStrip, 0, 255, 0, 1.0);
-        SetAnimation(LEDAnimationType::ColorFlow, LEDSection::LFrontElevatorStrip, 0, 255, 0, 1.0);
-        SetAnimation(LEDAnimationType::ColorFlow, LEDSection::RBackElevatorStrip, 0, 255, 0, 1.0);
-        SetAnimation(LEDAnimationType::ColorFlow, LEDSection::RFrontElevatorStrip, 0, 255, 0, 1.0);
-        SetAnimation(LEDAnimationType::ColorFlow, LEDSection::BackStrip, 0, 255, 0, 1.0);
-        m_running = true;
-    } else if (m_running && !grabbed) {
-        SetAnimation(LEDAnimationType::Clear);
-        m_running = false;
+    if (m_shouldStartup) {
+        StartingAnimation();
+    }
+    else {
+        bool grabbed = frc::SmartDashboard::GetBoolean("Piece Grabbed", false);
+        bool isCubeMode = frc::SmartDashboard::GetBoolean("Piece Mode", false);
+
+        if (isCubeMode) {
+            m_currentModeRGB = {150, 100, 0};
+        } else {
+            m_currentModeRGB = {150, 0, 150};
+        }
+
+        if (isCubeMode != m_lastMode) {
+            m_modeShouldChangeColor = true;
+        }
+
+        if (grabbed) {
+            SetAnimation(LEDAnimationType::ColorFlow, LEDSection::LBackElevatorStrip, 0, 150, 0, 1.0);
+            SetAnimation(LEDAnimationType::ColorFlow, LEDSection::LFrontElevatorStrip, 0, 150, 0, 1.0);
+            SetAnimation(LEDAnimationType::ColorFlow, LEDSection::RBackElevatorStrip, 0, 150, 0, 1.0);
+            SetAnimation(LEDAnimationType::ColorFlow, LEDSection::RFrontElevatorStrip, 0, 150, 0, 1.0);
+            SetAnimation(LEDAnimationType::ColorFlow, LEDSection::BackStrip, 0, 150, 0, 1.0);
+            m_grabberAnimationRunning = true;
+        } else if (m_grabberAnimationRunning && !grabbed) {
+            SetAnimation(LEDAnimationType::Clear);
+            m_grabberAnimationRunning = false;
+        }
+
+        if (m_modeShouldChangeColor) {
+            SetColor(m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], LEDSection::LUnderGlow);
+            SetColor(m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], LEDSection::RUnderGlow);
+            SetColor(m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], LEDSection::Candle);
+            m_modeShouldChangeColor = false;
+        }
+
+        m_lastMode = isCubeMode;
     }
 }
 
@@ -112,11 +137,11 @@ void LEDSystem::SetAnimation(LEDAnimationType newAnimation, LEDSection section, 
 }
 
 void LEDSystem::SetColor(int r, int g, int b, LEDSection section) {
-    m_candleControl.SetLEDs(r, g, b, 0, m_ledSections[section].first, m_ledSections[section].second);
+    m_candleControl.SetLEDs(r, g, b, 0, m_ledSections[section].first, m_ledSections[section].second - m_ledSections[section].first);
 }
 
 void LEDSystem::ClearColor(LEDSection section) {
-    m_candleControl.SetLEDs(0, 0, 0, 0, m_ledSections[section].first, m_ledSections[section].second);
+    m_candleControl.SetLEDs(0, 0, 0, 0, m_ledSections[section].first, m_ledSections[section].second - m_ledSections[section].first);
 }
 
 void LEDSystem::ClearAll() {
@@ -134,7 +159,14 @@ void LEDSystem::ClearAll() {
 }
 
 void LEDSystem::StartingAnimation() {
-    SetAnimation(LEDAnimationType::ColorFlow, LEDSection::All, 255, 255, 0, 1.0, true);
-    SetAnimation(LEDAnimationType::ColorFlow, LEDSection::All, 0, 0, 255, 1.0, false);
-
+    if (!m_startupRunning) {
+        m_startupRunning = true;
+        m_timer.Start();
+        SetAnimation(LEDAnimationType::ColorFlow, LEDSection::All, 255, 255, 0, 0.5, true);
+        SetAnimation(LEDAnimationType::ColorFlow, LEDSection::All, 0, 0, 255, 0.5, false);
+    }
+    if (m_timer.Get() > 3.0_s) {
+        m_shouldStartup = false;
+        m_timer.Stop();
+    }
 }

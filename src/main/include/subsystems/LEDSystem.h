@@ -30,7 +30,7 @@ enum class LEDSection {
 
 class LEDSystem : public frc2::SubsystemBase {
  public:
-  LEDSystem(int brightness);
+  LEDSystem();
   // 
   void SetAnimation(LEDAnimationType animation, LEDSection section = LEDSection::All, int r = 0, int g = 0, int b = 0, double speed = 0.7, bool reverse = false);
   void SetColor(int r, int g, int b, LEDSection section = LEDSection::All);
@@ -50,5 +50,11 @@ class LEDSystem : public frc2::SubsystemBase {
   CANdleConfiguration m_candleConfig;
   ctre::phoenix::led::Animation *m_animation;
   std::map<LEDSection, std::pair<uint8_t, uint8_t>> m_ledSections;
-  bool m_running;
+  bool m_grabberAnimationRunning;
+  bool m_modeShouldChangeColor;
+  bool m_lastMode;
+  bool m_shouldStartup;
+  bool m_startupRunning;
+  frc::Timer m_timer{};
+  std::array<int, 3> m_currentModeRGB;
 };

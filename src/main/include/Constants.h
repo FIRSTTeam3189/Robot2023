@@ -234,4 +234,4 @@ namespace AutoConstants {
 #define GRABBER_OUTTAKE_SPEED 0.25
 
 #define CANDLE_DEVICE_ID 0
-#define CANDLE_LED_PIXEL_COUNT 300
+#define LED_BRIGHTNESS 1.0

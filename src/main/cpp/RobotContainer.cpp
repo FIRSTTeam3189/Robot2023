@@ -225,7 +225,7 @@ void RobotContainer::ConfigureButtonBindings() {
     },{m_intake, m_grabber}).ToPtr()
   );
 
-  frc2::Trigger coneCorrectButton{m_ted.Button(PS5_BUTTON_TOUCHPAD)};
+  frc2::Trigger coneCorrectButton{m_ted.Button(PS5_BUTTON_MENU)};
   coneCorrectButton.WhileTrue(frc2::InstantCommand([this]{m_intake->SetPower((INTAKE_ROLLER_POWER / 2), -INTAKE_CONVEYOR_POWER, 0);},{m_intake}).ToPtr());
   coneCorrectButton.OnFalse(RunIntake(m_intake, 0, 0, 0).ToPtr());
 
@@ -246,6 +246,10 @@ void RobotContainer::ConfigureButtonBindings() {
 
   frc2::Trigger ultraShootButton{m_ted.Button(PS5_BUTTON_LSTICK)};
   ultraShootButton.OnTrue(UltraShoot(m_elevator, m_intake, m_grabber).ToPtr());
+
+  frc::SmartDashboard::PutBoolean("Piece Mode", m_isConeMode);
+  frc2::Trigger pieceModeToggleButton{m_ted.Button(PS5_BUTTON_TOUCHPAD)};
+  pieceModeToggleButton.OnTrue(frc2::InstantCommand([this]{ m_isConeMode = !m_isConeMode; frc::SmartDashboard::PutBoolean("Piece Mode", m_isConeMode); }, {}).ToPtr());
 }
 
 void RobotContainer::BuildEventMap() {
@@ -449,7 +453,7 @@ void RobotContainer::BuildEventMap() {
 void RobotContainer::CreateAutoPaths() {
   // Make auto builder
   m_autoBuilder = new pathplanner::SwerveAutoBuilder(
-    [this]() { return m_swerve->GetPose(); }, // Function to supply current robot pose
+    [this]() { return m_swerve->GetCorrectedPose(); }, // Function to supply current robot pose
     [this](auto initPose) { m_swerve->ResetOdometry(initPose); }, // Function used to reset odometry at the beginning of auto
     pathplanner::PIDConstants(AutoConstants::kPXController, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
     pathplanner::PIDConstants(AutoConstants::autoRotP, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
@@ -474,18 +478,6 @@ void RobotContainer::CreateAutoPaths() {
   m_chooser.AddOption("Two Score: High Cube + Balance + Ultrashoot", new TwoScoreHighCubeUltrashootAuto(m_autoBuilder, "One Score + Pickup + Balance + Ultrashoot"));
   m_chooser.AddOption("Two Score: Wide Sweep High/Mid Cubes", new TwoScoreWideSweepHighMidCubeAuto(m_autoBuilder, "Two Score Wide Sweep"));
   m_chooser.AddOption("Five Score", new FiveScoreAuto(m_autoBuilder, "Five Score"));
-
-  // Make auto builder
-  m_autoBuilder = new pathplanner::SwerveAutoBuilder(
-    [this]() { return m_swerve->GetPose(); }, // Function to supply current robot pose
-    [this](auto initPose) { m_swerve->ResetOdometry(initPose); }, // Function used to reset odometry at the beginning of auto
-    pathplanner::PIDConstants(AutoConstants::kPXController, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
-    pathplanner::PIDConstants(AutoConstants::autoRotP, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
-    [this](auto speeds) { m_swerve->PercentDrive(speeds); }, // Output function that accepts field relative ChassisSpeeds
-    AutoParameters::eventMap, // Our event map
-    { m_swerve }, // Drive requirements, usually just a single drive subsystem
-    true // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-  );
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

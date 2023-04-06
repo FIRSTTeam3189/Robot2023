@@ -57,6 +57,7 @@
 #include "subsystems/Intake.h"
 #include "subsystems/Grabber.h"
 #include "subsystems/Vision.h"
+#include "subsystems/LEDSystem.h"
 #include "RobotParameters.h"
 
 #include <pathplanner/lib/auto/SwerveAutoBuilder.h>
@@ -87,11 +88,13 @@ class RobotContainer {
   Elevator *m_elevator = new Elevator();
   Grabber *m_grabber = new Grabber();
   Intake *m_intake = new Intake();
+  LEDSystem *m_LED = new LEDSystem();
 
   frc::SendableChooser<frc2::Command*> m_chooser;
   pathplanner::SwerveAutoBuilder *m_autoBuilder = nullptr;
 
   bool m_isMagnitudeRot = false;
+  bool m_isConeMode = false;
 
   // Bill controls drivetrain + intake etc. (lower half)
   // Ted controls output + aiming etc. (upper half)

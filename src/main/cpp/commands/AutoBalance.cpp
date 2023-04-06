@@ -32,14 +32,14 @@ void AutoBalance::Execute() {
 
   // If bridge is balanced, start counting up loops where it's balanced
   // End command after certain amount of time balanced
-  if (abs(m_lastPitch) < 2.5 && abs((double)m_swerve->GetPose().X() - (double)m_lastXPosition) < 0.1) {
+  if (abs(m_lastPitch) < 2.5 && abs(m_lastRoll) < 2.5) {
     m_withinThresholdLoops++;
   } else {
     m_withinThresholdLoops = 0;
   }
 
   m_lastPitch = pitch;
-  m_lastXPosition = m_swerve->GetPose().X();
+  m_lastRoll = roll;
   m_swerve->PercentDrive(units::meters_per_second_t{xOutput}, units::meters_per_second_t{yOutput}, 0.0 * 1_rad / 1_s, false); // Note it drives ROBOT relative, not field relative
 }
 
