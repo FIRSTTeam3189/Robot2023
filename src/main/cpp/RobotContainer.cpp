@@ -461,7 +461,31 @@ void RobotContainer::CreateAutoPaths() {
 
   // Add auto commands to auto chooser
   m_chooser.SetDefaultOption("N/A", nullptr);
-  m_chooser.AddOption("Test: Line", new TestLineAuto(m_autoBuilder));
+  m_chooser.AddOption("Test: Line", new TestLineAuto(m_autoBuilder, "Test - Line"));
+  m_chooser.AddOption("Test - S", new TestSAuto(m_autoBuilder, "Test - S"));
+  m_chooser.AddOption("Test - Line + Rotate", new TestLineRotateAuto(m_autoBuilder, "Test - Line + Rotate"));
+  m_chooser.AddOption("Test - Line + Intake", new TestLineIntakeAuto(m_autoBuilder, "Test - Line + Intake"));
+  m_chooser.AddOption("Test - S + Rotate", new TestSRotateAuto(m_autoBuilder, "Test - S + Rotate"));
+  m_chooser.AddOption("Special", new SpecialAuto(m_autoBuilder, "Special"));
+  m_chooser.AddOption("Figure Eight", new FigureEightAuto(m_autoBuilder, "Figure Eight"));
+  m_chooser.AddOption("Two Score: High/Mid Cubes", new TwoScoreHighMidCubeAuto(m_autoBuilder, "Two Score High-Mid Cube"));
+  m_chooser.AddOption("One Score: High Cube + Taxi", new OneScoreHighCubeTaxiAuto(m_autoBuilder, "One Score + Taxi"));
+  m_chooser.AddOption("One Score: High Cube + Balance", new OneScoreHighCubeBalanceAuto(m_autoBuilder, "One Score + Balance"));
+  m_chooser.AddOption("Two Score: High Cube + Balance + Ultrashoot", new TwoScoreHighCubeUltrashootAuto(m_autoBuilder, "One Score + Pickup + Balance + Ultrashoot"));
+  m_chooser.AddOption("Two Score: Wide Sweep High/Mid Cubes", new TwoScoreWideSweepHighMidCubeAuto(m_autoBuilder, "Two Score Wide Sweep"));
+  m_chooser.AddOption("Five Score", new FiveScoreAuto(m_autoBuilder, "Five Score"));
+
+  // Make auto builder
+  m_autoBuilder = new pathplanner::SwerveAutoBuilder(
+    [this]() { return m_swerve->GetPose(); }, // Function to supply current robot pose
+    [this](auto initPose) { m_swerve->ResetOdometry(initPose); }, // Function used to reset odometry at the beginning of auto
+    pathplanner::PIDConstants(AutoConstants::kPXController, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+    pathplanner::PIDConstants(AutoConstants::autoRotP, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
+    [this](auto speeds) { m_swerve->PercentDrive(speeds); }, // Output function that accepts field relative ChassisSpeeds
+    AutoParameters::eventMap, // Our event map
+    { m_swerve }, // Drive requirements, usually just a single drive subsystem
+    true // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+  );
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

@@ -44,7 +44,7 @@ LEDSystem::LEDSystem(int brightness) : m_candleControl(CANDLE_DEVICE_ID), m_cand
 
 // This method will be called once per scheduler run
 void LEDSystem::Periodic() {
-    auto grabbed = frc::SmartDashboard::GetBoolean("Piece Grabbe", false);
+    auto grabbed = frc::SmartDashboard::GetBoolean("Piece Grabbed", false);
     if (grabbed) {
         SetAnimation(LEDAnimationType::ColorFlow, LEDSection::LBackElevatorStrip, 0, 255, 0, 1.0);
         SetAnimation(LEDAnimationType::ColorFlow, LEDSection::LFrontElevatorStrip, 0, 255, 0, 1.0);

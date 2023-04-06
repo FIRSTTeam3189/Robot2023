@@ -15,9 +15,9 @@
 
 #include "Constants.h"
 
-class TestLineAuto
+class TwoScoreWideSweepHighMidCubeAuto
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
-                                 TestLineAuto> {
+                                 TwoScoreWideSweepHighMidCubeAuto> {
  public:
-  TestLineAuto(pathplanner::SwerveAutoBuilder *builder, std::string filePath);
+  TwoScoreWideSweepHighMidCubeAuto(pathplanner::SwerveAutoBuilder *builder, std::string filePath);
 };

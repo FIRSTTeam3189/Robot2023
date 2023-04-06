@@ -24,7 +24,19 @@
 #include <frc/Joystick.h>
 #include <frc/PowerDistribution.h>
 
+#include "Autos/FigureEightAuto.h"
+#include "Autos/FiveScoreAuto.h"
+#include "Autos/OneScoreHighCubeBalanceAuto.h"
+#include "Autos/OneScoreHighCubeTaxiAuto.h"
+#include "Autos/SpecialAuto.h"
 #include "Autos/TestLineAuto.h"
+#include "Autos/TestLineIntakeAuto.h"
+#include "Autos/TestLineRotateAuto.h"
+#include "Autos/TestSAuto.h"
+#include "Autos/TestSRotateAuto.h"
+#include "Autos/TwoScoreHighCubeUltrashootAuto.h"
+#include "Autos/TwoScoreHighMidCubeAuto.h"
+#include "Autos/TwoScoreWideSweepHighMidCubeAuto.h"
 
 #include "commands/SingleModTest.h"
 #include "commands/OISwerveDrive.h"

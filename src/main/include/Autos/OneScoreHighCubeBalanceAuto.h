@@ -15,9 +15,9 @@
 
 #include "Constants.h"
 
-class TestLineAuto
+class OneScoreHighCubeBalanceAuto
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
-                                 TestLineAuto> {
+                                 OneScoreHighCubeBalanceAuto> {
  public:
-  TestLineAuto(pathplanner::SwerveAutoBuilder *builder, std::string filePath);
+  OneScoreHighCubeBalanceAuto(pathplanner::SwerveAutoBuilder *builder, std::string filePath);
 };

@@ -15,9 +15,9 @@
 
 #include "Constants.h"
 
-class TestLineAuto
+class TestLineIntakeAuto
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
-                                 TestLineAuto> {
+                                 TestLineIntakeAuto> {
  public:
-  TestLineAuto(pathplanner::SwerveAutoBuilder *builder, std::string filePath);
+  TestLineIntakeAuto(pathplanner::SwerveAutoBuilder *builder, std::string filePath);
 };

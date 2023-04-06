@@ -15,9 +15,9 @@
 
 #include "Constants.h"
 
-class TestLineAuto
+class TwoScoreHighCubeUltrashootAuto
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
-                                 TestLineAuto> {
+                                 TwoScoreHighCubeUltrashootAuto> {
  public:
-  TestLineAuto(pathplanner::SwerveAutoBuilder *builder, std::string filePath);
+  TwoScoreHighCubeUltrashootAuto(pathplanner::SwerveAutoBuilder *builder, std::string filePath);
 };
