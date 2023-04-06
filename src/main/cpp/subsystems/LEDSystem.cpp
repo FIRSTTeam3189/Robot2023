@@ -34,54 +34,69 @@ LEDSystem::LEDSystem(int brightness) : m_candleControl(CANDLE_DEVICE_ID), m_cand
     m_ledSections.at(LEDSection::LFrontStrip) = {141, 148};
     // length 6
     m_ledSections.at(LEDSection::LIntakeCrossStrip) = {148, 154};
+    // length of right side
+    m_ledSections.at(LEDSection::RSide) = {8, 87};
+    // length of left side
+    m_ledSections.at(LEDSection::LSide) = {86, 154};
+
+    StartingAnimation();
 }
 
 // This method will be called once per scheduler run
-void LEDSystem::Periodic() {}
+void LEDSystem::Periodic() {
+    auto grabbed = frc::SmartDashboard::GetBoolean("Piece Grabbe", false);
+    if (grabbed) {
+        SetAnimation(LEDAnimationType::ColorFlow, LEDSection::LBackElevatorStrip, 0, 255, 0, 1.0);
+        SetAnimation(LEDAnimationType::ColorFlow, LEDSection::LFrontElevatorStrip, 0, 255, 0, 1.0);
+        SetAnimation(LEDAnimationType::ColorFlow, LEDSection::RBackElevatorStrip, 0, 255, 0, 1.0);
+        SetAnimation(LEDAnimationType::ColorFlow, LEDSection::RFrontElevatorStrip, 0, 255, 0, 1.0);
+        SetAnimation(LEDAnimationType::ColorFlow, LEDSection::BackStrip, 0, 255, 0, 1.0);
+        m_running = true;
+    } else if (m_running && !grabbed) {
+        SetAnimation(LEDAnimationType::Clear);
+        m_running = false;
+    }
+}
 
-void LEDSystem::SetAnimation(LEDAnimationType newAnimation, LEDSection section, int r, int g, int b) {
+void LEDSystem::SetAnimation(LEDAnimationType newAnimation, LEDSection section, int r, int g, int b, double speed, bool reverse) {
     auto len = m_ledSections[section].second - m_ledSections[section].first;
     switch (newAnimation) {
     case LEDAnimationType::ColorFlow:
-        m_animation = new ColorFlowAnimation(r, g, b, 0, 0.7, len, ColorFlowAnimation::Direction::Forward, m_ledSections[section].first);
+        m_animation = new ColorFlowAnimation(r, g, b, 0, speed, len, ColorFlowAnimation::Direction::Forward, m_ledSections[section].first);
         m_candleControl.Animate(*m_animation, 0);
         break;
     case LEDAnimationType::Fire:
-        m_animation = new FireAnimation(m_candleConfig.brightnessScalar, 0.7, len, 0.7, 0.5, false, m_ledSections[section].first);
+        m_animation = new FireAnimation(m_candleConfig.brightnessScalar, speed, len, 0.7, 0.5, reverse, m_ledSections[section].first);
         m_candleControl.Animate(*m_animation, 0);
         break;
     case LEDAnimationType::Larson:
-        m_animation = new LarsonAnimation(r, g, b, 0, 1, len, LarsonAnimation::BounceMode::Front, 3, m_ledSections[section].first);
+        m_animation = new LarsonAnimation(r, g, b, 0, speed, len, LarsonAnimation::BounceMode::Front, 3, m_ledSections[section].first);
         m_candleControl.Animate(*m_animation, 0);
         break;
     case LEDAnimationType::Rainbow:
-        m_animation = new RainbowAnimation(1, 0.1, len, false, m_ledSections[section].first);
+        m_animation = new RainbowAnimation(m_candleConfig.brightnessScalar, speed, len, reverse, m_ledSections[section].first);
         m_candleControl.Animate(*m_animation, 0);
         break;
     case LEDAnimationType::RGBFade:
-        m_animation = new RgbFadeAnimation(0.7, 0.4, len, m_ledSections[section].first);
+        m_animation = new RgbFadeAnimation(m_candleConfig.brightnessScalar, speed, len, m_ledSections[section].first);
         m_candleControl.Animate(*m_animation, 0);
         break;
     case LEDAnimationType::SingleFade:
-        m_animation = new SingleFadeAnimation(r, g, b, 0, 0.5, len, m_ledSections[section].first);
+        m_animation = new SingleFadeAnimation(r, g, b, 0, speed, len, m_ledSections[section].first);
         m_candleControl.Animate(*m_animation, 0);
         break;
     case LEDAnimationType::Strobe:
-        m_animation = new StrobeAnimation(r, g, b, 0, 0.75, len, m_ledSections[section].first);
+        m_animation = new StrobeAnimation(r, g, b, 0, speed, len, m_ledSections[section].first);
         m_candleControl.Animate(*m_animation, 0);
         break;
     case LEDAnimationType::Twinkle:
-        m_animation = new TwinkleAnimation(r, g, b, 0, 0.5, len, TwinkleAnimation::TwinklePercent::Percent18, m_ledSections[section].first);
+        m_animation = new TwinkleAnimation(r, g, b, 0, speed, len, TwinkleAnimation::TwinklePercent::Percent100, m_ledSections[section].first);
         m_candleControl.Animate(*m_animation, 0);
         break;
     case LEDAnimationType::TwinkleOff:
-        m_animation = new TwinkleOffAnimation(r, g, b, 0, 0.8, len, TwinkleOffAnimation::TwinkleOffPercent::Percent100, m_ledSections[section].first);
+        m_animation = new TwinkleOffAnimation(r, g, b, 0, speed, len, TwinkleOffAnimation::TwinkleOffPercent::Percent100, m_ledSections[section].first);
         m_candleControl.Animate(*m_animation, 0);
         break;
-    case LEDAnimationType::MultiAnim:
-    // Need to Work on after Testing
-        break;
-    
     default:
         m_candleControl.ClearAnimation(0);
         m_candleControl.ClearAnimation(1);
@@ -119,5 +134,7 @@ void LEDSystem::ClearAll() {
 }
 
 void LEDSystem::StartingAnimation() {
+    SetAnimation(LEDAnimationType::ColorFlow, LEDSection::All, 255, 255, 0, 1.0, true);
+    SetAnimation(LEDAnimationType::ColorFlow, LEDSection::All, 0, 0, 255, 1.0, false);
 
 }

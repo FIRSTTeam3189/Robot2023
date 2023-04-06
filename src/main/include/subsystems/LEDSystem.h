@@ -21,14 +21,18 @@
 #include <map>
 // #include <
 
-enum class LEDAnimationType { Clear, ColorFlow, Fire, Larson, Rainbow, RGBFade, SingleFade, Strobe, Twinkle, TwinkleOff, MultiAnim };
-enum class LEDSection { All, Candle, BackStrip, RIntakeCrossStrip, RFrontStrip, RFrontElevatorStrip, RBackElevatorStrip, RUnderGlow, LUnderGlow, LBackElevatorStrip, LFrontElevatorStrip, LFrontStrip, LIntakeCrossStrip};  
+enum class LEDAnimationType { Clear, ColorFlow, Fire, Larson, Rainbow, RGBFade, SingleFade, Strobe, Twinkle, TwinkleOff };
+enum class LEDSection { 
+  All, Candle, BackStrip, RIntakeCrossStrip, RFrontStrip, RFrontElevatorStrip, 
+  RBackElevatorStrip, RUnderGlow, LUnderGlow, LBackElevatorStrip, LFrontElevatorStrip, LFrontStrip, LIntakeCrossStrip,
+  LSide, RSide
+};
 
 class LEDSystem : public frc2::SubsystemBase {
  public:
   LEDSystem(int brightness);
   // 
-  void SetAnimation(LEDAnimationType animation, LEDSection section = LEDSection::All, int r = 0, int g = 0, int b = 0);
+  void SetAnimation(LEDAnimationType animation, LEDSection section = LEDSection::All, int r = 0, int g = 0, int b = 0, double speed = 0.7, bool reverse = false);
   void SetColor(int r, int g, int b, LEDSection section = LEDSection::All);
   void ClearColor(LEDSection section = LEDSection::All);
   void ClearAll();
@@ -45,5 +49,6 @@ class LEDSystem : public frc2::SubsystemBase {
   ctre::phoenix::led::CANdle m_candleControl;
   CANdleConfiguration m_candleConfig;
   ctre::phoenix::led::Animation *m_animation;
-  std::map<LEDSection, std::pair<uint8_t, uint8_t>> m_ledSections; 
+  std::map<LEDSection, std::pair<uint8_t, uint8_t>> m_ledSections;
+  bool m_running;
 };
