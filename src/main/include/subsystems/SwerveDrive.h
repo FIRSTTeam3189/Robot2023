@@ -46,6 +46,7 @@ public:
 enum class ManualModuleDriveType {forward, turn, stop};
 
 enum class SwerveModuleLocation{fl, fr, bl, br};
+
 struct SwerveModules {
   frc::Translation2d m_frontLeftLocation;
   frc::Translation2d m_frontRightLocation;
@@ -65,7 +66,8 @@ class SwerveDrive : public frc2::SubsystemBase {
   void PercentDrive(units::meters_per_second_t xSpeed,
    units::meters_per_second_t ySpeed,
    units::radians_per_second_t rot,
-   bool fieldRelative);
+   bool fieldRelative,
+   frc::Translation2d centerOfRotation = frc::Translation2d{});
 
   void PercentDrive(frc::ChassisSpeeds speeds);
 
@@ -97,7 +99,6 @@ class SwerveDrive : public frc2::SubsystemBase {
   double GetNormalizedYaw();
   frc::Pose2d GetPose();
   frc::Pose2d GetCorrectedPose();
-  void DriveFast();
   void LockWheels();
 
   // Access functions for rotation PID controller

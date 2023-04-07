@@ -8,12 +8,12 @@
 #include <frc2/command/CommandPtr.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc2/command/button/CommandJoystick.h>
-#include <frc2/command/button/CommandPS4Controller.h>
 #include <frc2/command/RunCommand.h>
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/ParallelRaceGroup.h>
 #include <frc2/command/WaitCommand.h>
 #include <frc2/command/RamseteCommand.h>
+#include <frc2/command/ParallelCommandGroup.h>
 #include <frc/trajectory/Trajectory.h>
 #include <frc/trajectory/TrajectoryConfig.h>
 #include <frc/trajectory/TrajectoryGenerator.h>
@@ -50,7 +50,7 @@
 #include "commands/UltraShoot.h"
 #include "commands/TrajectoryAimAssist.h"
 #include "commands/ToggleIntakePistons.h"
-#include "commands/ShootFromCarriage.h"
+#include "commands/RunGrabber.h"
 
 #include "subsystems/SwerveDrive.h"
 #include "subsystems/Elevator.h"
@@ -100,6 +100,7 @@ class RobotContainer {
   // Ted controls output + aiming etc. (upper half)
   frc2::CommandJoystick m_bill{PS5_BILL_CONTROLLER_PORT};
   frc2::CommandJoystick m_ted{PS5_TED_CONTROLLER_PORT};
+  frc2::CommandJoystick m_test{PS5_TEST_CONTROLLER_PORT};
 
   void ConfigureButtonBindings();
   void BuildEventMap();

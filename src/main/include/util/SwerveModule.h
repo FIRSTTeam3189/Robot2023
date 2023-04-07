@@ -57,6 +57,7 @@ class SwerveModule {
  public:
   SwerveModule(SwerveInfo SI);
   void Stop();
+  void Lock(const frc::SwerveModuleState &input_state);
   void SetDesiredState(const frc::SwerveModuleState &state);
   void SetDesiredPercentState(const frc::SwerveModuleState &state);
   void ManualModuleSpeed(double speed);
@@ -67,7 +68,6 @@ class SwerveModule {
   double GetVelocity();
   frc::SwerveModulePosition GetSwerveModulePosition();
 
-  void DriveFast();
   void UpdateModulePosition();
   SwerveModuleTelemetry GetTelemetry();
   void ResetSpeedEncoder();

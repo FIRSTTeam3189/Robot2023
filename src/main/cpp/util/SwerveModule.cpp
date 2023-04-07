@@ -86,8 +86,10 @@ units::meter_t SwerveModule::FalconToMeters(double encoderTicks) {
     return units::meter_t{encoderTicks * (SwerveDriveConstants::wheelCircumferenceMeters / (SwerveDriveConstants::encoderSpeedGearRatio * SwerveDriveConstants::falconEncoderTicksPerRevolution))};
 }
 
-void SwerveModule::DriveFast() {
-    m_speedMotor.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 1.0);
+void SwerveModule::Lock(const frc::SwerveModuleState &input_state) {
+    const auto state = OptimizeAngle(
+        input_state, units::degree_t{FalconToDegrees(m_angleMotor.GetSelectedSensorPosition())});
+    m_angleMotor.Set(TalonFXControlMode::Position, DegreesToFalcon(state.angle.Degrees().value()));
 }
 
 void SwerveModule::SetDesiredPercentState(const frc::SwerveModuleState &input_state) {

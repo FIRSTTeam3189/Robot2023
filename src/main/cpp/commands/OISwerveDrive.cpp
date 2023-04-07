@@ -3,10 +3,11 @@
 
 #include "commands/OISwerveDrive.h"
 
-OISwerveDrive::OISwerveDrive(frc::Joystick *m_bill, SwerveDrive *swerve_drive, bool isMagnitudeRot) 
+OISwerveDrive::OISwerveDrive(frc::Joystick *m_bill, SwerveDrive *swerve_drive, bool isMagnitudeRot, RotationMode mode) 
 :  m_bill(m_bill), m_swerve_drive(swerve_drive),
    m_rotationPIDController(SwerveDriveConstants::rotP, SwerveDriveConstants::rotI, SwerveDriveConstants::rotD),
-   m_isMagnitudeRot(isMagnitudeRot) {
+   m_isMagnitudeRot(isMagnitudeRot),
+   m_currentMode(mode) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(swerve_drive);
   m_rotationPIDController.SetTolerance(1.0);
@@ -47,7 +48,7 @@ units::angular_velocity::radians_per_second_t OISwerveDrive::GetDesiredRotationa
   
   // Stop rotating if within tolerance
   if (abs(m_swerve_drive->GetNormalizedYaw() - goalAngle) < 2.5) {
-    rot = units::angular_velocity::radians_per_second_t {0.0};
+    rot = units::angular_velocity::radians_per_second_t{0.0};
   }
 
   return -rot;
@@ -78,8 +79,50 @@ void OISwerveDrive::Execute() {
     m_swerve_drive->Drive(xSpeed, ySpeed, rot, fieldRelative);
   } 
   else {
-    const auto rot = GetDesiredRotationalVelocity();
-    m_swerve_drive->PercentDrive(xSpeed, ySpeed, rot, fieldRelative);
+    units::radians_per_second_t rot{};
+    frc::Translation2d centerOfRotation{};
+
+    switch (m_currentMode) {
+      case RotationMode::normal:
+        rot = GetDesiredRotationalVelocity();
+        break;
+      case RotationMode::frontLeftCW:
+        rot = -2.0_rad / 1_s;
+        centerOfRotation = frc::Translation2d{+SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter};
+        break;
+      case RotationMode::frontLeftCCW:
+        rot = 2.0_rad / 1_s;
+        centerOfRotation = frc::Translation2d{+SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter};
+        break;
+      case RotationMode::frontRightCW:
+        rot = -2.0_rad / 1_s;
+        centerOfRotation = frc::Translation2d{+SwerveDriveConstants::xDistanceFromCenter, +SwerveDriveConstants::yDistanceFromCenter};
+        break;
+      case RotationMode::frontRightCCW:
+        rot = 2.0_rad / 1_s;
+        centerOfRotation = frc::Translation2d{+SwerveDriveConstants::xDistanceFromCenter, +SwerveDriveConstants::yDistanceFromCenter};
+        break;
+      case RotationMode::backLeftCW:
+        rot = -2.0_rad / 1_s;
+        centerOfRotation = frc::Translation2d{-SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter};
+        break;
+      case RotationMode::backLeftCCW:
+        rot = 2.0_rad / 1_s;
+        centerOfRotation = frc::Translation2d{-SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter};
+        break;
+      case RotationMode::backRightCW:
+        rot = -2.0_rad / 1_s;
+        centerOfRotation = frc::Translation2d{-SwerveDriveConstants::xDistanceFromCenter, +SwerveDriveConstants::yDistanceFromCenter};
+        break;
+      case RotationMode::backRightCCW:
+        rot = 2.0_rad / 1_s;
+        centerOfRotation = frc::Translation2d{-SwerveDriveConstants::xDistanceFromCenter, +SwerveDriveConstants::yDistanceFromCenter};
+        break;
+      default:
+        break;
+    }
+
+    m_swerve_drive->PercentDrive(xSpeed, ySpeed, rot, fieldRelative, centerOfRotation);
   }
 }
 

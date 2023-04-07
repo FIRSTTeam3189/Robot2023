@@ -23,9 +23,9 @@
 
 enum class LEDAnimationType { Clear, ColorFlow, Fire, Larson, Rainbow, RGBFade, SingleFade, Strobe, Twinkle, TwinkleOff };
 enum class LEDSection { 
-  All, Candle, BackStrip, RIntakeCrossStrip, RFrontStrip, RFrontElevatorStrip, 
-  RBackElevatorStrip, RUnderGlow, LUnderGlow, LBackElevatorStrip, LFrontElevatorStrip, LFrontStrip, LIntakeCrossStrip,
-  LSide, RSide
+  All, Candle, BackStrip, RFrontStrip, RFrontElevatorStrip, 
+  RBackElevatorStrip, RUnderGlow, LUnderGlow, LBackElevatorStrip, LFrontElevatorStrip, LFrontStrip,
+  LSide, RSide, Backside
 };
 
 class LEDSystem : public frc2::SubsystemBase {

@@ -4,9 +4,36 @@
 
 #include "commands/ElevatorPID.h"
 
+ElevatorPID::ElevatorPID(Elevator *elevator, Intake *intake, ElevatorLevel level, bool shouldFinish) 
+: m_elevator(elevator), m_intake(intake), m_shouldFinish(shouldFinish) {
+  // Use addRequirements() here to declare subsystem dependencies.
+  AddRequirements(elevator);
+  AddRequirements(intake);
+
+  bool isConeMode = frc::SmartDashboard::GetBoolean("Is Cone Mode?", false);
+
+  switch (level)
+  {
+  case ElevatorLevel::Low:
+    m_target = isConeMode ? ELEVATOR_LOW_CONE_TARGET : ELEVATOR_LOW_CUBE_TARGET;
+    break;
+  case ElevatorLevel::Mid:
+    m_target = isConeMode ? ELEVATOR_MID_CONE_TARGET : ELEVATOR_MID_CUBE_TARGET;
+    break;
+  case ElevatorLevel::High:
+    m_target = isConeMode ? ELEVATOR_HIGH_CONE_TARGET : ELEVATOR_HIGH_CUBE_TARGET;
+    break;
+  case ElevatorLevel::DoubleSubstation:
+    m_target = isConeMode ? ELEVATOR_DOUBLE_SUBSTATION_CONE_TARGET : ELEVATOR_DOUBLE_SUBSTATION_CUBE_TARGET;
+    break;
+  default:
+    break;
+  }
+  
+}
+
 ElevatorPID::ElevatorPID(Elevator *elevator, Intake *intake, double target, bool shouldFinish) 
 : m_elevator(elevator), m_intake(intake), m_target(target), m_shouldFinish(shouldFinish) {
-  // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(elevator);
   AddRequirements(intake);
 }

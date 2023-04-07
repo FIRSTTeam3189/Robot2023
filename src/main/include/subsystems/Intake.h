@@ -20,7 +20,8 @@ class Intake : public frc2::SubsystemBase {
 
   void ToggleIntake();
   void SetPistonExtension(bool isExtended);
-  void SetPower(double rollerPower, double conveyorPower, double coneCorrectPower);
+  bool GetPistonExtentionState();
+  void SetPower(double rollerPower, double conveyorPower);
   
 private:
   Piston m_intakePiston;

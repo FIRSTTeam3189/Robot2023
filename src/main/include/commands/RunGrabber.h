@@ -9,6 +9,8 @@
 
 #include "subsystems/Grabber.h"
 
+
+enum class GrabberAction { Grab, Shoot };
 /**
  * An example command.
  *
@@ -16,10 +18,11 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class ShootFromCarriage
-    : public frc2::CommandHelper<frc2::CommandBase, ShootFromCarriage> {
+class RunGrabber
+    : public frc2::CommandHelper<frc2::CommandBase, RunGrabber> {
  public:
-  ShootFromCarriage(Grabber *grabber, double power);
+  RunGrabber(Grabber *grabber, GrabberAction action);
+  RunGrabber(Grabber *grabber, double power);
 
   void Initialize() override;
 

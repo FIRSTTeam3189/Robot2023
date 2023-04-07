@@ -15,7 +15,7 @@ UltraShoot::UltraShoot(Elevator *elevator, Intake *intake, Grabber *grabber)
     frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(0.5_s),
-      RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER, 0)
+      RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER)
     ),
     frc2::ParallelDeadlineGroup(
       ElevatorPID(m_elevator, m_intake, ELEVATOR_ULTRA_SHOOT_TARGET, false),

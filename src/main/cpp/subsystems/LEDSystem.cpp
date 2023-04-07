@@ -5,7 +5,7 @@
 #include "subsystems/LEDSystem.h"
 
 LEDSystem::LEDSystem() : m_candleControl(CANDLE_DEVICE_ID), m_candleConfig(), m_animation(NULL), m_ledSections(), m_grabberAnimationRunning(false),
-m_modeShouldChangeColor(true), m_lastMode(false), m_shouldStartup(true), m_startupRunning(false), m_currentModeRGB({0, 0, 0}) {
+m_modeShouldChangeColor(true), m_lastMode(true), m_shouldStartup(true), m_startupRunning(false), m_currentModeRGB({0, 0, 0}) {
     m_candleConfig.stripType = ctre::phoenix::led::LEDStripType::RGB;
     m_candleConfig.brightnessScalar = LED_BRIGHTNESS;
     m_candleControl.ConfigAllSettings(m_candleConfig);
@@ -15,12 +15,10 @@ m_modeShouldChangeColor(true), m_lastMode(false), m_shouldStartup(true), m_start
     m_ledSections[LEDSection::Candle] = {0, 8};
     // length 11
     m_ledSections[LEDSection::BackStrip] = {8, 19};
-    // length 5
-    m_ledSections[LEDSection::RIntakeCrossStrip] = {19, 24};
-    //length 10
-    m_ledSections[LEDSection::RFrontStrip] = {24, 34};
+    // length 15
+    m_ledSections[LEDSection::RFrontStrip] = {19, 34};
     // length 10
-    m_ledSections[LEDSection::RFrontElevatorStrip] = {34 , 43};
+    m_ledSections[LEDSection::RFrontElevatorStrip] = {34, 43};
     // length 19
     m_ledSections[LEDSection::RBackElevatorStrip] = {43, 62};
     // length 24
@@ -31,56 +29,58 @@ m_modeShouldChangeColor(true), m_lastMode(false), m_shouldStartup(true), m_start
     m_ledSections[LEDSection::LBackElevatorStrip] = {111, 130};
     // length 10
     m_ledSections[LEDSection::LFrontElevatorStrip] = {130, 140};
-    // length 7
-    m_ledSections[LEDSection::LFrontStrip] = {140, 147};
-    // length 6
-    m_ledSections[LEDSection::LIntakeCrossStrip] = {147, 153};
+    // length 13
+    m_ledSections[LEDSection::LFrontStrip] = {140, 153};
     // length of right side
-    m_ledSections[LEDSection::RSide] = {8, 86};
+    m_ledSections[LEDSection::RSide] = {19, 61};
     // length of left side
-    m_ledSections[LEDSection::LSide] = {87, 153};
+    m_ledSections[LEDSection::LSide] = {111, 153};
+    // length of back side
+    m_ledSections[LEDSection::Backside] = {0, 19};
+    StartingAnimation();
 }
 
 // This method will be called once per scheduler run
 void LEDSystem::Periodic() {
-    if (m_shouldStartup) {
-        StartingAnimation();
-    }
-    else {
-        bool grabbed = frc::SmartDashboard::GetBoolean("Piece Grabbed", false);
-        bool isCubeMode = frc::SmartDashboard::GetBoolean("Piece Mode", false);
+    bool grabbed = frc::SmartDashboard::GetBoolean("Piece Grabbed", false);
+    bool isConeMode = frc::SmartDashboard::GetBoolean("Is Cone Mode?", false);
 
-        if (isCubeMode) {
-            m_currentModeRGB = {150, 100, 0};
+    if (isConeMode) {
+        m_currentModeRGB = {150, 100, 0};
+    } else {
+        m_currentModeRGB = {150, 0, 150};
+    }
+
+    if (isConeMode != m_lastMode) {
+        m_modeShouldChangeColor = true;
+    }
+
+    if (grabbed && !m_grabberAnimationRunning) {
+        SetAnimation(LEDAnimationType::Clear);
+        SetAnimation(LEDAnimationType::Larson, LEDSection::LSide, m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], 0.75, false, 0);
+        SetAnimation(LEDAnimationType::Larson, LEDSection::RSide, m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], 0.75, true, 1);
+        SetAnimation(LEDAnimationType::Larson, LEDSection::Backside, m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], 0.4, true, 2);
+        SetAnimation(LEDAnimationType::SingleFade, LEDSection::LUnderGlow, m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], 0.65, false, 3);
+        SetAnimation(LEDAnimationType::SingleFade, LEDSection::RUnderGlow, m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], 0.65, false, 4);
+
+        m_grabberAnimationRunning = true;
+    } else if (m_grabberAnimationRunning && !grabbed) {
+        SetAnimation(LEDAnimationType::Clear);
+        m_grabberAnimationRunning = false;
+    }
+
+    if (m_modeShouldChangeColor) {
+        if (!grabbed) {
+            SetAnimation(LEDAnimationType::SingleFade, LEDSection::All, m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], 0.65, false, 5);
         } else {
-            m_currentModeRGB = {150, 0, 150};
+            SetAnimation(LEDAnimationType::SingleFade, LEDSection::LUnderGlow, m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], 0.65, false, 3);
+            SetAnimation(LEDAnimationType::SingleFade, LEDSection::RUnderGlow, m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], 0.65, false, 4);
         }
-
-        if (isCubeMode != m_lastMode) {
-            m_modeShouldChangeColor = true;
-        }
-
-        if (grabbed) {
-            SetAnimation(LEDAnimationType::ColorFlow, LEDSection::LBackElevatorStrip, 0, 150, 0, 1.0);
-            SetAnimation(LEDAnimationType::ColorFlow, LEDSection::LFrontElevatorStrip, 0, 150, 0, 1.0);
-            SetAnimation(LEDAnimationType::ColorFlow, LEDSection::RBackElevatorStrip, 0, 150, 0, 1.0);
-            SetAnimation(LEDAnimationType::ColorFlow, LEDSection::RFrontElevatorStrip, 0, 150, 0, 1.0);
-            SetAnimation(LEDAnimationType::ColorFlow, LEDSection::BackStrip, 0, 150, 0, 1.0);
-            m_grabberAnimationRunning = true;
-        } else if (m_grabberAnimationRunning && !grabbed) {
-            SetAnimation(LEDAnimationType::Clear);
-            m_grabberAnimationRunning = false;
-        }
-
-        if (m_modeShouldChangeColor) {
-            SetColor(m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], LEDSection::LUnderGlow);
-            SetColor(m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], LEDSection::RUnderGlow);
-            SetColor(m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], LEDSection::Candle);
-            m_modeShouldChangeColor = false;
-        }
-
-        m_lastMode = isCubeMode;
+        m_modeShouldChangeColor = false;
     }
+
+    
+    m_lastMode = isConeMode;
 }
 
 void LEDSystem::SetAnimation(LEDAnimationType newAnimation, LEDSection section, int r, int g, int b, double speed, bool reverse, int animSlot) {
@@ -99,7 +99,7 @@ void LEDSystem::SetAnimation(LEDAnimationType newAnimation, LEDSection section, 
         m_candleControl.Animate(*m_animation, animSlot);
         break;
     case LEDAnimationType::Larson:
-        m_animation = new LarsonAnimation(r, g, b, 0, speed, len, LarsonAnimation::BounceMode::Front, 3, m_ledSections[section].first);
+        m_animation = new LarsonAnimation(r, g, b, 0, speed, len, LarsonAnimation::BounceMode::Front, 20, m_ledSections[section].first);
         m_candleControl.Animate(*m_animation, animSlot);
         break;
     case LEDAnimationType::Rainbow:
@@ -125,6 +125,17 @@ void LEDSystem::SetAnimation(LEDAnimationType newAnimation, LEDSection section, 
     case LEDAnimationType::TwinkleOff:
         m_animation = new TwinkleOffAnimation(r, g, b, 0, speed, len, TwinkleOffAnimation::TwinkleOffPercent::Percent100, m_ledSections[section].first);
         m_candleControl.Animate(*m_animation, animSlot);
+        break;
+    case LEDAnimationType::Clear:
+        m_candleControl.ClearAnimation(0);
+        m_candleControl.ClearAnimation(1);
+        m_candleControl.ClearAnimation(2);
+        m_candleControl.ClearAnimation(3);
+        m_candleControl.ClearAnimation(4);
+        m_candleControl.ClearAnimation(5);
+        m_candleControl.ClearAnimation(6);
+        m_candleControl.ClearAnimation(7);
+        m_candleControl.ClearAnimation(8);
         break;
     default:
         m_candleControl.ClearAnimation(0);
@@ -163,15 +174,18 @@ void LEDSystem::ClearAll() {
 }
 
 void LEDSystem::StartingAnimation() {
-    if (!m_startupRunning) {
-        m_startupRunning = true;
-        m_timer.Start();
-        SetAnimation(LEDAnimationType::ColorFlow, LEDSection::All, 255, 255, 0, 0.5, true);
-        SetAnimation(LEDAnimationType::ColorFlow, LEDSection::All, 0, 0, 255, 0.5, false, 1);
-    }
-    if (m_timer.Get() > 3.0_s) {
-        m_shouldStartup = false;
-        ClearAll();
-        m_timer.Stop();
+    while (m_shouldStartup) {
+        if (!m_startupRunning) {
+            SetAnimation(LEDAnimationType::Clear);
+            m_startupRunning = true;
+            m_timer.Start();
+            SetAnimation(LEDAnimationType::ColorFlow, LEDSection::All, 255, 255, 0, 0.5, true);
+            SetAnimation(LEDAnimationType::ColorFlow, LEDSection::All, 0, 0, 255, 0.5, false, 1);
+        }
+        if (m_timer.Get() > 3.0_s) {
+            m_shouldStartup = false;
+            SetAnimation(LEDAnimationType::Clear);
+            m_timer.Stop();
+        }
     }
 }

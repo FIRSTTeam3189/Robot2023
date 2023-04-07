@@ -37,13 +37,6 @@ void SwerveDrive::Periodic() {
   UpdateOdometry();
 }
 
-void SwerveDrive::DriveFast() {
-  m_SM.m_frontLeft.DriveFast();
-  m_SM.m_frontRight.DriveFast();
-  m_SM.m_backLeft.DriveFast();
-  m_SM.m_backRight.DriveFast();
-}
-
 double SwerveDrive::GetRobotYaw() {
   return m_pigeon.GetYaw();
 }
@@ -65,13 +58,16 @@ void SwerveDrive::PercentDrive(
   units::meters_per_second_t xSpeed,
   units::meters_per_second_t ySpeed,
   units::radians_per_second_t rot,
-  bool fieldRelative) {
+  bool fieldRelative,
+  frc::Translation2d centerOfRotation) {
   UpdateOdometry();
   
   auto states = SwerveDriveParameters::kinematics.ToSwerveModuleStates(
-    fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
+    (fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
                         xSpeed, ySpeed, rot, -m_pigeon.GetRotation2d())
-                        : frc::ChassisSpeeds{xSpeed, ySpeed, rot});
+                        : frc::ChassisSpeeds{xSpeed, ySpeed, rot}),
+    centerOfRotation);
+
   SwerveDriveParameters::kinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed);
 
   auto [fl, fr, bl, br] = states;
@@ -369,10 +365,10 @@ void SwerveDrive::Log2DField() {
 }
 
 void SwerveDrive::LockWheels() {
-  m_SM.m_frontLeft.SetDesiredState(frc::SwerveModuleState{0.0_mps, units::radian_t{pi/ 4.0}});
-  m_SM.m_frontRight.SetDesiredState(frc::SwerveModuleState{0.0_mps, units::radian_t{-pi/ 4.0}});
-  m_SM.m_backLeft.SetDesiredState(frc::SwerveModuleState{0.0_mps, units::radian_t{-pi/ 4.0}});
-  m_SM.m_backRight.SetDesiredState(frc::SwerveModuleState{0.0_mps, units::radian_t{pi/ 4.0}});
+  m_SM.m_frontLeft.Lock(frc::SwerveModuleState{0.0_mps, units::radian_t{-pi/ 4.0}});
+  m_SM.m_frontRight.Lock(frc::SwerveModuleState{0.0_mps, units::radian_t{pi/ 4.0}});
+  m_SM.m_backLeft.Lock(frc::SwerveModuleState{0.0_mps, units::radian_t{pi/ 4.0}});
+  m_SM.m_backRight.Lock(frc::SwerveModuleState{0.0_mps, units::radian_t{-pi/ 4.0}});
 }
 
 void SwerveDrive::LogModuleStates(SwerveModuleTelemetry telemetryArray[]) {

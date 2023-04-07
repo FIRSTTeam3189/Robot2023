@@ -12,6 +12,12 @@ ToggleIntakePistons::ToggleIntakePistons(Intake *intake)
 
 // Called when the command is initially scheduled.
 void ToggleIntakePistons::Initialize() {
+  if (m_intake->GetPistonExtentionState())
+  {
+    m_intake->SetPower(-INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER);
+  } else {
+    m_intake->SetPower(INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER);
+  }
   m_intake->ToggleIntake();
   m_isFinished = true;
 }

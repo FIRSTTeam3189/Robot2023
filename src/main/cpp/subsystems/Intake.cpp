@@ -29,7 +29,11 @@ void Intake::SetPistonExtension(bool isExtended) {
     m_intakePiston.SetExtended(isExtended);
 }
 
-void Intake::SetPower(double intakePower, double conveyorPower, double coneCorrectPower) {
+bool Intake::GetPistonExtentionState() {
+    return m_intakePiston.IsExtended();
+}
+
+void Intake::SetPower(double intakePower, double conveyorPower) {
     m_rollerMotor.Set(intakePower);
     m_conveyorMotor.Set(conveyorPower);
 }

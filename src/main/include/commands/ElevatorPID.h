@@ -11,6 +11,7 @@
 #include "subsystems/Elevator.h"
 #include "subsystems/Intake.h"
 
+enum class ElevatorLevel { Low, Mid, High, DoubleSubstation };
 /**
  * An example command.
  *
@@ -21,7 +22,8 @@
 class ElevatorPID
     : public frc2::CommandHelper<frc2::CommandBase, ElevatorPID> {
  public:
-  ElevatorPID(Elevator *elevator, Intake *intake, double target, bool shouldFinish);
+  ElevatorPID(Elevator *elevator, Intake *intake, ElevatorLevel level, bool shouldFinish);
+  ElevatorPID(Elevator *elevator, Intake *intake, double level, bool shouldFinish);
 
   void Initialize() override;
 
