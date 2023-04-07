@@ -32,7 +32,7 @@ class LEDSystem : public frc2::SubsystemBase {
  public:
   LEDSystem();
   // 
-  void SetAnimation(LEDAnimationType animation, LEDSection section = LEDSection::All, int r = 0, int g = 0, int b = 0, double speed = 0.7, bool reverse = false);
+  void SetAnimation(LEDAnimationType animation, LEDSection section = LEDSection::All, int r = 0, int g = 0, int b = 0, double speed = 0.7, bool reverse = false, int animSlot = 0);
   void SetColor(int r, int g, int b, LEDSection section = LEDSection::All);
   void ClearColor(LEDSection section = LEDSection::All);
   void ClearAll();

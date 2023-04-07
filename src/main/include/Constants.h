@@ -97,7 +97,7 @@ namespace SwerveDriveConstants {
     constexpr double frontLeftOffset {235.5};
     constexpr double frontRightOffset {334.5};
     constexpr double backLeftOffset {9.8};
-    constexpr double backRightOffset {88.2};
+    constexpr double backRightOffset {83.5};
 
     constexpr SwerveInfo kLeftFrontInfo {
         leftFrontSpeedCANID, leftFrontTurningCANID, leftFrontCancoderID, 
@@ -233,5 +233,5 @@ namespace AutoConstants {
 #define GRABBER_CARRY_SPEED -0.15
 #define GRABBER_OUTTAKE_SPEED 0.25
 
-#define CANDLE_DEVICE_ID 0
+#define CANDLE_DEVICE_ID 1
 #define LED_BRIGHTNESS 1.0
