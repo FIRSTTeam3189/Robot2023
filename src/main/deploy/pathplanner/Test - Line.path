@@ -16,10 +16,12 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "intake_pistons_out"
+        ],
         "executionBehavior": "sequential",
-        "waitBehavior": "none",
-        "waitTime": 0
+        "waitBehavior": "deadline",
+        "waitTime": 5.0
       }
     },
     {
@@ -38,12 +40,27 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "intake_pistons_in"
+        ],
         "executionBehavior": "sequential",
-        "waitBehavior": "none",
-        "waitTime": 0
+        "waitBehavior": "before",
+        "waitTime": 5.0
       }
     }
   ],
-  "markers": []
+  "markers": [
+    {
+      "position": 0.271875,
+      "names": [
+        "run_intake_in"
+      ]
+    },
+    {
+      "position": 0.7430397727272726,
+      "names": [
+        "stop_intake"
+      ]
+    }
+  ]
 }

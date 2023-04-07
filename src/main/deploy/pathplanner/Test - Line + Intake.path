@@ -17,10 +17,11 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "intake_pistons_out"
+          "intake_pistons_out",
+          "run_intake_in"
         ],
         "executionBehavior": "sequential",
-        "waitBehavior": "before",
+        "waitBehavior": "none",
         "waitTime": 5.0
       }
     },
@@ -41,10 +42,11 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
+          "stop_intake",
           "intake_pistons_in"
         ],
         "executionBehavior": "sequential",
-        "waitBehavior": "after",
+        "waitBehavior": "none",
         "waitTime": 5.0
       }
     }

@@ -10,35 +10,35 @@ m_modeShouldChangeColor(true), m_lastMode(false), m_shouldStartup(true), m_start
     m_candleConfig.brightnessScalar = LED_BRIGHTNESS;
     m_candleControl.ConfigAllSettings(m_candleConfig);
     // The Full Setup
-    m_ledSections.at(LEDSection::All) = {0, 154};
+    m_ledSections[LEDSection::All] = {0, 152};
     // Candle length 8
-    m_ledSections.at(LEDSection::Candle) = {0, 8};
+    m_ledSections[LEDSection::Candle] = {0, 8};
     // length 11
-    m_ledSections.at(LEDSection::BackStrip) = {8, 19};
+    m_ledSections[LEDSection::BackStrip] = {8, 19};
     // length 5
-    m_ledSections.at(LEDSection::RIntakeCrossStrip) = {19, 24};
+    m_ledSections[LEDSection::RIntakeCrossStrip] = {19, 24};
     //length 10
-    m_ledSections.at(LEDSection::RFrontStrip) = {24, 34};
+    m_ledSections[LEDSection::RFrontStrip] = {24, 34};
     // length 10
-    m_ledSections.at(LEDSection::RFrontElevatorStrip) = {34 , 44};
+    m_ledSections[LEDSection::RFrontElevatorStrip] = {34 , 43};
     // length 19
-    m_ledSections.at(LEDSection::RBackElevatorStrip) ={44, 63};
+    m_ledSections[LEDSection::RBackElevatorStrip] = {43, 62};
     // length 24
-    m_ledSections.at(LEDSection::RUnderGlow) = {63, 87};
+    m_ledSections[LEDSection::RUnderGlow] = {62, 86};
     // length 25
-    m_ledSections.at(LEDSection::LUnderGlow) = {87, 112};
+    m_ledSections[LEDSection::LUnderGlow] = {86, 111};
     // length 19
-    m_ledSections.at(LEDSection::LBackElevatorStrip) = {112, 131};
+    m_ledSections[LEDSection::LBackElevatorStrip] = {111, 130};
     // length 10
-    m_ledSections.at(LEDSection::LFrontElevatorStrip) = {131, 141};
+    m_ledSections[LEDSection::LFrontElevatorStrip] = {130, 140};
     // length 7
-    m_ledSections.at(LEDSection::LFrontStrip) = {141, 148};
+    m_ledSections[LEDSection::LFrontStrip] = {140, 147};
     // length 6
-    m_ledSections.at(LEDSection::LIntakeCrossStrip) = {148, 154};
+    m_ledSections[LEDSection::LIntakeCrossStrip] = {147, 153};
     // length of right side
-    m_ledSections.at(LEDSection::RSide) = {8, 87};
+    m_ledSections[LEDSection::RSide] = {8, 86};
     // length of left side
-    m_ledSections.at(LEDSection::LSide) = {86, 154};
+    m_ledSections[LEDSection::LSide] = {87, 153};
 }
 
 // This method will be called once per scheduler run
@@ -83,44 +83,48 @@ void LEDSystem::Periodic() {
     }
 }
 
-void LEDSystem::SetAnimation(LEDAnimationType newAnimation, LEDSection section, int r, int g, int b, double speed, bool reverse) {
+void LEDSystem::SetAnimation(LEDAnimationType newAnimation, LEDSection section, int r, int g, int b, double speed, bool reverse, int animSlot) {
     auto len = m_ledSections[section].second - m_ledSections[section].first;
+    auto cfDir = ColorFlowAnimation::Direction::Forward;
+    if (reverse) {
+        cfDir = ColorFlowAnimation::Direction::Backward;
+    }
     switch (newAnimation) {
     case LEDAnimationType::ColorFlow:
-        m_animation = new ColorFlowAnimation(r, g, b, 0, speed, len, ColorFlowAnimation::Direction::Forward, m_ledSections[section].first);
-        m_candleControl.Animate(*m_animation, 0);
+        m_animation = new ColorFlowAnimation(r, g, b, 0, speed, len, cfDir, m_ledSections[section].first);
+        m_candleControl.Animate(*m_animation, animSlot);
         break;
     case LEDAnimationType::Fire:
         m_animation = new FireAnimation(m_candleConfig.brightnessScalar, speed, len, 0.7, 0.5, reverse, m_ledSections[section].first);
-        m_candleControl.Animate(*m_animation, 0);
+        m_candleControl.Animate(*m_animation, animSlot);
         break;
     case LEDAnimationType::Larson:
         m_animation = new LarsonAnimation(r, g, b, 0, speed, len, LarsonAnimation::BounceMode::Front, 3, m_ledSections[section].first);
-        m_candleControl.Animate(*m_animation, 0);
+        m_candleControl.Animate(*m_animation, animSlot);
         break;
     case LEDAnimationType::Rainbow:
         m_animation = new RainbowAnimation(m_candleConfig.brightnessScalar, speed, len, reverse, m_ledSections[section].first);
-        m_candleControl.Animate(*m_animation, 0);
+        m_candleControl.Animate(*m_animation, animSlot);
         break;
     case LEDAnimationType::RGBFade:
         m_animation = new RgbFadeAnimation(m_candleConfig.brightnessScalar, speed, len, m_ledSections[section].first);
-        m_candleControl.Animate(*m_animation, 0);
+        m_candleControl.Animate(*m_animation, animSlot);
         break;
     case LEDAnimationType::SingleFade:
         m_animation = new SingleFadeAnimation(r, g, b, 0, speed, len, m_ledSections[section].first);
-        m_candleControl.Animate(*m_animation, 0);
+        m_candleControl.Animate(*m_animation, animSlot);
         break;
     case LEDAnimationType::Strobe:
         m_animation = new StrobeAnimation(r, g, b, 0, speed, len, m_ledSections[section].first);
-        m_candleControl.Animate(*m_animation, 0);
+        m_candleControl.Animate(*m_animation, animSlot);
         break;
     case LEDAnimationType::Twinkle:
         m_animation = new TwinkleAnimation(r, g, b, 0, speed, len, TwinkleAnimation::TwinklePercent::Percent100, m_ledSections[section].first);
-        m_candleControl.Animate(*m_animation, 0);
+        m_candleControl.Animate(*m_animation, animSlot);
         break;
     case LEDAnimationType::TwinkleOff:
         m_animation = new TwinkleOffAnimation(r, g, b, 0, speed, len, TwinkleOffAnimation::TwinkleOffPercent::Percent100, m_ledSections[section].first);
-        m_candleControl.Animate(*m_animation, 0);
+        m_candleControl.Animate(*m_animation, animSlot);
         break;
     default:
         m_candleControl.ClearAnimation(0);
@@ -163,10 +167,11 @@ void LEDSystem::StartingAnimation() {
         m_startupRunning = true;
         m_timer.Start();
         SetAnimation(LEDAnimationType::ColorFlow, LEDSection::All, 255, 255, 0, 0.5, true);
-        SetAnimation(LEDAnimationType::ColorFlow, LEDSection::All, 0, 0, 255, 0.5, false);
+        SetAnimation(LEDAnimationType::ColorFlow, LEDSection::All, 0, 0, 255, 0.5, false, 1);
     }
     if (m_timer.Get() > 3.0_s) {
         m_shouldStartup = false;
+        ClearAll();
         m_timer.Stop();
     }
 }
