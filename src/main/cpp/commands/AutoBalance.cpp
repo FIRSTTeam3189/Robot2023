@@ -16,7 +16,7 @@ AutoBalance::AutoBalance(SwerveDrive *swerveDrive)
 
 // Called when the command is initially scheduled.
 void AutoBalance::Initialize() {
-  // Robot is reversed if is pointing within 180 degree backward range
+  // Robot is reversed if it is pointing within 180 degree backward range
   if (abs(m_swerve->GetNormalizedYaw()) > 90) {
     m_isReversed = true;
   }
@@ -24,7 +24,9 @@ void AutoBalance::Initialize() {
 
 // Called repeatedly when this Command is scheduled to run
 void AutoBalance::Execute() {
-  // Uses robot relative PID and checking for whether robot is forward or backward
+  // Uses robot relative PID and checking for whether robot is facing forward or backward
+  // Since pitch/roll will have the opposite sign if the robot is backward compared to forward,
+  // Invert the sensor measurements if the robot is backwards (i.e. > 90 or < -90)
   double pitch = m_isReversed ? m_swerve->GetPitch() : -m_swerve->GetPitch();
   double roll = m_isReversed ? m_swerve->GetRoll() : -m_swerve->GetRoll();
   auto xOutput = m_xController.Calculate(pitch, 0.0);
@@ -48,7 +50,7 @@ void AutoBalance::End(bool interrupted) {}
 
 // Returns true when the command should end.
 bool AutoBalance::IsFinished() {
-  // Ends balance command if robot is level and didn't move much since last command schedule
+  // Ends balance command if robot is level for a while
   if (m_withinThresholdLoops >= AutoConstants::autoBalanceSettleLoops) {
     // Turn wheels in x shape to lock on charge station
     m_swerve->LockWheels();

@@ -4,18 +4,25 @@
 
 #include "subsystems/Grabber.h"
 
-Grabber::Grabber() : m_motor(GRABBER_MOTOR_ID), m_pieceGrabbed(false), m_encoderVelocity(0.0) {
-    m_motor.ConfigFactoryDefault();
-    m_motor.ConfigOpenloopRamp(0);
-    m_motor.ConfigClosedloopRamp(0);
-    m_motor.ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::IntegratedSensor);
+Grabber::Grabber() :
+m_motor(GRABBER_MOTOR_ID, 
+rev::CANSparkMax::MotorType::kBrushless), 
+m_encoder(m_motor.GetEncoder()), 
+m_pieceGrabbed(false), 
+m_encoderVelocity(0.0) {
+    m_motor.RestoreFactoryDefaults();
+    m_motor.SetClosedLoopRampRate(0);
+    m_motor.SetOpenLoopRampRate(0);
 }
 
 // This method will be called once per scheduler run
 void Grabber::Periodic() {
-    m_encoderVelocity = m_motor.GetSelectedSensorVelocity();
+    m_encoderVelocity = m_encoder.GetVelocity();
 
-    if (abs(m_encoderVelocity) < 200 && m_motor.GetStatorCurrent() != 0.0) {
+    // Checks the encoder velocity and output current to determine if there is resistance
+    // If the motor is trying to spin but isn't spinning, it is meeting resistance
+    // Most likely, this means it is stuck (hopefully not) or a piece is successfully in the grabber
+    if (abs(m_encoderVelocity) < 200 && m_motor.GetOutputCurrent() > 1.0) {
         m_pieceGrabbed = true;
     } else {
         m_pieceGrabbed = false;

@@ -16,13 +16,12 @@ OISwerveDrive::OISwerveDrive(frc::Joystick *m_bill, SwerveDrive *swerve_drive, b
 }
 
 // Called when the command is initially scheduled.
-void OISwerveDrive::Initialize() {
-
-}
+void OISwerveDrive::Initialize() {}
 
 units::angular_velocity::radians_per_second_t OISwerveDrive::GetDesiredRotationalVelocity() {
   // Get raw (-1.0 to 1.0) joystick positions for x and y axis
   // Left, up are -1.0; right, down are 1.0
+  // Inverted so forward on joystick is down the field
   double joystickX = -frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_RSTICK_Y), 0.05);
   double joystickY = -frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_RSTICK_X), 0.05);
 
@@ -32,7 +31,7 @@ units::angular_velocity::radians_per_second_t OISwerveDrive::GetDesiredRotationa
 
   // Convert joystick positions to goal angle in degrees
   // Normalized from -180, 180
-  // Uses arctan2 function -- converts Cartesian coordinates to a polar angle, then multiplies by radians to degrees conversion
+  // Uses arctan2 function -- converts Cartesian coordinates (1, 1) to a polar angle (pi / 4), then multiplies by radians to degrees conversion
   double goalAngle = SwerveDriveConstants::DEGToRAD * atan2(joystickY, joystickX);
 
   frc::SmartDashboard::PutNumber("Robot Desired Angle", goalAngle);
@@ -42,20 +41,19 @@ units::angular_velocity::radians_per_second_t OISwerveDrive::GetDesiredRotationa
               units::angular_velocity::radians_per_second_t{
                 m_rotLimiter.Calculate(m_rotationPIDController.Calculate(m_swerve_drive->GetNormalizedYaw(), goalAngle))
                 * SwerveDriveConstants::maxAngularVelocity};
-
-  frc::SmartDashboard::PutNumber("Theta PID output", m_rotationPIDController.Calculate(m_swerve_drive->GetNormalizedYaw(), goalAngle))
-                * SwerveDriveConstants::maxAngularVelocity;
   
   // Stop rotating if within tolerance
   if (abs(m_swerve_drive->GetNormalizedYaw() - goalAngle) < 2.5) {
     rot = units::angular_velocity::radians_per_second_t{0.0};
   }
 
+  // Invert because CCW is positive
   return -rot;
 }
 
 // Called repeatedly when this Command is scheduled to run
 void OISwerveDrive::Execute() {
+  // Read's drive joystick inputs to determine direction to travel
   // Limits speed and rotation to max speed
   const auto xSpeed = -m_xspeedLimiter.Calculate(
                 frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_Y), 0.05)) *
@@ -82,6 +80,9 @@ void OISwerveDrive::Execute() {
     units::radians_per_second_t rot{};
     frc::Translation2d centerOfRotation{};
 
+    // If mode is normal, the robot's center of rotation will be the physical center
+    // Otherwise, the center of rotation will be one of the four modules
+    // And the robot will rotate at a constant speed clockwise or counter-clockwise
     switch (m_currentMode) {
       case RotationMode::normal:
         rot = GetDesiredRotationalVelocity();

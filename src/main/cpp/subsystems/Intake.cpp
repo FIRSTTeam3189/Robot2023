@@ -14,6 +14,7 @@ m_conveyorMotor(INTAKE_CONVEYOR_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushles
     m_intakePiston.SetExtended(false);
     m_rollerMotor.RestoreFactoryDefaults();
     m_conveyorMotor.RestoreFactoryDefaults();
+    // Inverts because negative value on robot is intaking by default
     m_rollerMotor.SetInverted(true);
     m_conveyorMotor.SetInverted(true);
 }

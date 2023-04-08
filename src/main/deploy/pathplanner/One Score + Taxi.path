@@ -23,18 +23,18 @@
           "intake_pistons_in"
         ],
         "executionBehavior": "sequential",
-        "waitBehavior": "before",
+        "waitBehavior": "none",
         "waitTime": 5.0
       }
     },
     {
       "anchorPoint": {
-        "x": 4.0,
-        "y": 4.55
+        "x": 4.706642291473358,
+        "y": 4.633803515056011
       },
       "prevControl": {
-        "x": 3.0,
-        "y": 4.55
+        "x": 3.706642291473358,
+        "y": 4.633803515056011
       },
       "nextControl": null,
       "holonomicAngle": 0,

@@ -23,7 +23,7 @@
           "intake_pistons_in"
         ],
         "executionBehavior": "sequential",
-        "waitBehavior": "before",
+        "waitBehavior": "none",
         "waitTime": 5.0
       }
     },
@@ -51,7 +51,7 @@
           "run_intake_in"
         ],
         "executionBehavior": "sequential",
-        "waitBehavior": "deadline",
+        "waitBehavior": "none",
         "waitTime": 2.0
       }
     },
@@ -80,8 +80,8 @@
           "grab"
         ],
         "executionBehavior": "sequential",
-        "waitBehavior": "none",
-        "waitTime": 0
+        "waitBehavior": "before",
+        "waitTime": 0.5
       }
     },
     {
@@ -104,7 +104,7 @@
           "balance",
           "intake_pistons_out",
           "ultra_shoot",
-          "intake_pistons_in"
+          "elevator_to_0"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",

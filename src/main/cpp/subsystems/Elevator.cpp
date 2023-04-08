@@ -10,11 +10,13 @@ m_encoder(m_motor.GetEncoder()),
 m_lowerLimitSwitch(m_motor.GetReverseLimitSwitch(rev::SparkMaxLimitSwitch::Type::kNormallyOpen)),
 m_upperLimitSwitch(m_motor.GetForwardLimitSwitch(rev::SparkMaxLimitSwitch::Type::kNormallyOpen))
 {   
+    // Configure motor and limit switches
     m_motor.RestoreFactoryDefaults();
     m_motor.SetInverted(true);
     m_motor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
     m_upperLimitSwitch.EnableLimitSwitch(true);
     m_lowerLimitSwitch.EnableLimitSwitch(true);
+    // Makes the encoder return encoder counts instead of rotations
     m_encoder.SetPositionConversionFactor(ELEVATOR_INTEGRATED_CPR);
 }
 
@@ -50,12 +52,19 @@ double Elevator::ElevatorTicksToMeters(double encoderTicks) {
 }
 
 void Elevator::GoToPosition(double target) {
+    // Calculates PID value in volts based on position and target
     units::volt_t pidValue = units::volt_t{m_controller.Calculate(units::meter_t{ElevatorTicksToMeters(m_encoder.GetPosition())}, 
                                              units::meter_t{ElevatorTicksToMeters(target)})};
+
+    // Calculates the change in velocity (acceleration) since last control loop
+    // Uses the acceleration value and desired velocity to calculate feedforward gains
+    // Feedforward gains are approximated based on the current state of the system and a known physics model
+    // Gains calculated with SysID                                   
     auto acceleration = (m_controller.GetSetpoint().velocity - m_lastSpeed) /
       (frc::Timer::GetFPGATimestamp() - m_lastTime);
     units::volt_t ffValue = ff.Calculate(m_controller.GetSetpoint().velocity, acceleration);
 
+    // Limit the applied voltage to 12
     m_motor.SetVoltage(std::clamp((pidValue + ffValue), -12.0_V, 12.0_V) / 1.5);
     m_lastSpeed = m_controller.GetSetpoint().velocity;
     m_lastTime = frc::Timer::GetFPGATimestamp();
@@ -69,5 +78,6 @@ void Elevator::SetPID(double kP, double kI, double kD) {
 }
 
 bool Elevator::AtSetpoint() {
+    // If within stopping distance, elevator will return true
     return abs(m_target - m_encoder.GetPosition()) < ELEVATOR_STOP_DISTANCE;
 }

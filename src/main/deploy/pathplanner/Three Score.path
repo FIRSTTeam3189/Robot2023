@@ -16,8 +16,41 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
+        "names": [
+          "intake_pistons_out",
+          "score_high",
+          "elevator_to_0",
+          "intake_pistons_in"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 5.520284159828524,
+        "y": 4.533359192356141
+      },
+      "prevControl": {
+        "x": 5.290056673863348,
+        "y": 4.520799531394982
+      },
+      "nextControl": {
+        "x": 5.7176165286613205,
+        "y": 4.544124317288171
+      },
+      "holonomicAngle": 0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "intake_pistons_out",
+          "run_intake_in"
+        ],
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }
@@ -39,12 +72,16 @@
       "isReversal": true,
       "velOverride": null,
       "isLocked": false,
-      "isStopPoint": false,
+      "isStopPoint": true,
       "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
+        "names": [
+          "stop_intake",
+          "intake_pistons_in",
+          "grab"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "before",
+        "waitTime": 0.5
       }
     },
     {
@@ -66,7 +103,40 @@
       "isLocked": false,
       "isStopPoint": true,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "intake_pistons_out",
+          "ultra_shoot",
+          "elevator_to_0",
+          "intake_pistons_in"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 6.225833827943165,
+        "y": 3.4841165447637024
+      },
+      "prevControl": {
+        "x": 6.042779241808483,
+        "y": 3.495060921244292
+      },
+      "nextControl": {
+        "x": 6.443021684431753,
+        "y": 3.471131425304993
+      },
+      "holonomicAngle": 0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "intake_pistons_out",
+          "run_intake_in"
+        ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
@@ -89,12 +159,16 @@
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
-      "isStopPoint": false,
+      "isStopPoint": true,
       "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
+        "names": [
+          "stop_intake",
+          "intake_pistons_in",
+          "grab"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "before",
+        "waitTime": 0.5
       }
     },
     {
@@ -113,8 +187,13 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
+        "names": [
+          "balance",
+          "intake_pistons_out",
+          "ultra_shoot",
+          "intake_pistons_in"
+        ],
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }

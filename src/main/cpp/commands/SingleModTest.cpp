@@ -15,6 +15,7 @@ void SingleModTest::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
 void SingleModTest::Execute() {
+  // Sets constant speed or rotational velocity of one module
   if(m_test_type == ManualModuleDriveType::forward) {
     m_swerve_drive->ManualModuleSpeed(m_module, m_power);
   } else if (m_test_type == ManualModuleDriveType::turn) {

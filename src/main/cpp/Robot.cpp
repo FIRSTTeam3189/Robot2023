@@ -11,17 +11,9 @@
 #include <wpi/fs.h>
 
 void Robot::RobotInit() {
-  // Load in autonomous path from PathWeaver trajectories
-  // fs::path deployDirectory = frc::filesystem::GetDeployDirectory();
-  // deployDirectory = deployDirectory / "paths" / "Special.wpilib.json";
-  // m_container.SetPathWeaverTrajectory(frc::TrajectoryUtil::FromPathweaverJson(deployDirectory.string()));
   m_container.ResetGyroscope();
   // cs::UsbCamera frontCamera = frc::CameraServer::StartAutomaticCapture(0);
   // cs::UsbCamera interiorCamera = frc::CameraServer::StartAutomaticCapture(1);
-  // cs::UsbCamera camera = frc::CameraServer::StartAutomaticCapture();
-  // Setup trajectories
-  // m_container.GetAutonomousCommand();
-  // std::cout << "Robot initialized\n";
 }
 
 /**
@@ -31,9 +23,7 @@ void Robot::RobotInit() {
  * wgrated updating.
  */
 void Robot::RobotPeriodic() {
-  // std::cout << "About to run command scheduler instance\n";
   frc2::CommandScheduler::GetInstance().Run();
-  // std::cout << "Ran command scheduler instance\n";
 }
 
 /**
@@ -42,7 +32,6 @@ void Robot::RobotPeriodic() {
  * robot is disabled.
  */
 void Robot::DisabledInit() {
-  // std::cout << "Robot disabled\n";
 }
 
 void Robot::DisabledPeriodic() {
@@ -54,14 +43,11 @@ void Robot::DisabledPeriodic() {
  * RobotContainer} class.
  */
 void Robot::AutonomousInit() {
-  // std::cout << "About to get autonomous command\n";
   m_autonomousCommand = m_container.GetAutonomousCommand();
   m_container.ResetGyroscope();
-  // std::cout << "Got auto command\n";
 
   // Make sure auto exists
   if (m_autonomousCommand != nullptr) {
-    // std::cout << "Scheduling auto command\n";
     m_autonomousCommand->Schedule();
   }
 }

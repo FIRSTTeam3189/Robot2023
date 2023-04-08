@@ -5,6 +5,8 @@
 #include "util/Piston.h"
 
 Piston::Piston(int forwardChannel, int reverseChannel) {
+    // One solenoid for extension, one for retraction
+    // They will always have opposite states, so if one is true the other is !true
     m_solenoid_e = new frc::Solenoid(1, frc::PneumaticsModuleType::REVPH, forwardChannel);
     m_solenoid_r = new frc::Solenoid(1, frc::PneumaticsModuleType::REVPH, reverseChannel);
 

@@ -5,7 +5,7 @@
 #pragma once
 
 #include <frc2/command/SubsystemBase.h>
-#include "ctre/Phoenix.h"
+#include <rev/CANSparkMax.h>
 #include "Constants.h"
 #include <rev/ColorSensorV3.h>
 #include <rev/ColorMatch.h>
@@ -25,7 +25,8 @@ public:
   bool IsPieceGrabbed();
 
 private:
-  WPI_TalonFX m_motor;
+  rev::CANSparkMax m_motor;
+  rev::SparkMaxRelativeEncoder m_encoder;
   bool m_pieceGrabbed;
   double m_encoderVelocity;
   // Components (e.g. motor controllers and sensors) should generally be

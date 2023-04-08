@@ -22,8 +22,8 @@ enum class ElevatorLevel { Low, Mid, High, DoubleSubstation };
 class ElevatorPID
     : public frc2::CommandHelper<frc2::CommandBase, ElevatorPID> {
  public:
-  ElevatorPID(Elevator *elevator, Intake *intake, ElevatorLevel level, bool shouldFinish);
-  ElevatorPID(Elevator *elevator, Intake *intake, double level, bool shouldFinish);
+  ElevatorPID(Elevator *elevator, ElevatorLevel level, bool shouldFinish);
+  ElevatorPID(Elevator *elevator, double level, bool shouldFinish);
 
   void Initialize() override;
 
@@ -35,7 +35,6 @@ class ElevatorPID
 
  private:
   Elevator *m_elevator;
-  Intake *m_intake;
   int m_withinThresholdLoops;
   double m_target;
   bool m_shouldFinish;

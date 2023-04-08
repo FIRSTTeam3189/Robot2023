@@ -10,7 +10,14 @@
 TwoScoreHighMidCubeAuto::TwoScoreHighMidCubeAuto(pathplanner::SwerveAutoBuilder *builder, std::string filePath) {
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
-  std::vector<pathplanner::PathPlannerTrajectory> twoScoreGroup = pathplanner::PathPlanner::loadPathGroup(filePath, {pathplanner::PathConstraints(SwerveDriveConstants::kMaxSpeed, SwerveDriveConstants::kMaxAcceleration)});
+  
+  /* Loads PathPlanner path from project file
+   * Pass in constraints to be used in path generation
+   * Uses the autoBuilder made in RobotContainer to create a full autonomous routine
+   * Includes event markers, stop events, and robot trajectories
+  */
+
+std::vector<pathplanner::PathPlannerTrajectory> twoScoreGroup = pathplanner::PathPlanner::loadPathGroup(filePath, {pathplanner::PathConstraints(SwerveDriveConstants::kMaxSpeed, SwerveDriveConstants::kMaxAcceleration)});
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.emplace_back(builder->fullAuto(twoScoreGroup).Unwrap());
   auto group = SequentialCommandGroup(std::move(commands));

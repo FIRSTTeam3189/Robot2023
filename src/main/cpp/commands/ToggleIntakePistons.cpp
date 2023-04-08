@@ -12,6 +12,7 @@ ToggleIntakePistons::ToggleIntakePistons(Intake *intake)
 
 // Called when the command is initially scheduled.
 void ToggleIntakePistons::Initialize() {
+  // Uses intake motors to assist pistons (allows for faster and more consistent toggling)
   if (m_intake->GetPistonExtentionState())
   {
     m_intake->SetPower(-INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER);

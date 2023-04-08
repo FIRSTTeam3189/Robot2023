@@ -10,6 +10,7 @@ RobotContainer::RobotContainer() {
   ConfigureButtonBindings();
   // Adds auto events to map of possible events
   BuildEventMap();
+  // Create paths and add to auto selector
   CreateAutoPaths();
   frc::PowerDistribution pdh{1, frc::PowerDistribution::ModuleType::kRev};
   frc::SmartDashboard::PutNumber("PDH Current", pdh.GetTotalCurrent());
@@ -24,6 +25,7 @@ RobotContainer::RobotContainer() {
 
 void RobotContainer::ConfigureButtonBindings() {
   // --------------------Driver controls-----------------------
+  // Extends pistons, runs intake and conveyor outwards while held
   frc2::Trigger outtakeButton{m_bill.Button(PS5_BUTTON_RBUMPER)};
   outtakeButton.OnTrue(frc2::InstantCommand([this]{
     m_intake->SetPistonExtension(true);
@@ -43,6 +45,7 @@ void RobotContainer::ConfigureButtonBindings() {
     m_intake->SetPistonExtension(false);
   },{m_intake}).ToPtr());
 
+  // Extends pistons, runs intake and conveyor inwards while held
   frc2::Trigger intakeButton{m_bill.Button(PS5_BUTTON_LBUMPER)};
   intakeButton.OnTrue(frc2::InstantCommand([this]{
     m_intake->SetPistonExtension(true);
@@ -55,6 +58,7 @@ void RobotContainer::ConfigureButtonBindings() {
       ),
       RunIntake(m_intake, INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER)
     ).ToPtr());
+  // When the button is released, bring pistons in and bring piece towards grabber
   intakeButton.OnFalse(frc2::SequentialCommandGroup(
     frc2::InstantCommand([this]{
       m_intake->SetPower(0, 0);
@@ -64,6 +68,8 @@ void RobotContainer::ConfigureButtonBindings() {
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(1.0_s), 
       RunIntake(m_intake, 0, INTAKE_CONVEYOR_POWER)
+      // Perhaps automatically grab piece - or maybe not
+      // RunGrabber(m_grabber, GrabberAction::Grab)
     ),
     frc2::InstantCommand([this]{m_intake->SetPower(0, 0); m_grabber->SetSpeed(0);},{m_intake, m_grabber})
   ).ToPtr());
@@ -73,18 +79,25 @@ void RobotContainer::ConfigureButtonBindings() {
   // m_Trigger.OnTrue/WhileTrue(frc2::Command);
   // ------------------------------------------------------------------------------------------------------------------------------------------------
 
+  // Slowly strafe to the left while held
   frc2::Trigger translateLeftButton{m_bill.Button(PS5_BUTTON_SQR)};
   translateLeftButton.WhileTrue(SlowTranslate(m_swerve, 0.0_mps, SwerveDriveConstants::leftTranslateSpeed).ToPtr());
 
+  // Slowly strafe to the right while held
   frc2::Trigger translateRightButton{m_bill.Button(PS5_BUTTON_O)};
   translateRightButton.WhileTrue(SlowTranslate(m_swerve, 0.0_mps, SwerveDriveConstants::rightTranslateSpeed).ToPtr());
 
+  // Point the robot down the field (0 deg) when pressed 
   frc2::Trigger rotateTo0Button{m_bill.Button(PS5_BUTTON_TRI)};
   rotateTo0Button.OnTrue(RotateTo(m_swerve, 0.0).ToPtr());
 
+  // Point the robot towards alliance wall (180 deg) when pressed
   frc2::Trigger rotateTo180Button{m_bill.Button(PS5_BUTTON_X)};
   rotateTo180Button.OnTrue(RotateTo(m_swerve, 180.0).ToPtr());
 
+  // Resets the odometry and gyroscope on the fly when pressed
+  // Useful for testing or if something is messed up during teleop
+  // Robot acts as if it were just turned on and the field is reset
   frc2::Trigger resetOdometryButton{m_bill.Button(PS5_BUTTON_TOUCHPAD)};
   resetOdometryButton.OnTrue(
     frc2::SequentialCommandGroup(
@@ -92,6 +105,9 @@ void RobotContainer::ConfigureButtonBindings() {
       frc2::InstantCommand([this]{m_swerve->SetRobotYaw(0.0);},{m_swerve})
     ).ToPtr());
 
+  // Toggle drive interface between using setpoints for rotation and using constant rotation
+  // By default, right joystick controls holonomic rotation of the robot, where the angle of the joystick
+  // Matches the holonomic rotation (i.e. pointing to the right causes the robot to have a holonomic rotation of -90 degrees)
   frc2::Trigger toggleATan2RotButton{m_bill.Button(PS5_BUTTON_RSTICK)};
   toggleATan2RotButton.OnTrue(
     frc2::InstantCommand([this]{
@@ -100,38 +116,30 @@ void RobotContainer::ConfigureButtonBindings() {
     },{m_swerve}).ToPtr()
   );
   
-  frc2::Trigger leftAimAssistButton{m_bill.Button(PS5_BUTTON_CREATE)};
-  // leftAimAssistButton.OnTrue(frc2::ParallelRaceGroup(
-  //   frc2::WaitCommand(3.0_s), TrajectoryAimAssist(m_vision, m_swerve, 1.0, -0.4, 0.0)
-  // ).ToPtr());
-
-  frc2::Trigger rightAimAssistButton{m_bill.Button(PS5_BUTTON_MENU)};
-  // rightAimAssistButton.OnTrue(frc2::ParallelRaceGroup(
-  //   frc2::WaitCommand(3.0_s), TrajectoryAimAssist(m_vision, m_swerve, 1.0, 0.4, 0.0)
-  // ).ToPtr());
-
-  frc2::Trigger centerAimAssistButton{m_bill.Button(PS5_BUTTON_PS)};
-  // centerAimAssistButton.OnTrue(frc2::ParallelRaceGroup(
-  //   frc2::WaitCommand(3.0_s), TrajectoryAimAssist(m_vision, m_swerve, 1.0, 0.0, 0.0)
-  // ).ToPtr());
-  
+  // Rotates clockwise at a set speed around the front left module while held
+  // When released, goes back to normal center of rotation
   frc2::Trigger cornerRotateCWButton{m_bill.Button(PS5_BUTTON_LTRIGGER)};
   cornerRotateCWButton.OnTrue(frc2::InstantCommand([this] {m_swerve->SetDefaultCommand(OISwerveDrive(&m_bill, m_swerve, m_isMagnitudeRot, RotationMode::frontLeftCW)); }, {m_swerve}).ToPtr());
   cornerRotateCWButton.OnFalse(frc2::InstantCommand([this] {m_swerve->SetDefaultCommand(OISwerveDrive(&m_bill, m_swerve, m_isMagnitudeRot, RotationMode::normal)); }, {m_swerve}).ToPtr());
 
+  // Rotates counter-clockwise at a set speed around the front left module while held
+  // When released, goes back to normal center of rotation
   frc2::Trigger cornerRotateCCWButton{m_bill.Button(PS5_BUTTON_RTRIGGER)};
   cornerRotateCCWButton.OnTrue(frc2::InstantCommand([this] {m_swerve->SetDefaultCommand(OISwerveDrive(&m_bill, m_swerve, m_isMagnitudeRot, RotationMode::frontLeftCCW)); }, {m_swerve}).ToPtr());
   cornerRotateCCWButton.OnFalse(frc2::InstantCommand([this] {m_swerve->SetDefaultCommand(OISwerveDrive(&m_bill, m_swerve, m_isMagnitudeRot, RotationMode::normal)); }, {m_swerve}).ToPtr());
 
+  // Auto balances the robot while held -- locks wheels at the end
   frc2::Trigger autoBalanceButton{m_bill.POVLeft(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
   autoBalanceButton.WhileTrue(AutoBalance(m_swerve).ToPtr());
 
+  // Locks wheels of the swerve in an "X" pattern while held (for anti-push or anti-slipping on charge station)
   frc2::Trigger lockWheelsButton{m_bill.POVRight(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
   lockWheelsButton.WhileTrue(
     frc2::RunCommand([this]{m_swerve->LockWheels();},{m_swerve}).ToPtr()
   );
 
   // ---------------------Ted's controls----------------------
+  // Co-driver's left stick manually controls elevator velocity
   m_elevator->SetDefaultCommand(ElevatorRawDrive(m_elevator, m_grabber, m_intake, &m_ted));
 
   // When codriver buttons are pressed, elevator will go to corresponding position
@@ -140,6 +148,8 @@ void RobotContainer::ConfigureButtonBindings() {
 
   // When pressing codriver elevator buttons, moves elevator up to target
   // On release, shoot the piece
+  
+  // Hold to move elevator to low target, release to shoot
   frc2::Trigger elevatorLowLevelButton{m_ted.Button(PS5_BUTTON_X)};  
   elevatorLowLevelButton.OnTrue(
     frc2::SequentialCommandGroup(
@@ -148,16 +158,17 @@ void RobotContainer::ConfigureButtonBindings() {
         frc2::WaitCommand(0.5_s),
         RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER)
       ),
-      ElevatorPID(m_elevator, m_intake, ElevatorLevel::Low, false)).ToPtr());
+      ElevatorPID(m_elevator, ElevatorLevel::Low, false)).ToPtr());
   elevatorLowLevelButton.OnFalse(frc2::SequentialCommandGroup( 
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(.25_s), 
       RunGrabber(m_grabber, GrabberAction::Shoot)),
     frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
-    ElevatorPID(m_elevator, m_intake, 0, false),
+    ElevatorPID(m_elevator, 0, false),
     frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
   ).ToPtr());
   
+  // Hold to move elevator to mid target, release to shoot
   frc2::Trigger elevatorMidLevelButton{m_ted.Button(PS5_BUTTON_O)};
   elevatorMidLevelButton.OnTrue(
     frc2::SequentialCommandGroup(
@@ -166,16 +177,17 @@ void RobotContainer::ConfigureButtonBindings() {
         frc2::WaitCommand(0.5_s),
         RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER)
       ),
-      ElevatorPID(m_elevator, m_intake, ElevatorLevel::Mid, false)).ToPtr());
+      ElevatorPID(m_elevator, ElevatorLevel::Mid, false)).ToPtr());
   elevatorMidLevelButton.OnFalse(frc2::SequentialCommandGroup( 
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(.25_s), 
       RunGrabber(m_grabber, GrabberAction::Shoot)),
     frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
-    ElevatorPID(m_elevator, m_intake, 0, false),
+    ElevatorPID(m_elevator, 0, false),
     frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
   ).ToPtr());
 
+  // Hold to move elevator to high target, release to shoot
   frc2::Trigger elevatorHighLevelButton{m_ted.Button(PS5_BUTTON_TRI)};
   elevatorHighLevelButton.OnTrue(
     frc2::SequentialCommandGroup(
@@ -184,16 +196,18 @@ void RobotContainer::ConfigureButtonBindings() {
         frc2::WaitCommand(0.5_s),
         RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER)
       ),
-        ElevatorPID(m_elevator, m_intake, ElevatorLevel::High, false)).ToPtr());
+        ElevatorPID(m_elevator, ElevatorLevel::High, false)).ToPtr());
   elevatorHighLevelButton.OnFalse(frc2::SequentialCommandGroup( 
     frc2::ParallelDeadlineGroup(
       frc2::WaitCommand(.25_s), 
       RunGrabber(m_grabber, GrabberAction::Shoot)),
     frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
-    ElevatorPID(m_elevator, m_intake, 0, false),
+    ElevatorPID(m_elevator, 0, false),
     frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
   ).ToPtr());
 
+  // Hold to move elevator to double substation target and grab with grabber,
+  // release to send elevator back to bottom
   frc2::Trigger grabDoubleStationButton{m_ted.Button(PS5_BUTTON_SQR)};
   grabDoubleStationButton.OnTrue(
     frc2::SequentialCommandGroup(
@@ -202,22 +216,23 @@ void RobotContainer::ConfigureButtonBindings() {
         frc2::WaitCommand(0.5_s),
         RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER)
       ),
-      frc2::ParallelRaceGroup(
-        ElevatorPID(m_elevator, m_intake, ElevatorLevel::DoubleSubstation, false),
+      frc2::ParallelCommandGroup(
+        ElevatorPID(m_elevator, ElevatorLevel::DoubleSubstation, false),
         RunGrabber(m_grabber, GrabberAction::Grab)
       )
     ).ToPtr()
   );
   grabDoubleStationButton.OnFalse(
     frc2::SequentialCommandGroup(
-      ElevatorPID(m_elevator, m_intake, 0, false),
-      frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false); m_grabber->SetSpeed(GRABBER_CARRY_SPEED); },{m_intake})
+      frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false); m_grabber->SetSpeed(GRABBER_CARRY_SPEED); },{m_intake}),
+      ElevatorPID(m_elevator, 0, false)
     ).ToPtr()
   );
 
   frc2::Trigger cancelElevatorPIDControl{m_ted.Button(PS5_BUTTON_LSTICK)};
-  cancelElevatorPIDControl.OnTrue(ElevatorPID(m_elevator, m_intake, 0, true).ToPtr());
+  cancelElevatorPIDControl.OnTrue(ElevatorPID(m_elevator, 0, true).ToPtr());
 
+  // Brings piece inwards inside robot and grabs with grabber and elevator when pressed
   frc2::Trigger interiorGrabButton{m_ted.Button(PS5_BUTTON_CREATE)};
   interiorGrabButton.OnTrue(
     frc2::SequentialCommandGroup(
@@ -226,7 +241,7 @@ void RobotContainer::ConfigureButtonBindings() {
       },{m_intake, m_grabber}),
       frc2::ParallelDeadlineGroup(
         frc2::WaitCommand(0.35_s),
-        ElevatorPID(m_elevator, m_intake, ELEVATOR_INTERIOR_GRAB_TARGET, false),
+        ElevatorPID(m_elevator, ELEVATOR_INTERIOR_GRAB_TARGET, false),
         RunGrabber(m_grabber, GRABBER_INTERIOR_GRAB_SPEED)
       )).ToPtr()
   );
@@ -236,18 +251,22 @@ void RobotContainer::ConfigureButtonBindings() {
     },{m_intake, m_grabber}).ToPtr()
   );
 
+  // Tips over cone inside robot while held
   frc2::Trigger coneCorrectButton{m_ted.Button(PS5_BUTTON_MENU)};
   coneCorrectButton.WhileTrue(frc2::InstantCommand([this]{m_intake->SetPower((INTAKE_ROLLER_POWER / 2), -INTAKE_CONVEYOR_POWER);},{m_intake}).ToPtr());
   coneCorrectButton.OnFalse(RunIntake(m_intake, 0, 0).ToPtr());
 
+  // Manual control of grabber -- hold to run inwards
   frc2::Trigger grabButton{m_ted.Button(PS5_BUTTON_LTRIGGER)};
   grabButton.WhileTrue(RunGrabber(m_grabber, GrabberAction::Grab).ToPtr());
   grabButton.OnFalse(RunGrabber(m_grabber, 0).ToPtr());
 
+  // Manual control of grabber -- hold to run outwards
   frc2::Trigger shootButton{m_ted.Button(PS5_BUTTON_RTRIGGER)};
-  shootButton.WhileTrue(RunGrabber(m_grabber, GrabberAction::Grab).ToPtr());
+  shootButton.WhileTrue(RunGrabber(m_grabber, GrabberAction::Shoot).ToPtr());
   shootButton.OnFalse(RunGrabber(m_grabber, 0).ToPtr());
 
+  // Stops all co-driver subsystems when pressed -- panic button
   frc2::Trigger codriverStopButton{m_ted.Button(PS5_BUTTON_PS)};
   codriverStopButton.OnTrue((frc2::InstantCommand([this]{
     m_intake->SetPower(0, 0);
@@ -255,7 +274,8 @@ void RobotContainer::ConfigureButtonBindings() {
     m_grabber->SetSpeed(0);
   },{m_intake, m_grabber, m_elevator}).ToPtr()));
 
-  frc2::Trigger ultraShootButton{m_ted.Button(PS5_BUTTON_LSTICK)};
+  // Shoots the elevator to max height and fires grabber on the way up when pressed
+  frc2::Trigger ultraShootButton{m_ted.Button(PS5_BUTTON_RBUMPER)};
   ultraShootButton.OnTrue(UltraShoot(m_elevator, m_intake, m_grabber).ToPtr());
 
   // Toggles the mode of the robot from cube to cone or vice versa
@@ -266,41 +286,56 @@ void RobotContainer::ConfigureButtonBindings() {
   pieceModeToggleButton.OnTrue(frc2::InstantCommand([this]{ m_isConeMode = !m_isConeMode; frc::SmartDashboard::PutBoolean("Is Cone Mode?", m_isConeMode); }, {}).ToPtr());
 
   // ---------------------Test's controls----------------------
+  // If test controller is connected, takes controls
   if (m_test.IsConnected()) {
+    // Takes raw control from co-driver
     m_elevator->SetDefaultCommand(ElevatorRawDrive(m_elevator, m_grabber, m_intake, &m_test));
 
+    // Hold down to spin all modules forward at constant speed
     frc2::Trigger forwardSpeedTestButton{m_test.Button(PS5_BUTTON_TRI)};
-    forwardSpeedTestButton.WhileTrue(frc2::ParallelCommandGroup(
-      SingleModTest(m_swerve, SwerveModuleLocation::fl, 0.5, ManualModuleDriveType::forward),
-      SingleModTest(m_swerve, SwerveModuleLocation::fr, 0.5, ManualModuleDriveType::forward),
-      SingleModTest(m_swerve, SwerveModuleLocation::bl, 0.5, ManualModuleDriveType::forward),
-      SingleModTest(m_swerve, SwerveModuleLocation::br, 0.5, ManualModuleDriveType::forward)
-    ).ToPtr());
+    forwardSpeedTestButton.WhileTrue(
+      frc2::RunCommand([this]{
+        m_swerve->ManualModuleSpeed(SwerveModuleLocation::fl, 0.5);
+        m_swerve->ManualModuleSpeed(SwerveModuleLocation::fr, 0.5);
+        m_swerve->ManualModuleSpeed(SwerveModuleLocation::bl, 0.5);
+        m_swerve->ManualModuleSpeed(SwerveModuleLocation::br, 0.5);
+      },{m_swerve}).ToPtr()
+    );
 
+    // Hold down to spin all modules backward at constant speed
     frc2::Trigger backwardSpeedTestButton{m_test.Button(PS5_BUTTON_X)};
-    backwardSpeedTestButton.WhileTrue(frc2::ParallelCommandGroup(
-      SingleModTest(m_swerve, SwerveModuleLocation::fl, -0.5, ManualModuleDriveType::forward),
-      SingleModTest(m_swerve, SwerveModuleLocation::fr, -0.5, ManualModuleDriveType::forward),
-      SingleModTest(m_swerve, SwerveModuleLocation::bl, -0.5, ManualModuleDriveType::forward),
-      SingleModTest(m_swerve, SwerveModuleLocation::br, -0.5, ManualModuleDriveType::forward)
-    ).ToPtr());
+    backwardSpeedTestButton.WhileTrue(
+      frc2::RunCommand([this]{
+        m_swerve->ManualModuleSpeed(SwerveModuleLocation::fl, -0.5);
+        m_swerve->ManualModuleSpeed(SwerveModuleLocation::fr, -0.5);
+        m_swerve->ManualModuleSpeed(SwerveModuleLocation::bl, -0.5);
+        m_swerve->ManualModuleSpeed(SwerveModuleLocation::br, -0.5);
+      },{m_swerve}).ToPtr()
+    );
 
+    // Hold down to rotate all modules clockwise at constant speed
     frc2::Trigger turnCWTestButton{m_test.Button(PS5_BUTTON_SQR)};
-    turnCWTestButton.WhileTrue(frc2::ParallelCommandGroup(
-      SingleModTest(m_swerve, SwerveModuleLocation::fl, 0.5, ManualModuleDriveType::turn),
-      SingleModTest(m_swerve, SwerveModuleLocation::fr, 0.5, ManualModuleDriveType::turn),
-      SingleModTest(m_swerve, SwerveModuleLocation::bl, 0.5, ManualModuleDriveType::turn),
-      SingleModTest(m_swerve, SwerveModuleLocation::br, 0.5, ManualModuleDriveType::turn)
-    ).ToPtr());
+    turnCWTestButton.WhileTrue(
+      frc2::RunCommand([this]{
+        m_swerve->ManualModuleTurn(SwerveModuleLocation::fl, 0.5);
+        m_swerve->ManualModuleTurn(SwerveModuleLocation::fr, 0.5);
+        m_swerve->ManualModuleTurn(SwerveModuleLocation::bl, 0.5);
+        m_swerve->ManualModuleTurn(SwerveModuleLocation::br, 0.5);
+      },{m_swerve}).ToPtr()
+    );
 
+    // Hold down to rotate all modules counter-clockwise at constant speed
     frc2::Trigger turnCCWTestButton{m_test.Button(PS5_BUTTON_O)};
-    turnCCWTestButton.WhileTrue(frc2::ParallelCommandGroup(
-      SingleModTest(m_swerve, SwerveModuleLocation::fl, -0.5, ManualModuleDriveType::turn),
-      SingleModTest(m_swerve, SwerveModuleLocation::fr, -0.5, ManualModuleDriveType::turn),
-      SingleModTest(m_swerve, SwerveModuleLocation::bl, -0.5, ManualModuleDriveType::turn),
-      SingleModTest(m_swerve, SwerveModuleLocation::br, -0.5, ManualModuleDriveType::turn)
-    ).ToPtr());
+    turnCCWTestButton.WhileTrue(
+      frc2::RunCommand([this]{
+        m_swerve->ManualModuleTurn(SwerveModuleLocation::fl, -0.5);
+        m_swerve->ManualModuleTurn(SwerveModuleLocation::fr, -0.5);
+        m_swerve->ManualModuleTurn(SwerveModuleLocation::bl, -0.5);
+        m_swerve->ManualModuleTurn(SwerveModuleLocation::br, -0.5);
+      },{m_swerve}).ToPtr()
+    );
 
+    // Press to toggle intake pistons in or out
     frc2::Trigger toggleIntakePistonButton{m_test.Button(PS5_BUTTON_TOUCHPAD)};
     toggleIntakePistonButton.OnTrue(
       frc2::SequentialCommandGroup(
@@ -369,6 +404,7 @@ void RobotContainer::BuildEventMap() {
   * The value is a std::sharedptr<frc2::Command>,
   * which is a pointer to the command that should be executed when its
   * associated key is called
+  * Mostly uses copies of teleop commands, with slight modifications
   */ 
 
   // --------------------------------START OF AUTO EVENTS---------------------------------
@@ -395,7 +431,7 @@ void RobotContainer::BuildEventMap() {
     "score_low", 
     std::make_shared<frc2::SequentialCommandGroup>(
       frc2::SequentialCommandGroup(
-        ElevatorPID(m_elevator, m_intake, ElevatorLevel::Low, false),
+        ElevatorPID(m_elevator, ElevatorLevel::Low, false),
         frc2::ParallelDeadlineGroup(
           frc2::WaitCommand(.25_s), 
           RunGrabber(m_grabber, GrabberAction::Shoot)
@@ -409,7 +445,7 @@ void RobotContainer::BuildEventMap() {
     "score_mid", 
     std::make_shared<frc2::SequentialCommandGroup>(
       frc2::SequentialCommandGroup(
-        ElevatorPID(m_elevator, m_intake, ElevatorLevel::Mid, false),
+        ElevatorPID(m_elevator, ElevatorLevel::Mid, false),
         frc2::ParallelDeadlineGroup(
           frc2::WaitCommand(.25_s), 
           RunGrabber(m_grabber, GrabberAction::Shoot)
@@ -423,7 +459,7 @@ void RobotContainer::BuildEventMap() {
     "score_high", 
     std::make_shared<frc2::SequentialCommandGroup>(
       frc2::SequentialCommandGroup(
-        ElevatorPID(m_elevator, m_intake, ElevatorLevel::High, false),
+        ElevatorPID(m_elevator, ElevatorLevel::High, false),
         frc2::ParallelDeadlineGroup(
           frc2::WaitCommand(.25_s), 
           RunGrabber(m_grabber, GrabberAction::Shoot)
@@ -437,7 +473,7 @@ void RobotContainer::BuildEventMap() {
     "elevator_to_0", 
     std::make_shared<frc2::ParallelDeadlineGroup>(
       frc2::WaitCommand(2.0_s),
-      ElevatorPID(m_elevator, m_intake, 0, false)
+      ElevatorPID(m_elevator, 0, false)
     )
   );
 
@@ -450,7 +486,7 @@ void RobotContainer::BuildEventMap() {
         },{m_intake}),
         frc2::ParallelDeadlineGroup(
           frc2::WaitCommand(0.35_s),
-          ElevatorPID(m_elevator, m_intake, ELEVATOR_INTERIOR_GRAB_TARGET, false),
+          ElevatorPID(m_elevator, ELEVATOR_INTERIOR_GRAB_TARGET, false),
           RunGrabber(m_grabber, GRABBER_INTERIOR_GRAB_SPEED)
         ),
         frc2::WaitCommand(0.125_s),
@@ -487,7 +523,7 @@ void RobotContainer::BuildEventMap() {
     std::make_shared<frc2::SequentialCommandGroup>(
       frc2::SequentialCommandGroup(
         frc2::ParallelDeadlineGroup(
-          ElevatorPID(m_elevator, m_intake, ELEVATOR_ULTRA_SHOOT_TARGET, false),
+          ElevatorPID(m_elevator, ELEVATOR_ULTRA_SHOOT_TARGET, false),
           frc2::RunCommand([this]{
             if (m_elevator->GetPosition() > ELEVATOR_ULTRA_SHOOT_RELEASE_POINT) {
               m_grabber->SetSpeed(ELEVATOR_ULTRA_SHOOT_POWER);
@@ -543,6 +579,7 @@ void RobotContainer::CreateAutoPaths() {
     true // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
   );
 
+  // Creates instances of each auto command
   // Add auto commands to auto chooser
   m_chooser.SetDefaultOption("N/A", nullptr);
   m_chooser.AddOption("Test: Line", new TestLineAuto(m_autoBuilder, "Test - Line"));

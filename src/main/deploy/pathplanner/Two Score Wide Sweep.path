@@ -23,7 +23,7 @@
           "intake_pistons_in"
         ],
         "executionBehavior": "sequential",
-        "waitBehavior": "before",
+        "waitBehavior": "none",
         "waitTime": 5.0
       }
     },
@@ -75,7 +75,8 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "intake_pistons_out"
+          "intake_pistons_out",
+          "run_intake_in"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",
@@ -102,11 +103,13 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "intake_pistons_in"
+          "stop_intake",
+          "intake_pistons_in",
+          "grab"
         ],
         "executionBehavior": "sequential",
-        "waitBehavior": "none",
-        "waitTime": 0
+        "waitBehavior": "before",
+        "waitTime": 0.5
       }
     },
     {
@@ -126,13 +129,13 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Intake Pistons Out",
-          "Score Mid",
-          "Elevator To 0",
-          "Intake Pistons In"
+          "intake_pistons_out",
+          "score_mid",
+          "elevator_to_0",
+          "intake_pistons_in"
         ],
-        "executionBehavior": "parallel",
-        "waitBehavior": "after",
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
         "waitTime": 0
       }
     }

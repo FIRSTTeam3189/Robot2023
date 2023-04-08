@@ -18,17 +18,24 @@ angleD(SI.angleMotorPID.d),
 m_angleOffset(SI.encoderOffset),
 m_absoluteEncoder(SI.CANCoderID, "Swerve")
 {
+    // Sets to default settings and then sets individual settings
+    // Tedious and boilerplate but more reliable than flashing settings or going through tuner
+    // Also works when swapping motors without changing settings or burning them to the motors
     m_speedMotor.ConfigFactoryDefault();
     m_angleMotor.ConfigFactoryDefault();
     m_speedMotor.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor);
+    // Non-continuous feedback -- one rotation forward is not the same as zero rotations (distance has been traveled)
     m_speedMotor.ConfigFeedbackNotContinuous(true);
     m_speedMotor.SetNeutralMode(NeutralMode::Brake);
+    // Invert so positive is forward
     m_speedMotor.SetInverted(true);
     m_speedMotor.Config_kP(0, speedP, 50);
     m_speedMotor.Config_kI(0, speedI, 50);
     m_speedMotor.Config_kD(0, speedD, 50);
     m_speedMotor.ConfigClosedloopRamp(0);
     m_speedMotor.ConfigOpenloopRamp(0.01);
+    // Enable current limiting, set current to limit down to as ampLimit, current to start limiting to as the same, and
+    // time before limiting to .1 second (arbitrary)
     m_speedMotor.ConfigStatorCurrentLimit(StatorCurrentLimitConfiguration{
                                             true, SwerveDriveConstants::ampLimit, SwerveDriveConstants::ampLimit + 5.0, 0.1});
 
@@ -49,9 +56,12 @@ m_absoluteEncoder(SI.CANCoderID, "Swerve")
                                             true, SwerveDriveConstants::ampLimit, SwerveDriveConstants::ampLimit + 10.0, 0.1});
 
     m_absoluteEncoder.ConfigSensorDirection(true);
+    // Boots to absolute and reads encoder offsets, so the wheels do not need to be straight
+    // When starting up code or even power cycling the robot
     m_absoluteEncoder.ConfigAbsoluteSensorRange(AbsoluteSensorRange::Unsigned_0_to_360);
     m_absoluteEncoder.ConfigSensorInitializationStrategy(SensorInitializationStrategy::BootToAbsolutePosition);
     ResetSpeedEncoder();
+    // Resets angle motors with absolute encoder offsets
     ResetAngleToAbsolute();
 }
 
@@ -87,18 +97,25 @@ units::meter_t SwerveModule::FalconToMeters(double encoderTicks) {
 }
 
 void SwerveModule::Lock(const frc::SwerveModuleState &input_state) {
+    // Basic set function that only sets angle motor
+    // Used for swerve locking and charge station
     const auto state = OptimizeAngle(
         input_state, units::degree_t{FalconToDegrees(m_angleMotor.GetSelectedSensorPosition())});
     m_angleMotor.Set(TalonFXControlMode::Position, DegreesToFalcon(state.angle.Degrees().value()));
 }
 
 void SwerveModule::SetDesiredPercentState(const frc::SwerveModuleState &input_state) {
+    // Uses simple percent control (desired velocity over max velocity) as motor output
+    // Less jerky than feedforward
+    // Optimize the angle to never rotate more than 180, instead finding shortest path around the "circle"
+    frc::SmartDashboard::PutNumber("Input state angle", input_state.angle.Degrees().value());
     const auto state = OptimizeAngle(
         input_state, units::degree_t{FalconToDegrees(m_angleMotor.GetSelectedSensorPosition())});
     double vel = state.speed.value();
     double speedPercent = vel / (double)SwerveDriveConstants::kMaxSpeed;
     m_speedMotor.Set(TalonFXControlMode::PercentOutput, speedPercent);
     double turnSetpoint = DegreesToFalcon(state.angle.Degrees().value());
+    // If desiring to move slowly and not rotate much, don't move module
     if (fabs(vel) < .025 && (m_lastAngle - turnSetpoint) < 5.0) {
         Stop();
         turnSetpoint = m_lastAngle;
@@ -110,14 +127,18 @@ void SwerveModule::SetDesiredPercentState(const frc::SwerveModuleState &input_st
 
 void SwerveModule::SetDesiredState(const frc::SwerveModuleState &input_state) {
     // First optimize swerve states (figures out whether CW or CCW is less turning angle)
+    // Optimize the angle to never rotate more than 180, instead finding shortest path around the "circle"
     frc::SmartDashboard::PutNumber("Input state angle", input_state.angle.Degrees().value());
     const auto state = OptimizeAngle(
         input_state, units::degree_t{FalconToDegrees(m_angleMotor.GetSelectedSensorPosition())});
     
+    // Calculate acceleration since the last control frame
     double vel = state.speed.value();
     auto acceleration = (state.speed - m_lastSpeed) /
       (frc::Timer::GetFPGATimestamp() - m_lastTime);
 
+    // Calculates feedforward value with SysID values and physics model
+    // Limits applied volts to 12
     units::volt_t ffValue = std::clamp(ff.Calculate(state.speed, acceleration), -12.0_V, 12.0_V);
     m_speedMotor.Set(TalonFXControlMode::PercentOutput, (ffValue / 12.0_V));
     m_lastSpeed = state.speed;
@@ -142,6 +163,7 @@ void SwerveModule::SetDesiredState(const frc::SwerveModuleState &input_state) {
 }
 
 frc::SwerveModuleState SwerveModule::OptimizeAngle(frc::SwerveModuleState desiredState, frc::Rotation2d currentAngle) {
+    // Optimizes the module to take shortest turning path so it never rotates more than 180 degrees
     double targetAngle = NormalizeTo0To360(
                         currentAngle.Degrees().value(), 
                         desiredState.angle.Degrees().value());
@@ -245,6 +267,7 @@ frc::SwerveModulePosition SwerveModule::GetSwerveModulePosition() {
 }
 
 void SwerveModule::UpdateModulePosition() {
+    // Updates position of module with current distance traveled and angle of module
     m_swervePosition.distance = FalconToMeters(m_speedMotor.GetSelectedSensorPosition());
     m_swervePosition.angle = -frc::Rotation2d{units::degree_t{(GetRelativeAngle())}};
 }

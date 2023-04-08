@@ -4,14 +4,17 @@
 
 #include "commands/ElevatorPID.h"
 
-ElevatorPID::ElevatorPID(Elevator *elevator, Intake *intake, ElevatorLevel level, bool shouldFinish) 
-: m_elevator(elevator), m_intake(intake), m_shouldFinish(shouldFinish) {
+ElevatorPID::ElevatorPID(Elevator *elevator, ElevatorLevel level, bool shouldFinish) 
+: m_elevator(elevator), m_shouldFinish(shouldFinish) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(elevator);
-  AddRequirements(intake);
 
+  // Read the current game piece mode from SmartDashboard
   bool isConeMode = frc::SmartDashboard::GetBoolean("Is Cone Mode?", false);
 
+  // Check the mode and target height and choose target height based on that
+  // Cones are scored at a higher level, for example
+  // So if the co-driver sets the robot to cone mode and scores, the elevator will raise slightly higher
   switch (level)
   {
   case ElevatorLevel::Low:
@@ -32,17 +35,14 @@ ElevatorPID::ElevatorPID(Elevator *elevator, Intake *intake, ElevatorLevel level
   
 }
 
-ElevatorPID::ElevatorPID(Elevator *elevator, Intake *intake, double target, bool shouldFinish) 
-: m_elevator(elevator), m_intake(intake), m_target(target), m_shouldFinish(shouldFinish) {
+ElevatorPID::ElevatorPID(Elevator *elevator, double target, bool shouldFinish) 
+: m_elevator(elevator), m_target(target), m_shouldFinish(shouldFinish) {
   AddRequirements(elevator);
-  AddRequirements(intake);
 }
 
 // Called when the command is initially scheduled.
 void ElevatorPID::Initialize() {
-  if (m_target > 300.0) {
-    m_intake->SetPistonExtension(true);
-  }
+  // Go slower on the way down, or else go normal speed
   if (m_target == 0.0) {
     m_elevator->SetPID(50.0, 0.0, 0.0);
   } else {
@@ -71,6 +71,7 @@ void ElevatorPID::End(bool interrupted) {}
 // Returns true when the command should end.
 // Ends command when elevator is close to its target for a certain amount of time
 bool ElevatorPID::IsFinished() {
+  // Ends if elevator is close to target for a while
   if (m_withinThresholdLoops >= ELEVATOR_SETTLE_LOOPS && m_shouldFinish) {
     return true;
   }

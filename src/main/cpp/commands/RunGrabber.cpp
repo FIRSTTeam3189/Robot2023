@@ -7,18 +7,18 @@
 RunGrabber::RunGrabber(Grabber *grabber, GrabberAction action) : m_grabber(grabber) {
   AddRequirements(grabber);
 
+  // Checks if it is in cone mode from the SmartDashboard
   bool isConeMode = frc::SmartDashboard::GetBoolean("Is Cone Mode?", false);
 
+  // Runs the grabber at differnet speeds depending on if mode is cone or cube 
   switch (action)
   {
   case GrabberAction::Grab:
     m_power = isConeMode ? GRABBER_CONE_GRAB_SPEED : GRABBER_CUBE_GRAB_SPEED;
     break;
-
   case GrabberAction::Shoot:
     m_power = isConeMode ? GRABBER_CONE_SHOOT_SPEED : GRABBER_CUBE_SHOOT_SPEED;
     break;
-
   default:
     break;
   }

@@ -46,6 +46,8 @@ void SwerveDrive::ResetGyro() {
 }
 
 void SwerveDrive::PercentDrive(frc::ChassisSpeeds speeds) {
+  // Version of drive function that uses basic percentage control (100% on axis is 100% power, 5% is 5%, etc.)
+  // Takes a chassis speeds instead of desired velocities
   auto states = SwerveDriveParameters::kinematics.ToSwerveModuleStates(speeds);
   SwerveDriveParameters::kinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed);
   m_SM.m_frontLeft.SetDesiredPercentState(states[0]);
@@ -60,8 +62,9 @@ void SwerveDrive::PercentDrive(
   units::radians_per_second_t rot,
   bool fieldRelative,
   frc::Translation2d centerOfRotation) {
+  // Version of drive function that uses basic percentage control (100% on axis is 100% power, 5% is 5%, etc.)
   UpdateOdometry();
-  
+
   auto states = SwerveDriveParameters::kinematics.ToSwerveModuleStates(
     (fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
                         xSpeed, ySpeed, rot, -m_pigeon.GetRotation2d())
@@ -71,6 +74,19 @@ void SwerveDrive::PercentDrive(
   SwerveDriveParameters::kinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed);
 
   auto [fl, fr, bl, br] = states;
+
+  frc::SmartDashboard::PutNumber("FL speed", (double)fl.speed);
+  frc::SmartDashboard::PutNumber("FL angle", (double)fl.angle.Degrees());
+  frc::SmartDashboard::PutNumber("FR speed", (double)fr.speed);
+  frc::SmartDashboard::PutNumber("FR angle", (double)fr.angle.Degrees());
+  frc::SmartDashboard::PutNumber("BL speed", (double)bl.speed);
+  frc::SmartDashboard::PutNumber("BL angle", (double)bl.angle.Degrees());
+  frc::SmartDashboard::PutNumber("BR speed", (double)br.speed);
+  frc::SmartDashboard::PutNumber("BR angle", (double)br.angle.Degrees());
+
+  frc::SmartDashboard::PutNumber("X speed", (double)xSpeed);
+  frc::SmartDashboard::PutNumber("Y speed", (double)ySpeed);
+  frc::SmartDashboard::PutNumber("Rotation", (double)(SwerveDriveConstants::DEGToRAD * rot));
 
   double AdvantageScopeDesiredStates[] = 
     {(double)fl.angle.Degrees(), (double)fl.speed,
@@ -92,6 +108,7 @@ void SwerveDrive::Drive(
   units::meters_per_second_t ySpeed,
   units::radians_per_second_t rot,
   bool fieldRelative) {
+  // Version of function that uses feedforward control
   UpdateOdometry();
   
   auto states = SwerveDriveParameters::kinematics.ToSwerveModuleStates(
@@ -114,7 +131,7 @@ void SwerveDrive::Drive(
   frc::SmartDashboard::PutNumber("X speed", (double)xSpeed);
   frc::SmartDashboard::PutNumber("Y speed", (double)ySpeed);
   frc::SmartDashboard::PutNumber("Rotation", (double)(SwerveDriveConstants::DEGToRAD * rot));
-  
+
   // Desired states to be logged in AdvantageScope (requires different format)
   double AdvantageScopeDesiredStates[] = 
     {(double)fl.angle.Degrees(), (double)fl.speed,
@@ -127,6 +144,7 @@ void SwerveDrive::Drive(
 }
 
 void SwerveDrive::SetModuleStates(std::array<frc::SwerveModuleState, 4> desiredStates) {
+  // Sets all modules using feedforward
   m_SM.m_frontLeft.SetDesiredState(desiredStates[0]);
   m_SM.m_frontRight.SetDesiredState(desiredStates[1]);
   m_SM.m_backLeft.SetDesiredState(desiredStates[2]);
@@ -134,6 +152,7 @@ void SwerveDrive::SetModuleStates(std::array<frc::SwerveModuleState, 4> desiredS
 }
 
 void SwerveDrive::SetPercentModuleStates(std::array<frc::SwerveModuleState, 4> desiredStates) {
+  // Sets all modules using basic control
   m_SM.m_frontLeft.SetDesiredPercentState(desiredStates[0]);
   m_SM.m_frontRight.SetDesiredPercentState(desiredStates[1]);
   m_SM.m_backLeft.SetDesiredPercentState(desiredStates[2]);
@@ -169,7 +188,7 @@ double SwerveDrive::GetRoll() {
 }
 
 void SwerveDrive::ManualModuleSpeed(SwerveModuleLocation location, double speed) {
-  // Switch over enum cases to set individual modules manually
+  // Switch over enum cases to set individual modules to spin at a constant speed manually
   switch(location) {
     case SwerveModuleLocation::fl :
       m_SM.m_frontLeft.ManualModuleSpeed(speed);
@@ -275,6 +294,7 @@ void SwerveDrive::Stop() {
 
 void SwerveDrive::InitSmartDashboard() {
   // Add swerve PID values to PID tabs
+  // Allows for editing of PID values during runtime
   frc::SmartDashboard::PutNumber("Robot yaw", GetNormalizedYaw());
   EntryRotationP = SwerveRotationPIDTab.Add("Rotation P", AutoParameters::thetaPIDController.GetP()).GetEntry();
   EntryRotationI = SwerveRotationPIDTab.Add("Rotation I", AutoParameters::thetaPIDController.GetI()).GetEntry();
@@ -365,6 +385,7 @@ void SwerveDrive::Log2DField() {
 }
 
 void SwerveDrive::LockWheels() {
+  // Sets modules to point in an "X" shape, which means it is less likely to be pushed or slide
   m_SM.m_frontLeft.Lock(frc::SwerveModuleState{0.0_mps, units::radian_t{-pi/ 4.0}});
   m_SM.m_frontRight.Lock(frc::SwerveModuleState{0.0_mps, units::radian_t{pi/ 4.0}});
   m_SM.m_backLeft.Lock(frc::SwerveModuleState{0.0_mps, units::radian_t{pi/ 4.0}});
@@ -424,7 +445,7 @@ void SwerveDrive::SyncSmartdashBoardValues() {
   SwerveModuleTelemetry telemetryArray[] = {frontLeftTelemetry, frontRightTelemetry, backLeftTelemetry, backRightTelemetry};
   LogModuleStates(telemetryArray);
   Log2DField();
-
+  
   EntryFrontLeftSpeed->SetDouble(frontLeftTelemetry.speed);
   EntryFrontLeftPosition->SetDouble(frontLeftTelemetry.position);
   EntryFrontLeftAngleVelocity->SetDouble(frontLeftTelemetry.angleVelocity);
