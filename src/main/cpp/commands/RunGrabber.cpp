@@ -4,14 +4,23 @@
 
 #include "commands/RunGrabber.h"
 
-RunGrabber::RunGrabber(Grabber *grabber, GrabberAction action) : m_grabber(grabber) {
+RunGrabber::RunGrabber(Grabber *grabber, GrabberAction action) : m_grabber(grabber), m_action(action) {
   AddRequirements(grabber);
+}
 
+RunGrabber::RunGrabber(Grabber *grabber, double power)
+: m_grabber(grabber), m_power(power), m_action(GrabberAction::None) {
+  // Use addRequirements() here to declare subsystem dependencies.
+  AddRequirements(grabber);
+}
+
+// Called when the command is initially scheduled.
+void RunGrabber::Initialize() {
   // Checks if it is in cone mode from the SmartDashboard
   bool isConeMode = frc::SmartDashboard::GetBoolean("Is Cone Mode?", false);
 
   // Runs the grabber at differnet speeds depending on if mode is cone or cube 
-  switch (action)
+  switch (m_action)
   {
   case GrabberAction::Grab:
     m_power = isConeMode ? GRABBER_CONE_GRAB_SPEED : GRABBER_CUBE_GRAB_SPEED;
@@ -19,19 +28,12 @@ RunGrabber::RunGrabber(Grabber *grabber, GrabberAction action) : m_grabber(grabb
   case GrabberAction::Shoot:
     m_power = isConeMode ? GRABBER_CONE_SHOOT_SPEED : GRABBER_CUBE_SHOOT_SPEED;
     break;
+  case GrabberAction::None:
+    break;
   default:
     break;
   }
 }
-
-RunGrabber::RunGrabber(Grabber *grabber, double power)
-: m_grabber(grabber), m_power(power) {
-  // Use addRequirements() here to declare subsystem dependencies.
-  AddRequirements(grabber);
-}
-
-// Called when the command is initially scheduled.
-void RunGrabber::Initialize() {}
 
 // Called repeatedly when this Command is scheduled to run
 void RunGrabber::Execute() {

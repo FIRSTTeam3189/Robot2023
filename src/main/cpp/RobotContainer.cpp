@@ -579,6 +579,7 @@ void RobotContainer::CreateAutoPaths() {
     true // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
   );
 
+  pathplanner::SwerveAutoBuilder();
   // Creates instances of each auto command
   // Add auto commands to auto chooser
   m_chooser.SetDefaultOption("N/A", nullptr);

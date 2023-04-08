@@ -5,17 +5,25 @@
 #include "commands/ElevatorPID.h"
 
 ElevatorPID::ElevatorPID(Elevator *elevator, ElevatorLevel level, bool shouldFinish) 
-: m_elevator(elevator), m_shouldFinish(shouldFinish) {
+: m_elevator(elevator), m_shouldFinish(shouldFinish), m_level(level) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(elevator);
+}
 
+ElevatorPID::ElevatorPID(Elevator *elevator, double target, bool shouldFinish) 
+: m_elevator(elevator), m_target(target), m_shouldFinish(shouldFinish), m_level(ElevatorLevel::None) {
+  AddRequirements(elevator);
+}
+
+// Called when the command is initially scheduled.
+void ElevatorPID::Initialize() {
   // Read the current game piece mode from SmartDashboard
   bool isConeMode = frc::SmartDashboard::GetBoolean("Is Cone Mode?", false);
 
   // Check the mode and target height and choose target height based on that
   // Cones are scored at a higher level, for example
   // So if the co-driver sets the robot to cone mode and scores, the elevator will raise slightly higher
-  switch (level)
+  switch (m_level)
   {
   case ElevatorLevel::Low:
     m_target = isConeMode ? ELEVATOR_LOW_CONE_TARGET : ELEVATOR_LOW_CUBE_TARGET;
@@ -29,19 +37,12 @@ ElevatorPID::ElevatorPID(Elevator *elevator, ElevatorLevel level, bool shouldFin
   case ElevatorLevel::DoubleSubstation:
     m_target = isConeMode ? ELEVATOR_DOUBLE_SUBSTATION_CONE_TARGET : ELEVATOR_DOUBLE_SUBSTATION_CUBE_TARGET;
     break;
+  case ElevatorLevel::None:
+    break;
   default:
     break;
   }
-  
-}
 
-ElevatorPID::ElevatorPID(Elevator *elevator, double target, bool shouldFinish) 
-: m_elevator(elevator), m_target(target), m_shouldFinish(shouldFinish) {
-  AddRequirements(elevator);
-}
-
-// Called when the command is initially scheduled.
-void ElevatorPID::Initialize() {
   // Go slower on the way down, or else go normal speed
   if (m_target == 0.0) {
     m_elevator->SetPID(50.0, 0.0, 0.0);

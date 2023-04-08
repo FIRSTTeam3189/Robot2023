@@ -10,7 +10,7 @@ m_swerve(swerve),
 m_targetAngle(targetAngle),
 m_rotationPIDController(SwerveDriveConstants::rotP, SwerveDriveConstants::rotI, SwerveDriveConstants::rotD),
 m_withinThresholdLoops(0),
-m_lastError(9999999999999999999999999) {
+m_lastError(99999) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(swerve);
   m_rotationPIDController.SetTolerance(1.0);

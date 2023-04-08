@@ -11,7 +11,7 @@
 #include "subsystems/Elevator.h"
 #include "subsystems/Intake.h"
 
-enum class ElevatorLevel { Low, Mid, High, DoubleSubstation };
+enum class ElevatorLevel { None, Low, Mid, High, DoubleSubstation };
 /**
  * An example command.
  *
@@ -38,4 +38,5 @@ class ElevatorPID
   int m_withinThresholdLoops;
   double m_target;
   bool m_shouldFinish;
+  ElevatorLevel m_level;
 };

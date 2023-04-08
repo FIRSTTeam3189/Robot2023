@@ -10,7 +10,7 @@
 #include "subsystems/Grabber.h"
 
 
-enum class GrabberAction { Grab, Shoot };
+enum class GrabberAction { None, Grab, Shoot };
 /**
  * An example command.
  *
@@ -35,4 +35,5 @@ class RunGrabber
  private:
   Grabber *m_grabber;
   double m_power;
+  GrabberAction m_action;
 };

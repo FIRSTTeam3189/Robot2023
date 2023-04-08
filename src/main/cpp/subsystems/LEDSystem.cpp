@@ -38,59 +38,61 @@ m_modeShouldChangeColor(true), m_lastMode(true), m_shouldStartup(true), m_startu
     m_ledSections[LEDSection::LSide] = {111, 153};
     // length of back side
     m_ledSections[LEDSection::Backside] = {0, 19};
-
-    // Play the starting animation on code startup
-    StartingAnimation();
 }
 
 // This method will be called once per scheduler run
 void LEDSystem::Periodic() {
-    bool grabbed = frc::SmartDashboard::GetBoolean("Piece Grabbed", false);
-    bool isConeMode = frc::SmartDashboard::GetBoolean("Is Cone Mode?", false);
-
-    // Robot will flash yellow if in cone mode, or purple for cube mode
-    if (isConeMode) {
-        m_currentModeRGB = {150, 100, 0};
-    } else {
-        m_currentModeRGB = {150, 0, 150};
+    if (m_shouldStartup) {
+        StartingAnimation();
     }
+    else {
+        bool grabbed = frc::SmartDashboard::GetBoolean("Piece Grabbed", false);
+        bool isConeMode = frc::SmartDashboard::GetBoolean("Is Cone Mode?", false);
 
-    // Only change animations when there's a change in mode
-    if (isConeMode != m_lastMode) {
-        m_modeShouldChangeColor = true;
-    }
-
-    // When grabber detects a piece, top half of the robot will flash to indicate to the drivers
-    // Bottom half will still breathe to indicate piece mode
-    if (grabbed && !m_grabberAnimationRunning) {
-        SetAnimation(LEDAnimationType::Clear);
-        SetAnimation(LEDAnimationType::Larson, LEDSection::LSide, m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], 0.75, false, 0);
-        SetAnimation(LEDAnimationType::Larson, LEDSection::RSide, m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], 0.75, true, 1);
-        SetAnimation(LEDAnimationType::Larson, LEDSection::Backside, m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], 0.4, true, 2);
-        SetAnimation(LEDAnimationType::SingleFade, LEDSection::LUnderGlow, m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], 0.65, false, 3);
-        SetAnimation(LEDAnimationType::SingleFade, LEDSection::RUnderGlow, m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], 0.65, false, 4);
-
-        m_grabberAnimationRunning = true;
-    } else if (m_grabberAnimationRunning && !grabbed) {
-        // Once grabber detects piece is gone, revert top half to breathing the color of game piece
-        SetAnimation(LEDAnimationType::Clear);
-        m_grabberAnimationRunning = false;
-        m_modeShouldChangeColor = true;
-    }
-
-    // By default, robot will glow/breathe the color of the game piece mode the robot is in
-    if (m_modeShouldChangeColor) {
-        if (!grabbed) {
-            SetAnimation(LEDAnimationType::SingleFade, LEDSection::All, m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], 0.65, false, 5);
+        // Robot will flash yellow if in cone mode, or purple for cube mode
+        if (isConeMode) {
+            m_currentModeRGB = {150, 100, 0};
         } else {
+            m_currentModeRGB = {150, 0, 150};
+        }
+
+        // Only change animations when there's a change in mode
+        if (isConeMode != m_lastMode) {
+            m_modeShouldChangeColor = true;
+        }
+
+        // When grabber detects a piece, top half of the robot will flash to indicate to the drivers
+        // Bottom half will still breathe to indicate piece mode
+        if (grabbed && !m_grabberAnimationRunning) {
+            SetAnimation(LEDAnimationType::Clear);
+            SetAnimation(LEDAnimationType::Larson, LEDSection::LSide, m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], 0.75, false, 0);
+            SetAnimation(LEDAnimationType::Larson, LEDSection::RSide, m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], 0.75, true, 1);
+            SetAnimation(LEDAnimationType::Larson, LEDSection::Backside, m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], 0.4, true, 2);
             SetAnimation(LEDAnimationType::SingleFade, LEDSection::LUnderGlow, m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], 0.65, false, 3);
             SetAnimation(LEDAnimationType::SingleFade, LEDSection::RUnderGlow, m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], 0.65, false, 4);
+
+            m_grabberAnimationRunning = true;
+        } else if (m_grabberAnimationRunning && !grabbed) {
+            // Once grabber detects piece is gone, revert top half to breathing the color of game piece
+            SetAnimation(LEDAnimationType::Clear);
+            m_grabberAnimationRunning = false;
+            m_modeShouldChangeColor = true;
         }
-        // Only sets animations when there's a change
-        m_modeShouldChangeColor = false;
+
+        // By default, robot will glow/breathe the color of the game piece mode the robot is in
+        if (m_modeShouldChangeColor) {
+            if (!grabbed) {
+                SetAnimation(LEDAnimationType::SingleFade, LEDSection::All, m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], 0.65, false, 5);
+            } else {
+                SetAnimation(LEDAnimationType::SingleFade, LEDSection::LUnderGlow, m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], 0.65, false, 3);
+                SetAnimation(LEDAnimationType::SingleFade, LEDSection::RUnderGlow, m_currentModeRGB[0], m_currentModeRGB[1], m_currentModeRGB[2], 0.65, false, 4);
+            }
+            // Only sets animations when there's a change
+            m_modeShouldChangeColor = false;
+        }
+        
+        m_lastMode = isConeMode;
     }
-    
-    m_lastMode = isConeMode;
 }
 
 void LEDSystem::SetAnimation(LEDAnimationType newAnimation, LEDSection section, int r, int g, int b, double speed, bool reverse, int animSlot) {
@@ -194,18 +196,16 @@ void LEDSystem::ClearAll() {
 
 void LEDSystem::StartingAnimation() {
     // Plays a flowing color animation for 3 seconds
-    while (m_shouldStartup) {
-        if (!m_startupRunning) {
-            SetAnimation(LEDAnimationType::Clear);
-            m_startupRunning = true;
-            m_timer.Start();
-            SetAnimation(LEDAnimationType::ColorFlow, LEDSection::All, 255, 255, 0, 0.5, true);
-            SetAnimation(LEDAnimationType::ColorFlow, LEDSection::All, 0, 0, 255, 0.5, false, 1);
-        }
-        if (m_timer.Get() > 3.0_s) {
-            m_shouldStartup = false;
-            SetAnimation(LEDAnimationType::Clear);
-            m_timer.Stop();
-        }
+    if (!m_startupRunning) {
+        SetAnimation(LEDAnimationType::Clear);
+        m_startupRunning = true;
+        m_timer.Start();
+        SetAnimation(LEDAnimationType::ColorFlow, LEDSection::All, 255, 255, 0, 0.5, true);
+        SetAnimation(LEDAnimationType::ColorFlow, LEDSection::All, 0, 0, 255, 0.5, false, 1);
+    }
+    if (m_timer.Get() > 3.0_s) {
+        m_shouldStartup = false;
+        SetAnimation(LEDAnimationType::Clear);
+        m_timer.Stop();
     }
 }

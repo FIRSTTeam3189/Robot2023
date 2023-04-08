@@ -22,7 +22,8 @@ void Grabber::Periodic() {
     // Checks the encoder velocity and output current to determine if there is resistance
     // If the motor is trying to spin but isn't spinning, it is meeting resistance
     // Most likely, this means it is stuck (hopefully not) or a piece is successfully in the grabber
-    if (abs(m_encoderVelocity) < 200 && m_motor.GetOutputCurrent() > 1.0) {
+    if (abs(m_encoderVelocity) < 200 && abs(m_motor.GetAppliedOutput()) > 0.1) {
+        frc::SmartDashboard::PutNumber("Grabber applied output", m_motor.GetAppliedOutput());
         m_pieceGrabbed = true;
     } else {
         m_pieceGrabbed = false;

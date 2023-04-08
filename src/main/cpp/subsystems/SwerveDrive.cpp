@@ -243,6 +243,7 @@ frc::Pose2d SwerveDrive::GetPose() {
 }
 
 frc::Pose2d SwerveDrive::GetCorrectedPose() {
+  // Pose used for auto - y-axis is inverted
   UpdateOdometry();
   auto pose = m_odometry.GetPose();
   frc::Pose2d correctedPose{{pose.X(), -pose.Y()}, pose.Rotation()};

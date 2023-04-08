@@ -56,7 +56,7 @@ namespace SwerveDriveConstants {
     constexpr auto kMaxSpeed {4.0_mps};
     constexpr auto kMaxAcceleration {3.0_mps_sq};
     constexpr units::radians_per_second_t maxAngularVelocity {pi};
-    constexpr units::radians_per_second_squared_t maxAngularAcceleration {pi/ 4};
+    constexpr units::radians_per_second_squared_t maxAngularAcceleration {pi / 2};
 
     constexpr double speedP {5.0};
     constexpr double speedI {0.0};

@@ -88,35 +88,35 @@ void OISwerveDrive::Execute() {
         rot = GetDesiredRotationalVelocity();
         break;
       case RotationMode::frontLeftCW:
-        rot = -2.0_rad / 1_s;
+        rot = -10.0_rad / 1_s;
         centerOfRotation = frc::Translation2d{+SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter};
         break;
       case RotationMode::frontLeftCCW:
-        rot = 2.0_rad / 1_s;
+        rot = 10.0_rad / 1_s;
         centerOfRotation = frc::Translation2d{+SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter};
         break;
       case RotationMode::frontRightCW:
-        rot = -2.0_rad / 1_s;
+        rot = -10.0_rad / 1_s;
         centerOfRotation = frc::Translation2d{+SwerveDriveConstants::xDistanceFromCenter, +SwerveDriveConstants::yDistanceFromCenter};
         break;
       case RotationMode::frontRightCCW:
-        rot = 2.0_rad / 1_s;
+        rot = 10.0_rad / 1_s;
         centerOfRotation = frc::Translation2d{+SwerveDriveConstants::xDistanceFromCenter, +SwerveDriveConstants::yDistanceFromCenter};
         break;
       case RotationMode::backLeftCW:
-        rot = -2.0_rad / 1_s;
+        rot = -10.0_rad / 1_s;
         centerOfRotation = frc::Translation2d{-SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter};
         break;
       case RotationMode::backLeftCCW:
-        rot = 2.0_rad / 1_s;
+        rot = 10.0_rad / 1_s;
         centerOfRotation = frc::Translation2d{-SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter};
         break;
       case RotationMode::backRightCW:
-        rot = -2.0_rad / 1_s;
+        rot = -10.0_rad / 1_s;
         centerOfRotation = frc::Translation2d{-SwerveDriveConstants::xDistanceFromCenter, +SwerveDriveConstants::yDistanceFromCenter};
         break;
       case RotationMode::backRightCCW:
-        rot = 2.0_rad / 1_s;
+        rot = 10.0_rad / 1_s;
         centerOfRotation = frc::Translation2d{-SwerveDriveConstants::xDistanceFromCenter, +SwerveDriveConstants::yDistanceFromCenter};
         break;
       default:
