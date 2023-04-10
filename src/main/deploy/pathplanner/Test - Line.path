@@ -24,56 +24,6 @@
     },
     {
       "anchorPoint": {
-        "x": 1.6,
-        "y": 4.0
-      },
-      "prevControl": {
-        "x": 1.608098112879899,
-        "y": 4.009284609513097
-      },
-      "nextControl": {
-        "x": 1.608098112879899,
-        "y": 4.009284609513097
-      },
-      "holonomicAngle": 0,
-      "isReversal": true,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "sequential",
-        "waitBehavior": "none",
-        "waitTime": 5.0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 2.6,
-        "y": 4.0
-      },
-      "prevControl": {
-        "x": 2.6099700707054474,
-        "y": 3.997480324680038
-      },
-      "nextControl": {
-        "x": 2.6099700707054474,
-        "y": 3.997480324680038
-      },
-      "holonomicAngle": 0,
-      "isReversal": true,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
         "x": 2.6,
         "y": 3.0
       },
