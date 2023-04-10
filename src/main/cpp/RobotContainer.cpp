@@ -224,6 +224,7 @@ void RobotContainer::ConfigureButtonBindings() {
   );
   grabDoubleStationButton.OnFalse(
     frc2::SequentialCommandGroup(
+      // 
       frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false); m_grabber->SetSpeed(GRABBER_CARRY_SPEED); },{m_intake}),
       ElevatorPID(m_elevator, 0, false)
     ).ToPtr()
@@ -570,7 +571,7 @@ void RobotContainer::CreateAutoPaths() {
   // Make auto builder
   m_autoBuilder = new pathplanner::SwerveAutoBuilder(
     [this]() { return m_swerve->GetPose(); }, // Function to supply current robot pose
-    [this](auto initPose) { m_swerve->ResetOdometry(initPose); }, // Function used to reset odometry at the beginning of auto
+    [this](auto initPose) { m_swerve->ResetOdometry(frc::Pose2d{1.6_m, 3.0_m, frc::Rotation2d{0_deg}}); }, // Function used to reset odometry at the beginning of auto
     pathplanner::PIDConstants(AutoConstants::kPXController, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
     pathplanner::PIDConstants(AutoConstants::autoRotP, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
     [this](auto speeds) { m_swerve->PercentDrive(speeds); }, // Output function that accepts field relative ChassisSpeeds
