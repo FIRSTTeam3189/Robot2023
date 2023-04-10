@@ -17,7 +17,7 @@ SpecialAuto::SpecialAuto(pathplanner::SwerveAutoBuilder *builder, std::string fi
    * Includes event markers, stop events, and robot trajectories
   */
 
-std::vector<pathplanner::PathPlannerTrajectory> specialGroup = pathplanner::PathPlanner::loadPathGroup(filePath, {pathplanner::PathConstraints(SwerveDriveConstants::kMaxSpeed, SwerveDriveConstants::kMaxAcceleration)});
+std::vector<pathplanner::PathPlannerTrajectory> specialGroup = pathplanner::PathPlanner::loadPathGroup(filePath, {pathplanner::PathConstraints(SwerveDriveConstants::kMaxSpeed / 2.0, SwerveDriveConstants::kMaxAcceleration / 2.0)});
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.emplace_back(builder->fullAuto(specialGroup).Unwrap());
   auto group = SequentialCommandGroup(std::move(commands));

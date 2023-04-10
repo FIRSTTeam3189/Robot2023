@@ -569,7 +569,7 @@ void RobotContainer::BuildEventMap() {
 void RobotContainer::CreateAutoPaths() {
   // Make auto builder
   m_autoBuilder = new pathplanner::SwerveAutoBuilder(
-    [this]() { return m_swerve->GetCorrectedPose(); }, // Function to supply current robot pose
+    [this]() { return m_swerve->GetPose(); }, // Function to supply current robot pose
     [this](auto initPose) { m_swerve->ResetOdometry(initPose); }, // Function used to reset odometry at the beginning of auto
     pathplanner::PIDConstants(AutoConstants::kPXController, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
     pathplanner::PIDConstants(AutoConstants::autoRotP, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)

@@ -272,7 +272,6 @@ void SwerveDrive::UpdateOdometry() {
 }  
 
 void SwerveDrive::ResetOdometry(frc::Pose2d pose) {
-  ResetSpeedEncoders();
   m_odometry.ResetPosition(m_pigeon.GetRotation2d(),
                            m_modulePositions,
                            pose);
