@@ -100,7 +100,7 @@ void SwerveModule::Lock(const frc::SwerveModuleState &input_state) {
     // Basic set function that only sets angle motor
     // Used for swerve locking and charge station
     const auto state = OptimizeAngle(
-        input_state, units::degree_t{FalconToDegrees(m_angleMotor.GetSelectedSensorPosition())});
+        input_state, units::degree_t{GetRelativeAngle()});
     m_angleMotor.Set(TalonFXControlMode::Position, DegreesToFalcon(state.angle.Degrees().value()));
 }
 
@@ -109,12 +109,14 @@ void SwerveModule::SetDesiredPercentState(const frc::SwerveModuleState &input_st
     // Less jerky than feedforward
     // Optimize the angle to never rotate more than 180, instead finding shortest path around the "circle"
     frc::SmartDashboard::PutNumber("Input state angle", input_state.angle.Degrees().value());
+    frc::SmartDashboard::PutNumber("Actual angle", GetRelativeAngle());
     const auto state = OptimizeAngle(
-        input_state, units::degree_t{FalconToDegrees(m_angleMotor.GetSelectedSensorPosition())});
+        input_state, units::degree_t{GetRelativeAngle()});
     double vel = state.speed.value();
+    frc::SmartDashboard::PutNumber("Target Swerve Speed Percent", vel / (double)SwerveDriveConstants::kMaxSpeed);
     double speedPercent = vel / (double)SwerveDriveConstants::kMaxSpeed;
     m_speedMotor.Set(TalonFXControlMode::PercentOutput, speedPercent);
-    double turnSetpoint = DegreesToFalcon(state.angle.Degrees().value());
+    double turnSetpoint = -DegreesToFalcon(state.angle.Degrees().value());
     // If desiring to move slowly and not rotate much, don't move module
     if (fabs(vel) < .025 && (m_lastAngle - turnSetpoint) < 5.0) {
         Stop();
@@ -130,8 +132,8 @@ void SwerveModule::SetDesiredState(const frc::SwerveModuleState &input_state) {
     // Optimize the angle to never rotate more than 180, instead finding shortest path around the "circle"
     frc::SmartDashboard::PutNumber("Input state angle", input_state.angle.Degrees().value());
     const auto state = OptimizeAngle(
-        input_state, units::degree_t{FalconToDegrees(m_angleMotor.GetSelectedSensorPosition())});
-    
+        input_state, units::degree_t{GetRelativeAngle()});
+
     // Calculate acceleration since the last control frame
     double vel = state.speed.value();
     auto acceleration = (state.speed - m_lastSpeed) /
@@ -146,12 +148,12 @@ void SwerveModule::SetDesiredState(const frc::SwerveModuleState &input_state) {
     frc::SmartDashboard::PutNumber("Target Swerve Speed Percent", (double)(ffValue / 12.0_V));
     
     // Calculate position to set angle PID to
-    double turnSetpoint = DegreesToFalcon(state.angle.Degrees().value());
+    double turnSetpoint = -DegreesToFalcon(state.angle.Degrees().value());
 
     // If robot wants to barely move or rotate module, stop motors
     // Also sets next setpoint as current angle so no rotation happens
     // Keep wheels in current spot instead of resetting to 0
-    if (fabs(vel) < .025 && (m_lastAngle - turnSetpoint) < 5.0) {
+    if (fabs(vel) < .025 && abs(m_lastAngle - turnSetpoint) < 5.0) {
         Stop();
         turnSetpoint = m_lastAngle;
     } else {
@@ -255,7 +257,7 @@ void SwerveModule::ResetAngleToAbsolute() {
 
 frc::SwerveModuleState SwerveModule::GetState() {
     return {units::meters_per_second_t{m_speedMotor.GetSelectedSensorVelocity()},
-        units::radian_t{m_angleMotor.GetSelectedSensorPosition()}};
+        units::radian_t{GetRelativeAngle()}};
 }
 
 double SwerveModule::GetAbsolutePosition() {
@@ -269,11 +271,11 @@ frc::SwerveModulePosition SwerveModule::GetSwerveModulePosition() {
 void SwerveModule::UpdateModulePosition() {
     // Updates position of module with current distance traveled and angle of module
     m_swervePosition.distance = FalconToMeters(m_speedMotor.GetSelectedSensorPosition());
-    m_swervePosition.angle = -frc::Rotation2d{units::degree_t{(GetRelativeAngle())}};
+    m_swervePosition.angle = frc::Rotation2d{units::degree_t{(GetRelativeAngle())}};
 }
 
 double SwerveModule::GetRelativeAngle() {
-    return FalconToDegrees(m_angleMotor.GetSelectedSensorPosition());
+    return -FalconToDegrees(m_angleMotor.GetSelectedSensorPosition());
 }
 
 double SwerveModule::GetVelocity() {
@@ -285,13 +287,13 @@ SwerveModuleTelemetry SwerveModule::GetTelemetry() {
     // then use in SwerveDrive.cpp dashboard functions
     double speed = m_speedMotor.GetSelectedSensorVelocity();
     double position = m_speedMotor.GetSelectedSensorPosition();
-    double angleVelocity = m_angleMotor.GetSelectedSensorVelocity();
+    double angleVelocity = -m_angleMotor.GetSelectedSensorVelocity();
     double speedCurrent = m_speedMotor.GetOutputCurrent();
     double speedVoltage = m_speedMotor.GetBusVoltage();
     double angleCurrent = m_angleMotor.GetOutputCurrent();
     double angleVoltage = m_angleMotor.GetBusVoltage();
     double absoluteAngle = m_absoluteEncoder.GetAbsolutePosition();
-    double relativeAngle = FalconToDegrees(m_angleMotor.GetSelectedSensorPosition());
+    double relativeAngle = GetRelativeAngle();
 
     // Organizes module data into struct
     SwerveModuleTelemetry SMT{speed, position, 

@@ -9,10 +9,10 @@ SwerveDrive::SwerveDrive() :
 // Initialize swerve drive info into SwerveModules struct
 // Using WPILib kinematics and odometry, pass in sensors and locations
 m_SM{
-  {+SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter},
   {+SwerveDriveConstants::xDistanceFromCenter, +SwerveDriveConstants::yDistanceFromCenter},
-  {-SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter},
+  {+SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter},
   {-SwerveDriveConstants::xDistanceFromCenter, +SwerveDriveConstants::yDistanceFromCenter},
+  {-SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter},
   {SwerveDriveConstants::kLeftFrontInfo},
   {SwerveDriveConstants::kRightFrontInfo},
   {SwerveDriveConstants::kLeftBackInfo},
@@ -240,6 +240,7 @@ void SwerveDrive::ResetEncodersToAbsolute() {
 frc::Pose2d SwerveDrive::GetPose() {
   UpdateOdometry();
   return m_odometry.GetPose();
+  
 }
 
 frc::Pose2d SwerveDrive::GetCorrectedPose() {
@@ -272,6 +273,7 @@ void SwerveDrive::UpdateOdometry() {
 }  
 
 void SwerveDrive::ResetOdometry(frc::Pose2d pose) {
+  ResetSpeedEncoders();
   m_odometry.ResetPosition(m_pigeon.GetRotation2d(),
                            m_modulePositions,
                            pose);

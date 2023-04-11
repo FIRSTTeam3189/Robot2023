@@ -38,8 +38,13 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
+        "names": [
+          "intake_pistons_out",
+          "score_high",
+          "elevator_to_0",
+          "intake_pistons_in"
+        ],
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }
@@ -48,5 +53,18 @@
   "maxVelocity": 2.0,
   "maxAcceleration": 1.0,
   "isReversed": null,
-  "markers": []
+  "markers": [
+    {
+      "position": 0.21196732954545452,
+      "names": [
+        "intake_pistons_out"
+      ]
+    },
+    {
+      "position": 0.6209161931818185,
+      "names": [
+        "intake_pistons_in"
+      ]
+    }
+  ]
 }

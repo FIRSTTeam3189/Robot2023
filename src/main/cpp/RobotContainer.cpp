@@ -74,6 +74,11 @@ void RobotContainer::ConfigureButtonBindings() {
     frc2::InstantCommand([this]{m_intake->SetPower(0, 0); m_grabber->SetSpeed(0);},{m_intake, m_grabber})
   ).ToPtr());
 
+  // Toggles pistons out with help of intake motors
+  frc2::Trigger togglePistonsButton{m_bill.Button(PS5_BUTTON_PS)};
+  togglePistonsButton.OnTrue(ToggleIntakePistons(m_intake).ToPtr());
+  togglePistonsButton.OnFalse(frc2::InstantCommand([this]{m_intake->SetPower(0, 0);},{m_intake}).ToPtr());
+
   // ----------------------------------------------- POV Button Example ----------------------------------------------------------------------------
   // m_Trigger = frc2::Trigger(m_controller.POVUp(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop()));
   // m_Trigger.OnTrue/WhileTrue(frc2::Command);
@@ -235,16 +240,11 @@ void RobotContainer::ConfigureButtonBindings() {
 
   // Brings piece inwards inside robot and grabs with grabber and elevator when pressed
   frc2::Trigger interiorGrabButton{m_ted.Button(PS5_BUTTON_CREATE)};
-  interiorGrabButton.OnTrue(
-    frc2::SequentialCommandGroup(
-      frc2::InstantCommand([this]{
-        m_intake->SetPower(0, INTAKE_CONVEYOR_POWER);
-      },{m_intake, m_grabber}),
-      frc2::ParallelDeadlineGroup(
-        frc2::WaitCommand(0.35_s),
-        ElevatorPID(m_elevator, ELEVATOR_INTERIOR_GRAB_TARGET, false),
-        RunGrabber(m_grabber, GRABBER_INTERIOR_GRAB_SPEED)
-      )).ToPtr()
+  interiorGrabButton.WhileTrue(
+    frc2::ParallelCommandGroup(
+      RunIntake(m_intake, 0, INTAKE_CONVEYOR_POWER),
+      RunGrabber(m_grabber, GRABBER_INTERIOR_GRAB_SPEED)
+    ).ToPtr()
   );
   interiorGrabButton.OnFalse(frc2::InstantCommand([this]{
       m_intake->SetPower(0, 0);
@@ -572,8 +572,9 @@ void RobotContainer::CreateAutoPaths() {
   m_autoBuilder = new pathplanner::SwerveAutoBuilder(
     [this]() { return m_swerve->GetPose(); }, // Function to supply current robot pose
     // Pathplanner resets odometry to 2 meters higher than it should be
-    [this](auto initPose) { m_swerve->ResetOdometry(initPose.TransformBy(frc::Transform2d{frc::Translation2d{0.0_m, -2.0_m}, frc::Rotation2d{0_deg}})); }, // Function used to reset odometry at the beginning of auto
-    pathplanner::PIDConstants(AutoConstants::kPXController, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+    [this](auto initPose) { m_swerve->ResetOdometry(initPose); std::cout << "Reset odometry from PPLib\n"; },
+    // [this](auto initPose) { m_swerve->ResetOdometry(initPose.TransformBy(frc::Transform2d{frc::Translation2d{0.0_m, -2.0_m}, frc::Rotation2d{0_deg}})); }, // Function used to reset odometry at the beginning of auto
+    pathplanner::PIDConstants(AutoConstants::autoKP, AutoConstants::autoKI, AutoConstants::autoKD), // PID constants to correct for translation error (used to create the X and Y PID controllers)
     pathplanner::PIDConstants(AutoConstants::autoRotP, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
     [this](auto speeds) { m_swerve->PercentDrive(speeds); }, // Output function that accepts field relative ChassisSpeeds
     AutoParameters::eventMap, // Our event map

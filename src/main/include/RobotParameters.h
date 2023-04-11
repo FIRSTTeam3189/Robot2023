@@ -14,10 +14,10 @@
 // Kinematics object for both drive and auto
 namespace SwerveDriveParameters{
     static frc::SwerveDriveKinematics<4> kinematics{
-    frc::Translation2d{+SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter},
     frc::Translation2d{+SwerveDriveConstants::xDistanceFromCenter, +SwerveDriveConstants::yDistanceFromCenter},
-    frc::Translation2d{-SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter},
-    frc::Translation2d{-SwerveDriveConstants::xDistanceFromCenter, +SwerveDriveConstants::yDistanceFromCenter}
+    frc::Translation2d{+SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter},
+    frc::Translation2d{-SwerveDriveConstants::xDistanceFromCenter, +SwerveDriveConstants::yDistanceFromCenter},
+    frc::Translation2d{-SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter}
     };
 } // namespace SwerveDriveConstants
 
@@ -25,8 +25,6 @@ namespace AutoParameters {
     static frc::TrapezoidProfile<units::radians>::Constraints thetaConstraints{SwerveDriveConstants::maxAngularVelocity,
                                                                         SwerveDriveConstants::maxAngularAcceleration};
 
-    static frc2::PIDController autoXPIDController{AutoConstants::kPXController, 0.0, 0.0};
-    static frc2::PIDController autoYPIDController{AutoConstants::kPYController, 0.0, 0.0};
     static frc::ProfiledPIDController<units::radians> thetaPIDController {
         AutoConstants::autoRotP,
         AutoConstants::autoRotI,

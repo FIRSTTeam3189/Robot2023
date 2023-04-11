@@ -47,8 +47,7 @@ units::angular_velocity::radians_per_second_t OISwerveDrive::GetDesiredRotationa
     rot = units::angular_velocity::radians_per_second_t{0.0};
   }
 
-  // Invert because CCW is positive
-  return -rot;
+  return rot;
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -59,7 +58,7 @@ void OISwerveDrive::Execute() {
                 frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_Y), 0.05)) *
               SwerveDriveConstants::kMaxSpeed;
 
-  const auto ySpeed = m_yspeedLimiter.Calculate(
+  const auto ySpeed = -m_yspeedLimiter.Calculate(
                 frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_LSTICK_X), 0.05)) *
               SwerveDriveConstants::kMaxSpeed;
 
@@ -89,35 +88,35 @@ void OISwerveDrive::Execute() {
         break;
       case RotationMode::frontLeftCW:
         rot = -10.0_rad / 1_s;
-        centerOfRotation = frc::Translation2d{+SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter};
+        centerOfRotation = frc::Translation2d{+SwerveDriveConstants::xDistanceFromCenter, +SwerveDriveConstants::yDistanceFromCenter};
         break;
       case RotationMode::frontLeftCCW:
         rot = 10.0_rad / 1_s;
-        centerOfRotation = frc::Translation2d{+SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter};
+        centerOfRotation = frc::Translation2d{+SwerveDriveConstants::xDistanceFromCenter, +SwerveDriveConstants::yDistanceFromCenter};
         break;
       case RotationMode::frontRightCW:
         rot = -10.0_rad / 1_s;
-        centerOfRotation = frc::Translation2d{+SwerveDriveConstants::xDistanceFromCenter, +SwerveDriveConstants::yDistanceFromCenter};
+        centerOfRotation = frc::Translation2d{+SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter};
         break;
       case RotationMode::frontRightCCW:
         rot = 10.0_rad / 1_s;
-        centerOfRotation = frc::Translation2d{+SwerveDriveConstants::xDistanceFromCenter, +SwerveDriveConstants::yDistanceFromCenter};
+        centerOfRotation = frc::Translation2d{+SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter};
         break;
       case RotationMode::backLeftCW:
         rot = -10.0_rad / 1_s;
-        centerOfRotation = frc::Translation2d{-SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter};
+        centerOfRotation = frc::Translation2d{-SwerveDriveConstants::xDistanceFromCenter, +SwerveDriveConstants::yDistanceFromCenter};
         break;
       case RotationMode::backLeftCCW:
         rot = 10.0_rad / 1_s;
-        centerOfRotation = frc::Translation2d{-SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter};
+        centerOfRotation = frc::Translation2d{-SwerveDriveConstants::xDistanceFromCenter, +SwerveDriveConstants::yDistanceFromCenter};
         break;
       case RotationMode::backRightCW:
         rot = -10.0_rad / 1_s;
-        centerOfRotation = frc::Translation2d{-SwerveDriveConstants::xDistanceFromCenter, +SwerveDriveConstants::yDistanceFromCenter};
+        centerOfRotation = frc::Translation2d{-SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter};
         break;
       case RotationMode::backRightCCW:
         rot = 10.0_rad / 1_s;
-        centerOfRotation = frc::Translation2d{-SwerveDriveConstants::xDistanceFromCenter, +SwerveDriveConstants::yDistanceFromCenter};
+        centerOfRotation = frc::Translation2d{-SwerveDriveConstants::xDistanceFromCenter, -SwerveDriveConstants::yDistanceFromCenter};
         break;
       default:
         break;

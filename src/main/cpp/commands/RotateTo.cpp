@@ -28,7 +28,7 @@ void RotateTo::Execute() {
   // Uses PID to calculate the robot's next output based on the current yaw and desired yaw
   // Multiplied by max rotational velocity
   units::angular_velocity::radians_per_second_t rot = 
-    units::radians_per_second_t{m_rotationPIDController.Calculate(m_swerve->GetNormalizedYaw(), m_targetAngle)
+    -units::radians_per_second_t{m_rotationPIDController.Calculate(m_swerve->GetNormalizedYaw(), m_targetAngle)
     * SwerveDriveConstants::maxAngularVelocity};
   
   // Tolerance is 1 degree

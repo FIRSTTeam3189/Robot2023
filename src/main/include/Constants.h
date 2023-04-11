@@ -6,6 +6,7 @@
 #include "util/SwerveModule.h"
 #include <frc/controller/PIDController.h>
 #include <frc/geometry/Translation2d.h>
+#include <frc/geometry/Pose3d.h>
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc/trajectory/Trajectory.h>
@@ -126,16 +127,29 @@ namespace AutoConstants {
     // Ramsete controller (trajectory following) parameters
     constexpr auto kRamseteB {2.0 * 1_rad * 1_rad / (1_m * 1_m)};
     constexpr auto kRamseteZeta {0.7 / 1_rad};
-    constexpr double autoRotP {-5.0};
+    constexpr double autoRotP {5.0};
     constexpr double autoRotI {0.0};
     constexpr double autoRotD {0.0};
     constexpr int autoBalanceSettleLoops {25};
 
     // Y and rotation are inverted
     // PID Controllers for x and y movement in auto mode -- theta controller is part of drive object
-    constexpr double kPXController {0.0};
-    constexpr double kPYController {-0.0};                                                     
+    constexpr double autoKP {0.75};
+    constexpr double autoKI {0.0};
+    constexpr double autoKD {0.1};                                              
 };
+
+namespace FieldCoordinates {
+    const frc::Pose3d apriltag1{15.51_m, 1.07_m, 0.46_m, frc::Rotation3d{}};
+    const frc::Pose3d apriltag2{15.51_m, 2.75_m, 0.46_m, frc::Rotation3d{}};
+    const frc::Pose3d apriltag3{15.51_m, 4.42_m, 0.46_m, frc::Rotation3d{}};
+    const frc::Pose3d apriltag4{16.18_m, 6.75_m, 0.46_m, frc::Rotation3d{}};
+    const frc::Pose3d apriltag5{0.36_m, 6.75_m, 0.46_m, frc::Rotation3d{}};
+    const frc::Pose3d apriltag6{1.03_m, 4.42_m, 0.46_m, frc::Rotation3d{}};
+    const frc::Pose3d apriltag7{1.03_m, 2,75_m, 0.46_m, frc::Rotation3d{}};
+    const frc::Pose3d apriltag8{1.03_m, 1.07_m, 0.46_m, frc::Rotation3d{}};
+    const frc::Pose2d chargeStationCenter{3.88_m, 2.75_m, frc::Rotation2d{}}
+}
 
 // PS5 Controls
 #define PS5_BILL_CONTROLLER_PORT 0
@@ -233,11 +247,11 @@ namespace AutoConstants {
 
 // #define GRABBER_MOTOR_ID 0
 #define GRABBER_MOTOR_ID 18
-#define GRABBER_CUBE_SHOOT_SPEED 0.5
-#define GRABBER_CONE_SHOOT_SPEED -0.75
+#define GRABBER_CUBE_SHOOT_SPEED 0.75
+#define GRABBER_CONE_SHOOT_SPEED -1.0
 #define GRABBER_INTERIOR_GRAB_SPEED -0.25
-#define GRABBER_CUBE_GRAB_SPEED -0.50
-#define GRABBER_CONE_GRAB_SPEED 0.75
+#define GRABBER_CUBE_GRAB_SPEED -0.75
+#define GRABBER_CONE_GRAB_SPEED 1.0
 #define GRABBER_CARRY_SPEED -0.15
 #define GRABBER_OUTTAKE_SPEED 0.25
 

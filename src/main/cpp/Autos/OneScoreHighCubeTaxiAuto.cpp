@@ -17,7 +17,7 @@ OneScoreHighCubeTaxiAuto::OneScoreHighCubeTaxiAuto(pathplanner::SwerveAutoBuilde
    * Includes event markers, stop events, and robot trajectories
   */
 
-std::vector<pathplanner::PathPlannerTrajectory> oneScoreTaxiGroup = pathplanner::PathPlanner::loadPathGroup(filePath, {pathplanner::PathConstraints(SwerveDriveConstants::kMaxSpeed / 2.0, SwerveDriveConstants::kMaxAcceleration / 2.0)});
+std::vector<pathplanner::PathPlannerTrajectory> oneScoreTaxiGroup = pathplanner::PathPlanner::loadPathGroup(filePath, {pathplanner::PathConstraints(SwerveDriveConstants::kMaxSpeed, SwerveDriveConstants::kMaxAcceleration)});
   std::vector<std::unique_ptr<frc2::Command>> commands;
   commands.emplace_back(builder->fullAuto(oneScoreTaxiGroup).Unwrap());
   auto group = SequentialCommandGroup(std::move(commands));

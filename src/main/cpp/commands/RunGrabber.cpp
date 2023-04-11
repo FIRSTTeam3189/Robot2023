@@ -47,5 +47,5 @@ void RunGrabber::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool RunGrabber::IsFinished() {
-  return false;
+  return m_grabber->IsPieceGrabbed();
 }
