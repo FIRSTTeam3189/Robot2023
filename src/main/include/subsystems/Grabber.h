@@ -29,6 +29,7 @@ private:
   rev::SparkMaxRelativeEncoder m_encoder;
   bool m_pieceGrabbed;
   double m_encoderVelocity;
+  frc::Timer m_timer;
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 };

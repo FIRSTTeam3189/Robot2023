@@ -16,17 +16,18 @@ RunGrabber::RunGrabber(Grabber *grabber, double power)
 
 // Called when the command is initially scheduled.
 void RunGrabber::Initialize() {
+  m_timer.Start();
   // Checks if it is in cone mode from the SmartDashboard
-  bool isConeMode = frc::SmartDashboard::GetBoolean("Is Cone Mode?", false);
+  m_isConeMode = frc::SmartDashboard::GetBoolean("Is Cone Mode?", false);
 
   // Runs the grabber at differnet speeds depending on if mode is cone or cube 
   switch (m_action)
   {
   case GrabberAction::Grab:
-    m_power = isConeMode ? GRABBER_CONE_GRAB_SPEED : GRABBER_CUBE_GRAB_SPEED;
+    m_power = m_isConeMode ? GRABBER_CONE_GRAB_SPEED : GRABBER_CUBE_GRAB_SPEED;
     break;
   case GrabberAction::Shoot:
-    m_power = isConeMode ? GRABBER_CONE_SHOOT_SPEED : GRABBER_CUBE_SHOOT_SPEED;
+    m_power = m_isConeMode ? GRABBER_CONE_SHOOT_SPEED : GRABBER_CUBE_SHOOT_SPEED;
     break;
   case GrabberAction::None:
     break;
@@ -47,5 +48,13 @@ void RunGrabber::End(bool interrupted) {
 
 // Returns true when the command should end.
 bool RunGrabber::IsFinished() {
-  return m_grabber->IsPieceGrabbed();
+  if (!m_isConeMode && m_grabber->IsPieceGrabbed() && m_power < 0 && m_timer.HasElapsed(0.25_s)) {
+    return true;
+  }
+  else if (m_isConeMode && m_grabber->IsPieceGrabbed() && m_power > 0 && m_timer.HasElapsed(0.25_s)) {
+    return true;
+  }
+  else {
+    return false;
+  }
 }

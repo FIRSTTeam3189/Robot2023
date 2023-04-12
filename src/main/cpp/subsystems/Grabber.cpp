@@ -24,12 +24,13 @@ void Grabber::Periodic() {
     // Most likely, this means it is stuck (hopefully not) or a piece is successfully in the grabber
     // Then, the grabber will stop
     if (abs(m_motor.GetAppliedOutput()) > 0.1) {
-        if (abs(m_encoderVelocity) < 200) {
+        m_timer.Start();
+        if (abs(m_encoderVelocity) < 100 && m_timer.HasElapsed(0.25_s)) {
             // frc::SmartDashboard::PutNumber("Grabber applied output", m_motor.GetAppliedOutput());
             m_pieceGrabbed = true;
-
         } else {
             m_pieceGrabbed = false;
+            m_timer.Reset();
         }
     }
     

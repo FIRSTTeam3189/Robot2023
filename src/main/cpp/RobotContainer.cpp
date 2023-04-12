@@ -229,9 +229,8 @@ void RobotContainer::ConfigureButtonBindings() {
   );
   grabDoubleStationButton.OnFalse(
     frc2::SequentialCommandGroup(
-      // 
-      frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false); m_grabber->SetSpeed(GRABBER_CARRY_SPEED); },{m_intake}),
-      ElevatorPID(m_elevator, 0, false)
+      ElevatorPID(m_elevator, 0, false),
+      frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false); m_grabber->SetSpeed(GRABBER_CARRY_SPEED); },{m_intake})
     ).ToPtr()
   );
 

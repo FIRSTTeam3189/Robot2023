@@ -36,4 +36,6 @@ class RunGrabber
   Grabber *m_grabber;
   double m_power;
   GrabberAction m_action;
+  bool m_isConeMode = false;
+  frc::Timer m_timer;
 };
