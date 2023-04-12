@@ -3,11 +3,9 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #pragma once
-
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 #include "subsystems/SwerveDrive.h"
-
 /**
  * An example command.
  *
@@ -15,21 +13,23 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class ResetOdometry
-    : public frc2::CommandHelper<frc2::CommandBase, ResetOdometry> {
+class SimpleAutoBalance
+    : public frc2::CommandHelper<frc2::CommandBase, SimpleAutoBalance> {
  public:
-  ResetOdometry(SwerveDrive *swerve_drive, frc::Pose2d pose);
+  SimpleAutoBalance(SwerveDrive *swerveDrive);
 
   void Initialize() override;
 
   void Execute() override;
 
   void End(bool interrupted) override;
-
+  
   bool IsFinished() override;
 
  private:
-  SwerveDrive *m_swerve_drive;
-  frc::Pose2d m_pose;
-  bool m_isFinished = false;
+  SwerveDrive *m_swerve;
+  double m_lastPitch;
+  int m_withinThresholdLoops;
+  bool m_isGoingUpFirstTime = true;
+  units::meter_t m_lastXPosition;
 };

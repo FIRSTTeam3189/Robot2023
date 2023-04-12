@@ -24,7 +24,7 @@ m_modulePositions(
   m_SM.m_frontRight.GetSwerveModulePosition(),
   m_SM.m_backLeft.GetSwerveModulePosition(),
   m_SM.m_backRight.GetSwerveModulePosition()),
-m_odometry(SwerveDriveParameters::kinematics, m_pigeon.GetRotation2d(), m_modulePositions, initialPose)
+m_poseEstimator(SwerveDriveParameters::kinematics, m_pigeon.GetRotation2d(), m_modulePositions, frc::Pose2d{}, VisionConstants::stateStdDevs, VisionConstants::visionStdDevs)
 {
   // Implementation of subsystem constructor goes here.
   // Create Shuffleboard outputs
@@ -34,7 +34,7 @@ m_odometry(SwerveDriveParameters::kinematics, m_pigeon.GetRotation2d(), m_module
 
 void SwerveDrive::Periodic() {
   // Implementation of subsystem periodic method goes here.
-  UpdateOdometry();
+  UpdateEstimator();
 }
 
 double SwerveDrive::GetRobotYaw() {
@@ -63,7 +63,7 @@ void SwerveDrive::PercentDrive(
   bool fieldRelative,
   frc::Translation2d centerOfRotation) {
   // Version of drive function that uses basic percentage control (100% on axis is 100% power, 5% is 5%, etc.)
-  UpdateOdometry();
+  UpdateEstimator();
 
   auto states = SwerveDriveParameters::kinematics.ToSwerveModuleStates(
     (fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
@@ -109,7 +109,7 @@ void SwerveDrive::Drive(
   units::radians_per_second_t rot,
   bool fieldRelative) {
   // Version of function that uses feedforward control
-  UpdateOdometry();
+  UpdateEstimator();
   
   auto states = SwerveDriveParameters::kinematics.ToSwerveModuleStates(
     fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
@@ -237,44 +237,30 @@ void SwerveDrive::ResetEncodersToAbsolute() {
   m_SM.m_backRight.ResetAngleToAbsolute();
 }
 
-frc::Pose2d SwerveDrive::GetPose() {
-  UpdateOdometry();
-  return m_odometry.GetPose();
-  
+frc::Pose2d SwerveDrive::GetEstimatedPose() {
+  UpdateEstimator();
+  return m_poseEstimator.GetEstimatedPosition();
 }
 
-frc::Pose2d SwerveDrive::GetCorrectedPose() {
-  // Pose used for auto - y-axis is inverted
-  UpdateOdometry();
-  auto pose = m_odometry.GetPose();
-  frc::Pose2d correctedPose{{pose.X(), -pose.Y()}, pose.Rotation()};
-  return correctedPose;
-}
-
-void SwerveDrive::UpdateOdometry() {
-  // Update odometry values with current rotation and states
+void SwerveDrive::UpdateEstimator() {
+  // Update position and rotation of modules
   m_SM.m_frontLeft.UpdateModulePosition();
   m_SM.m_frontRight.UpdateModulePosition();
   m_SM.m_backLeft.UpdateModulePosition();
   m_SM.m_backRight.UpdateModulePosition();
 
+  // Get current positions after update
   m_modulePositions[0] = m_SM.m_frontLeft.GetSwerveModulePosition();
   m_modulePositions[1] = m_SM.m_frontRight.GetSwerveModulePosition();
   m_modulePositions[2] = m_SM.m_backLeft.GetSwerveModulePosition();
   m_modulePositions[3] = m_SM.m_backRight.GetSwerveModulePosition();
 
-  frc::SmartDashboard::PutNumber("Fl distance", (double)m_modulePositions[0].distance);
-  frc::SmartDashboard::PutNumber("Fr distance", (double)m_modulePositions[1].distance);
-  frc::SmartDashboard::PutNumber("Bl distance", (double)m_modulePositions[2].distance);
-  frc::SmartDashboard::PutNumber("Br distance", (double)m_modulePositions[3].distance);
+  m_poseEstimator.Update(m_pigeon.GetRotation2d(), m_modulePositions);
+}
 
-  m_odometry.Update(m_pigeon.GetRotation2d(), 
-                    m_modulePositions);
-}  
-
-void SwerveDrive::ResetOdometry(frc::Pose2d pose) {
+void SwerveDrive::SetCurrentPose(frc::Pose2d pose) {
   ResetSpeedEncoders();
-  m_odometry.ResetPosition(m_pigeon.GetRotation2d(),
+  m_poseEstimator.ResetPosition(m_pigeon.GetRotation2d(),
                            m_modulePositions,
                            pose);
 }
@@ -380,7 +366,7 @@ void SwerveDrive::SetActiveTrajectory(frc::Trajectory trajectory) {
 void SwerveDrive::Log2DField() {
   // Uses Field2d class as it implements sendable for 2d poses
   // Also supports trajectories, game pieces, etc. as field objects
-  m_fieldObject.SetRobotPose(GetPose());
+  m_fieldObject.SetRobotPose(GetEstimatedPose());
   auto trajectoryObject = m_fieldObject.GetObject("Trajectory");
   trajectoryObject->SetTrajectory(m_activeTrajectory);
   frc::SmartDashboard::PutData("Field object", &m_fieldObject);

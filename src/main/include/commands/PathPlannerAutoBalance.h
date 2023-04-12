@@ -7,6 +7,11 @@
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 
+#include <pathplanner/lib/PathPlanner.h>
+#include <pathplanner/lib/PathPlannerTrajectory.h>
+#include <pathplanner/lib/PathPoint.h>
+#include <pathplanner/lib/commands/PPSwerveControllerCommand.h>
+
 #include "subsystems/SwerveDrive.h"
 
 /**
@@ -16,10 +21,10 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class AutoBalance
-    : public frc2::CommandHelper<frc2::CommandBase, AutoBalance> {
+class PathPlannerAutoBalance
+    : public frc2::CommandHelper<frc2::CommandBase, PathPlannerAutoBalance> {
  public:
-  AutoBalance(SwerveDrive *swerveDrive);
+  PathPlannerAutoBalance(SwerveDrive *swerveDrive);
 
   void Initialize() override;
 
@@ -31,11 +36,8 @@ class AutoBalance
 
  private:
   SwerveDrive *m_swerve;
-  double m_lastPitch;
-  double m_lastRoll;
+  frc2::PIDController m_xController;
+  frc2::PIDController m_yController;
+  frc2::PIDController m_rotController;
   int m_withinThresholdLoops;
-  bool m_isGoingUpFirstTime;
-  frc::PIDController m_xController;
-  frc::PIDController m_yController;
-  bool m_isReversed;
 };

@@ -35,16 +35,12 @@ public:
    */
   void Periodic() override;
   VisionData GetData();
-  void Toggle();
 
 private:
   nt::IntegerTopic m_IDTopic;
   nt::IntegerTopic m_DetectionTypeTopic;
   nt::FloatArrayTopic m_TranslationMatrixTopic;
-  nt::FloatTopic m_cosZRotTopic;
-  nt::BooleanPublisher m_EnablePub;
   VisionData m_Data;
-  bool m_EnabledState = true;
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 };

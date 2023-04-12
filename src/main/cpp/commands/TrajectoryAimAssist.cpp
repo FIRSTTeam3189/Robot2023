@@ -20,7 +20,7 @@ TrajectoryAimAssist::TrajectoryAimAssist(Vision *vision, SwerveDrive *swerve, do
   AddRequirements(m_vision);
 
   // if (m_visionData.detectionID != DetectionType::None) {
-  //   auto m_pose = m_swerve->GetPose();
+  //   auto m_pose = m_swerve->GetEstimatedPose();
   //   frc::TrajectoryConfig config{SwerveDriveConstants::kMaxSpeed, SwerveDriveConstants::kMaxAcceleration};
   //   config.SetKinematics(SwerveDriveParameters::kinematics);
 
@@ -32,16 +32,16 @@ TrajectoryAimAssist::TrajectoryAimAssist(Vision *vision, SwerveDrive *swerve, do
   //     frc::Pose2d{m_pose.X() + xDistance, m_pose.Y() + yDistance, frc::Rotation2d{units::degree_t{m_targetRotAngle}}},
   //     config);
 
-  //   // visionTrajectory.TransformBy(frc::Transform2d{frc::Pose2d{0_m, 0_m, 0_deg}, m_swerve->GetPose()});
+  //   // visionTrajectory.TransformBy(frc::Transform2d{frc::Pose2d{0_m, 0_m, 0_deg}, m_swerve->GetEstimatedPose()});
   //   frc2::SwerveControllerCommand<4> visionCommand = m_swerve->CreateSwerveCommand(visionTrajectory);
 
-  //   frc::Pose2d targetPose{};
+  //   frc::Pose2d tarGetEstimatedPose{};
 
   //   AddCommands(frc2::SequentialCommandGroup(
   //     frc2::InstantCommand([&]{
-  //       targetPose = m_pose.TransformBy(frc::Transform2d{frc::Translation2d{xDistance, yDistance}, frc::Rotation2d{0.0_deg}});
+  //       tarGetEstimatedPose = m_pose.TransformBy(frc::Transform2d{frc::Translation2d{xDistance, yDistance}, frc::Rotation2d{0.0_deg}});
   //     },{m_swerve}),
-  //     DriveToPose(m_swerve, targetPose, targetRotAngle)
+  //     DriveToPose(m_swerve, tarGetEstimatedPose, targetRotAngle)
   //     )
   //   );
 

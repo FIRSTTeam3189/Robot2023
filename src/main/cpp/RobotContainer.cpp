@@ -103,10 +103,10 @@ void RobotContainer::ConfigureButtonBindings() {
   // Resets the odometry and gyroscope on the fly when pressed
   // Useful for testing or if something is messed up during teleop
   // Robot acts as if it were just turned on and the field is reset
-  frc2::Trigger resetOdometryButton{m_bill.Button(PS5_BUTTON_TOUCHPAD)};
-  resetOdometryButton.OnTrue(
+  frc2::Trigger SetCurrentPoseButton{m_bill.Button(PS5_BUTTON_TOUCHPAD)};
+  SetCurrentPoseButton.OnTrue(
     frc2::SequentialCommandGroup(
-      ResetOdometry(m_swerve, frc::Pose2d{0.0_m, 0.0_m, {0.0_deg}}),
+      SetCurrentPose(m_swerve, frc::Pose2d{0.0_m, 0.0_m, {0.0_deg}}),
       frc2::InstantCommand([this]{m_swerve->SetRobotYaw(0.0);},{m_swerve})
     ).ToPtr());
 
@@ -133,9 +133,20 @@ void RobotContainer::ConfigureButtonBindings() {
   cornerRotateCCWButton.OnTrue(frc2::InstantCommand([this] {m_swerve->SetDefaultCommand(OISwerveDrive(&m_bill, m_swerve, m_isMagnitudeRot, RotationMode::frontLeftCCW)); }, {m_swerve}).ToPtr());
   cornerRotateCCWButton.OnFalse(frc2::InstantCommand([this] {m_swerve->SetDefaultCommand(OISwerveDrive(&m_bill, m_swerve, m_isMagnitudeRot, RotationMode::normal)); }, {m_swerve}).ToPtr());
 
+  // Auto balances the robot with pathplanner trajectory while held -- locks wheels at the end
+  frc2::Trigger PPAutoBalanceButton{m_bill.POVLeft(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
+  PPAutoBalanceButton.WhileTrue(PathPlannerAutoBalance(m_swerve).ToPtr());
+  PPAutoBalanceButton.OnFalse(frc2::InstantCommand([this]{m_swerve->PercentDrive(0_mps, 0_mps, 0_rad / 1_s, true);},{m_swerve}).ToPtr());
+
   // Auto balances the robot while held -- locks wheels at the end
-  frc2::Trigger autoBalanceButton{m_bill.POVLeft(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
-  autoBalanceButton.WhileTrue(AutoBalance(m_swerve).ToPtr());
+  frc2::Trigger simpleAutoBalanceButton{m_bill.POVUp(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
+  simpleAutoBalanceButton.WhileTrue(SimpleAutoBalance(m_swerve).ToPtr());
+  simpleAutoBalanceButton.OnFalse(frc2::InstantCommand([this]{m_swerve->PercentDrive(0_mps, 0_mps, 0_rad / 1_s, true);},{m_swerve}).ToPtr());
+
+  // Auto balances the robot while held -- locks wheels at the end
+  frc2::Trigger PIDAutoBalanceButton{m_bill.POVDown(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
+  PIDAutoBalanceButton.WhileTrue(PIDAutoBalance(m_swerve).ToPtr());
+  PIDAutoBalanceButton.OnFalse(frc2::InstantCommand([this]{m_swerve->PercentDrive(0_mps, 0_mps, 0_rad / 1_s, true);},{m_swerve}).ToPtr());
 
   // Locks wheels of the swerve in an "X" pattern while held (for anti-push or anti-slipping on charge station)
   frc2::Trigger lockWheelsButton{m_bill.POVRight(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
@@ -569,10 +580,10 @@ void RobotContainer::BuildEventMap() {
 void RobotContainer::CreateAutoPaths() {
   // Make auto builder
   m_autoBuilder = new pathplanner::SwerveAutoBuilder(
-    [this]() { return m_swerve->GetPose(); }, // Function to supply current robot pose
+    [this]() { return m_swerve->GetEstimatedPose(); }, // Function to supply current robot pose
     // Pathplanner resets odometry to 2 meters higher than it should be
-    [this](auto initPose) { m_swerve->ResetOdometry(initPose); std::cout << "Reset odometry from PPLib\n"; },
-    // [this](auto initPose) { m_swerve->ResetOdometry(initPose.TransformBy(frc::Transform2d{frc::Translation2d{0.0_m, -2.0_m}, frc::Rotation2d{0_deg}})); }, // Function used to reset odometry at the beginning of auto
+    [this](auto initPose) { m_swerve->SetCurrentPose(initPose); std::cout << "Reset odometry from PPLib\n"; },
+    // [this](auto initPose) { m_swerve->SetCurrentPose(initPose.TransformBy(frc::Transform2d{frc::Translation2d{0.0_m, -2.0_m}, frc::Rotation2d{0_deg}})); }, // Function used to reset odometry at the beginning of auto
     pathplanner::PIDConstants(AutoConstants::autoKP, AutoConstants::autoKI, AutoConstants::autoKD), // PID constants to correct for translation error (used to create the X and Y PID controllers)
     pathplanner::PIDConstants(AutoConstants::autoRotP, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
     [this](auto speeds) { m_swerve->PercentDrive(speeds); }, // Output function that accepts field relative ChassisSpeeds
@@ -611,5 +622,5 @@ void RobotContainer::Sync() {
 
 void RobotContainer::ResetGyroscope() {
   m_swerve->ResetGyro();
-  m_swerve->ResetOdometry(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}});
+  m_swerve->SetCurrentPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}});
 }

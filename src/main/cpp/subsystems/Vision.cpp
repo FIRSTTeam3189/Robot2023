@@ -10,17 +10,11 @@ Vision::Vision() : m_Data() {
     m_DetectionTypeTopic = nts.GetIntegerTopic("Vision/Detection");
     m_IDTopic = nts.GetIntegerTopic("Vision/AprilTag/ID");
     m_TranslationMatrixTopic = nts.GetFloatArrayTopic("Vision/AprilTag/TMatrix");
-    m_cosZRotTopic = nts.GetFloatTopic("Vision/AprilTag/RMatrix");
-    auto enableTopic = nts.GetBooleanTopic("Enable");
-    m_EnablePub = enableTopic.Publish();
-    m_EnablePub.Set(m_EnabledState);
 }
 
 // This method will be called once per scheduler run
 void Vision::Periodic() {
-    // If vision is enabled and sending data, checks what the vision detects
-    // Allows for different behavior based on tape and apriltags
-    if (m_EnabledState) {
+    if (VisionConstants::shouldUseVision) {
         int detection = m_DetectionTypeTopic.Subscribe(-1).Get();
         if (detection == 0) {
             m_Data.detectionID = DetectionType::None;
@@ -37,9 +31,6 @@ void Vision::Periodic() {
             // This translates the camera as if it were at the front and center of the robot's frame
             // Which is what the vision alignment should be based off of
             m_Data.translationMatrix = m_TranslationMatrixTopic.Subscribe(s).Get();
-            m_Data.translationMatrix[0] += CAMERA_X_OFFSET;
-            m_Data.translationMatrix[1] += CAMERA_Y_OFFSET;
-            m_Data.cosZRot = m_cosZRotTopic.Subscribe(0.0f).Get();
         }
         else if (detection == 2) {
             m_Data.detectionID = DetectionType::Contours;
@@ -48,11 +39,6 @@ void Vision::Periodic() {
             
         }
     }
-}
-
-void Vision::Toggle() {
-    m_EnabledState = !m_EnabledState;
-    m_EnablePub.Set(m_EnabledState);
 }
 
 VisionData Vision::GetData() {

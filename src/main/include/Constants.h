@@ -7,6 +7,8 @@
 #include <frc/controller/PIDController.h>
 #include <frc/geometry/Translation2d.h>
 #include <frc/geometry/Pose3d.h>
+#include <frc/geometry/Rotation3d.h>
+#include <frc/geometry/Transform3d.h>
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc/trajectory/Trajectory.h>
@@ -136,8 +138,25 @@ namespace AutoConstants {
     // PID Controllers for x and y movement in auto mode -- theta controller is part of drive object
     constexpr double autoKP {0.75};
     constexpr double autoKI {0.0};
-    constexpr double autoKD {0.1};                                              
+    constexpr double autoKD {0.1};
+
+    // PID constants for auto balance PID controllers
+    constexpr double balanceKP {0.0};                                              
+    constexpr double balanceKI {0.0};                                              
+    constexpr double balanceKD {0.0};                                              
+    constexpr double balanceRotKP {0.0};                                              
+    constexpr double balanceRotKI {0.0};                                              
+    constexpr double balanceRotKD {0.0};                                              
 };
+
+namespace VisionConstants {
+    const frc::Transform3d cameraToRobotTransform{frc::Translation3d{0.0_m, 0.0_m, 0.0_m}, frc::Rotation3d{}};
+    // Allowed standard deviations for pose estimation, or "trust/confidence score"
+    // Higher means you trust the data less and it is less factored into the estimation
+    const wpi::array<double, 3> stateStdDevs {0.1, 0.1, 0.1};
+    const wpi::array<double, 3> visionStdDevs {0.9, 0.9, 0.9};
+    constexpr bool shouldUseVision {false};
+}
 
 namespace FieldCoordinates {
     const frc::Pose3d apriltag1{15.51_m, 1.07_m, 0.46_m, frc::Rotation3d{}};
@@ -146,9 +165,9 @@ namespace FieldCoordinates {
     const frc::Pose3d apriltag4{16.18_m, 6.75_m, 0.46_m, frc::Rotation3d{}};
     const frc::Pose3d apriltag5{0.36_m, 6.75_m, 0.46_m, frc::Rotation3d{}};
     const frc::Pose3d apriltag6{1.03_m, 4.42_m, 0.46_m, frc::Rotation3d{}};
-    const frc::Pose3d apriltag7{1.03_m, 2,75_m, 0.46_m, frc::Rotation3d{}};
+    const frc::Pose3d apriltag7{1.03_m, 2.75_m, 0.46_m, frc::Rotation3d{}};
     const frc::Pose3d apriltag8{1.03_m, 1.07_m, 0.46_m, frc::Rotation3d{}};
-    const frc::Pose2d chargeStationCenter{3.88_m, 2.75_m, frc::Rotation2d{}}
+    const frc::Translation2d chargeStationCenter{3.85_m, 2.75_m};
 }
 
 // PS5 Controls
@@ -232,26 +251,13 @@ namespace FieldCoordinates {
 // Target rotation is in degrees
 #define AIM_ASSIST_TARGET_ROTATION 0.0
 
-// Camera lense's offsets in meters from center front of robot
-#define CAMERA_X_OFFSET -0.05588
-#define CAMERA_Y_OFFSET 0.1905
-#define VISION_X_KP 2.75
-#define VISION_X_KI 0.0
-#define VISION_X_KD 0.0
-#define VISION_Y_KP 2.75
-#define VISION_Y_KI 0.0
-#define VISION_Y_KD 0.0
-#define VISION_ROT_KP 0.25
-#define VISION_ROT_KI 0.0
-#define VISION_ROT_KD 0.0
-
 // #define GRABBER_MOTOR_ID 0
 #define GRABBER_MOTOR_ID 18
 #define GRABBER_CUBE_SHOOT_SPEED 0.75
 #define GRABBER_CONE_SHOOT_SPEED -1.0
 #define GRABBER_INTERIOR_GRAB_SPEED -0.25
 #define GRABBER_CUBE_GRAB_SPEED -0.75
-#define GRABBER_CONE_GRAB_SPEED 1.0
+#define GRABBER_CONE_GRAB_SPEED 0.85
 #define GRABBER_CARRY_SPEED -0.15
 #define GRABBER_OUTTAKE_SPEED 0.25
 

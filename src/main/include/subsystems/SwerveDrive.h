@@ -17,6 +17,7 @@
 #include <frc/trajectory/TrajectoryConfig.h>
 #include <frc/trajectory/TrajectoryGenerator.h>
 #include <frc2/command/SwerveControllerCommand.h>
+#include <frc/estimator/SwerveDrivePoseEstimator.h>
 #include <networktables/NTSendableBuilder.h>
 #include <string>
 #include <numbers>
@@ -76,7 +77,7 @@ class SwerveDrive : public frc2::SubsystemBase {
    units::radians_per_second_t rot,
    bool fieldRelative);
 
-  void UpdateOdometry();
+  void UpdateEstimator();
   void InitSmartDashboard();
   void SyncSmartdashBoardValues();
   void UpdatePIDValues();
@@ -86,7 +87,7 @@ class SwerveDrive : public frc2::SubsystemBase {
   void ManualModuleTurn(SwerveModuleLocation location, double speed);
   void ResetSpeedEncoders();
   void ResetEncodersToAbsolute();
-  void ResetOdometry(frc::Pose2d pose);
+  void SetCurrentPose(frc::Pose2d newPose);
   void SetModuleStates(std::array<frc::SwerveModuleState, 4> desiredStates);
   void SetPercentModuleStates(std::array<frc::SwerveModuleState, 4> desiredStates);
   void SetActiveTrajectory(frc::Trajectory trajectory);
@@ -97,8 +98,7 @@ class SwerveDrive : public frc2::SubsystemBase {
   double GetRoll();
   void ResetGyro();
   double GetNormalizedYaw();
-  frc::Pose2d GetPose();
-  frc::Pose2d GetCorrectedPose();
+  frc::Pose2d GetEstimatedPose();
   void LockWheels();
 
   // Access functions for rotation PID controller
@@ -126,10 +126,9 @@ class SwerveDrive : public frc2::SubsystemBase {
 
   // Create wpi::array of swerve positions
   wpi::array<frc::SwerveModulePosition, 4> m_modulePositions;
-  frc::SwerveDriveOdometry<4> m_odometry;
+  frc::SwerveDrivePoseEstimator<4> m_poseEstimator;
   frc::Trajectory m_activeTrajectory{};
   frc::Field2d m_fieldObject{};
-  frc::Pose2d initialPose = frc::Pose2d{};
   
   // Swerve tab we are writing to
   frc::ShuffleboardTab &SwerveRotationPIDTab = frc::Shuffleboard::GetTab("Rotation PID Values");
