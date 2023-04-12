@@ -154,6 +154,7 @@ namespace VisionConstants {
     // Allowed standard deviations for pose estimation, or "trust/confidence score"
     // Higher means you trust the data less and it is less factored into the estimation
     const wpi::array<double, 3> stateStdDevs {0.1, 0.1, 0.1};
+    // Should be changed to reflect distance instead of being constant
     const wpi::array<double, 3> visionStdDevs {0.9, 0.9, 0.9};
     constexpr bool shouldUseVision {false};
 }
