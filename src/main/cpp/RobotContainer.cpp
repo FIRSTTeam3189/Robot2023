@@ -549,9 +549,14 @@ void RobotContainer::BuildEventMap() {
     )
   );
 
-  // Balance
   AutoParameters::eventMap.emplace(
-
+    "balance",
+    std::make_shared<frc2::ParallelRaceGroup>(
+      frc2::ParallelRaceGroup(
+        // Balances for maximum 5 seconds, ends if it balances before that
+        PathPlannnerAutoBalance(m_swerve)
+      )
+    )
   );
 
   AutoParameters::eventMap.emplace(
