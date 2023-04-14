@@ -44,7 +44,7 @@
       "isReversal": false,
       "velOverride": null,
       "isLocked": true,
-      "isStopPoint": true,
+      "isStopPoint": false,
       "stopEvent": {
         "names": [
           "intake_pistons_out",
@@ -57,22 +57,22 @@
     },
     {
       "anchorPoint": {
-        "x": 6.863557765577071,
-        "y": 4.586223403216038
+        "x": 7.0,
+        "y": 4.55
       },
       "prevControl": {
-        "x": 7.141471440216205,
-        "y": 4.62096261254593
+        "x": 7.277913674639134,
+        "y": 4.584739209329892
       },
       "nextControl": {
-        "x": 6.632319610793068,
-        "y": 4.557318633868038
+        "x": 6.768761845215997,
+        "y": 4.521095230652
       },
       "holonomicAngle": 0,
       "isReversal": false,
       "velOverride": 1.0,
       "isLocked": true,
-      "isStopPoint": true,
+      "isStopPoint": false,
       "stopEvent": {
         "names": [
           "stop_intake",
@@ -86,28 +86,53 @@
     },
     {
       "anchorPoint": {
-        "x": 1.5739849748930288,
-        "y": 4.412794787128036
+        "x": 1.56,
+        "y": 4.41
       },
       "prevControl": {
-        "x": 4.338191907153046,
-        "y": 4.470604325824036
+        "x": 1.5984701426290604,
+        "y": 4.415834803123687
+      },
+      "nextControl": {
+        "x": 1.5536431755148832,
+        "y": 4.409035854384006
+      },
+      "holonomicAngle": -180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "intake_pistons_out",
+          "score_mid",
+          "elevator_to_0",
+          "intake_pistons_in"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 6.442380843307605,
+        "y": 5.542681237785946
+      },
+      "prevControl": {
+        "x": 7.478602320087291,
+        "y": 5.799181820302417
       },
       "nextControl": null,
-      "holonomicAngle": -180.0,
+      "holonomicAngle": 0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [
-          "Intake Pistons Out",
-          "Score Mid",
-          "Elevator To 0",
-          "Intake Pistons In"
-        ],
+        "names": [],
         "executionBehavior": "parallel",
-        "waitBehavior": "after",
+        "waitBehavior": "none",
         "waitTime": 0
       }
     }
@@ -115,5 +140,36 @@
   "maxVelocity": 4.0,
   "maxAcceleration": 3.0,
   "isReversed": null,
-  "markers": []
+  "markers": [
+    {
+      "position": 0.5864701704545454,
+      "names": [
+        "intake_pistons_out"
+      ]
+    },
+    {
+      "position": 0.8386363636363634,
+      "names": [
+        "run_intake_in"
+      ]
+    },
+    {
+      "position": 2.224005681818182,
+      "names": [
+        "stop_intake"
+      ]
+    },
+    {
+      "position": 2.3323863636363633,
+      "names": [
+        "intake_pistons_in"
+      ]
+    },
+    {
+      "position": 2.4990056818181814,
+      "names": [
+        "grab"
+      ]
+    }
+  ]
 }

@@ -3,12 +3,12 @@
     {
       "anchorPoint": {
         "x": 1.5643500517770286,
-        "y": 4.412794787128036
+        "y": 1.07
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2834518507047217,
-        "y": 4.641055812723871
+        "x": 2.0594877127254256,
+        "y": 1.0872321655357597
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -29,22 +29,22 @@
     },
     {
       "anchorPoint": {
-        "x": 4.6626999606040025,
-        "y": 4.596948656907519
+        "x": 3.3200029773784037,
+        "y": 0.7721527968566153
       },
       "prevControl": {
-        "x": 4.200926389097676,
-        "y": 4.574763219041745
+        "x": 2.858229405872077,
+        "y": 0.7499673589908413
       },
       "nextControl": {
-        "x": 5.666960347134617,
-        "y": 4.645197317682442
+        "x": 4.32426336390902,
+        "y": 0.8204014576315385
       },
       "holonomicAngle": 0,
       "isReversal": false,
-      "velOverride": null,
+      "velOverride": 0.5,
       "isLocked": false,
-      "isStopPoint": false,
+      "isStopPoint": true,
       "stopEvent": {
         "names": [],
         "executionBehavior": "parallel",
@@ -55,11 +55,11 @@
     {
       "anchorPoint": {
         "x": 7.25,
-        "y": 4.6
+        "y": 0.92
       },
       "prevControl": {
         "x": 7.085923171651639,
-        "y": 4.6
+        "y": 0.92
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -74,20 +74,20 @@
           "grab"
         ],
         "executionBehavior": "sequential",
-        "waitBehavior": "before",
+        "waitBehavior": "none",
         "waitTime": 1.0
       }
     }
   ],
   "markers": [
     {
-      "position": 1.1303267045454555,
+      "position": 1.321519886363637,
       "names": [
         "intake_pistons_out"
       ]
     },
     {
-      "position": 1.3946732954545458,
+      "position": 1.585014204545455,
       "names": [
         "run_intake_in"
       ]

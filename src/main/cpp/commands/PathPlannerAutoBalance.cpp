@@ -28,7 +28,7 @@ void PathPlannerAutoBalance::Initialize() {
   
   // Generate trajectory with slow constraints and path points
   pathplanner::PathPlannerTrajectory balanceTrajectory = pathplanner::PathPlanner::generatePath(
-    pathplanner::PathConstraints(1_mps, 1_mps_sq),
+    pathplanner::PathConstraints(2_mps, 3_mps_sq),
     startpoint, endpoint
   );
   
