@@ -86,7 +86,7 @@ class RobotContainer {
  private:
   // The robot's subsystems and commands are defined here...
   Vision *m_vision = new Vision();
-  SwerveDrive *m_swerve = new SwerveDrive();
+  SwerveDrive *m_swerve = new SwerveDrive(m_vision);
   Elevator *m_elevator = new Elevator();
   Grabber *m_grabber = new Grabber();
   Intake *m_intake = new Intake();

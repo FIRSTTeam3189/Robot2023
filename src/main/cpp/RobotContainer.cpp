@@ -492,15 +492,11 @@ void RobotContainer::BuildEventMap() {
     "grab", 
     std::make_shared<frc2::SequentialCommandGroup>(
       frc2::SequentialCommandGroup(
-        frc2::InstantCommand([this]{
-          m_intake->SetPower(0, INTAKE_CONVEYOR_POWER);
-        },{m_intake}),
         frc2::ParallelDeadlineGroup(
-          frc2::WaitCommand(0.35_s),
-          ElevatorPID(m_elevator, ELEVATOR_INTERIOR_GRAB_TARGET, false),
-          RunGrabber(m_grabber, GRABBER_INTERIOR_GRAB_SPEED)
-        ),
-        frc2::WaitCommand(0.125_s),
+          frc2::WaitCommand(2.0_s),
+          RunGrabber(m_grabber, GRABBER_INTERIOR_GRAB_SPEED),
+          RunIntake(m_intake, 0, INTAKE_CONVEYOR_POWER)
+        )
         frc2::InstantCommand([this]{
           m_intake->SetPower(0, 0);
           m_grabber->SetSpeed(0);
@@ -553,11 +549,9 @@ void RobotContainer::BuildEventMap() {
     )
   );
 
+  // Balance
   AutoParameters::eventMap.emplace(
-    "print", 
-    std::make_shared<frc2::InstantCommand>(
-      frc2::InstantCommand([this]{std::cout << "Event triggered\n";},{})
-    )
+
   );
 
   AutoParameters::eventMap.emplace(
@@ -571,6 +565,13 @@ void RobotContainer::BuildEventMap() {
     "set_mode_cone",
     std::make_shared<frc2::InstantCommand>(
       frc2::InstantCommand([this]{frc::SmartDashboard::PutBoolean("Is Cone Mode?", true);},{})
+    )
+  );
+
+  AutoParameters::eventMap.emplace(
+    "print", 
+    std::make_shared<frc2::InstantCommand>(
+      frc2::InstantCommand([this]{std::cout << "Event triggered\n";},{})
     )
   );
 

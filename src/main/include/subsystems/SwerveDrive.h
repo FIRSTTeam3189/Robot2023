@@ -23,26 +23,10 @@
 #include <numbers>
 #include <iostream>
 
+#include "subsystems/Vision.h"
 #include "util/SwerveModule.h"
 #include "RobotParameters.h"
 #include "Constants.h"
-
-// hold instances of swerve modules and translation vectors
-
-/*
-class SwerveConfig {
-public:
-  double speedP = SwerveDriveConstants::speedP;
-  double speedI = SwerveDriveConstants::speedI;
-  double speedD = SwerveDriveConstants::speedD;
-  double angleP = SwerveDriveConstants::angleP;
-  double angleI = SwerveDriveConstants::angleI;
-  double angleD = SwerveDriveConstants::angleD;
-
-  friend std::ostream &operator<<(std::ostream &out, const SwerveConfig &config);
-  friend std::istream &operator>>(std::istream &in, SwerveConfig &config);
-};
-*/
 
 enum class ManualModuleDriveType {forward, turn, stop};
 
@@ -62,7 +46,7 @@ struct SwerveModules {
 
 class SwerveDrive : public frc2::SubsystemBase {
  public:
-  SwerveDrive();
+  SwerveDrive(Vision *vision);
 
   void PercentDrive(units::meters_per_second_t xSpeed,
    units::meters_per_second_t ySpeed,
@@ -119,6 +103,9 @@ class SwerveDrive : public frc2::SubsystemBase {
   void Stop();
 
  private:
+  // Vision pointer to get vision data from
+  Vision *m_vision;
+  
   // Declare sensors in struct
   SwerveModules m_SM;
   

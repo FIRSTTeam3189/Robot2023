@@ -25,9 +25,9 @@ m_modeShouldChangeColor(true), m_lastMode(true), m_shouldStartup(true), m_startu
     // length 24
     m_ledSections[LEDSection::RUnderGlow] = {62, 86};
     // length 25
-    m_ledSections[LEDSection::LUnderGlow] = {86, 111};
+    m_ledSections[LEDSection::LUnderGlow] = {86, 110};
     // length 19
-    m_ledSections[LEDSection::LBackElevatorStrip] = {111, 130};
+    m_ledSections[LEDSection::LBackElevatorStrip] = {110, 130};
     // length 10
     m_ledSections[LEDSection::LFrontElevatorStrip] = {130, 140};
     // length 13

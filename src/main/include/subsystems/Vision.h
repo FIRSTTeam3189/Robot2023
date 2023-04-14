@@ -22,7 +22,6 @@ enum class DetectionType {None, AprilTag, Contours};
 struct VisionData {
   int ID;
   std::vector<float> translationMatrix{0.0f, 0.0f, 0.0f};
-  float cosZRot;
   DetectionType detectionID;
 };
 
@@ -40,7 +39,7 @@ private:
   nt::IntegerTopic m_IDTopic;
   nt::IntegerTopic m_DetectionTypeTopic;
   nt::FloatArrayTopic m_TranslationMatrixTopic;
-  VisionData m_Data;
+  VisionData m_data;
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
 };

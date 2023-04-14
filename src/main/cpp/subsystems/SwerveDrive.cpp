@@ -5,7 +5,8 @@
 #include "subsystems/SwerveDrive.h"
 #include <frc/smartdashboard/SmartDashboard.h>
 
-SwerveDrive::SwerveDrive() : 
+SwerveDrive::SwerveDrive(Vision *vision) :
+m_vision(vision), 
 // Initialize swerve drive info into SwerveModules struct
 // Using WPILib kinematics and odometry, pass in sensors and locations
 m_SM{
@@ -24,7 +25,6 @@ m_modulePositions(
   m_SM.m_frontRight.GetSwerveModulePosition(),
   m_SM.m_backLeft.GetSwerveModulePosition(),
   m_SM.m_backRight.GetSwerveModulePosition()),
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
 m_poseEstimator(SwerveDriveParameters::kinematics, m_pigeon.GetRotation2d(), m_modulePositions, frc::Pose2d{}, VisionConstants::stateStdDevs, VisionConstants::visionStdDevs)
 {
   // Implementation of subsystem constructor goes here.
@@ -257,6 +257,132 @@ void SwerveDrive::UpdateEstimator() {
   m_modulePositions[3] = m_SM.m_backRight.GetSwerveModulePosition();
 
   m_poseEstimator.Update(m_pigeon.GetRotation2d(), m_modulePositions);
+ 
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+    
+  VisionData data = m_vision->GetData();
+  if (VisionConstants::shouldUseVision && data.detectionID == DetectionType::AprilTag) {
+    // Update the pose estimator with vision data
+    // Vision data is trusted less than the data provided by the module encoder positions and gyroscope, so it influences the pose less
+    // It is also scaled based on distance to the vision target it picks up, so it trusts closer targets more 
+    // Calculate distance to target
+    float distance = sqrt(pow(data.translationMatrix[0], 2.0f) + pow(data.translationMatrix[0], 2.0f));
+    // Update trust before inputting vision measurements
+    // Starts at std dev of 0.5m and increases by .1 for every meter away from the target
+    double stdDev = 0.5 + ((double)distance * 0.1);
+    // Rot trust is 100% because we're just using the gyro (not using vision rotation measurement)
+    wpi::array<double, 3> stdDevArray{stdDev, stdDev, 0.0};
+    // Calculate pose from vision and add to estimator
+    // Figure out pose of tag based on ID and known set of poses
+    frc::Pose2d tagPose{};
+    switch (data.ID) {
+      case 1:
+        tagPose = FieldCoordinates::apriltag1;
+        break;
+      case 2:
+        tagPose = FieldCoordinates::apriltag2;
+        break;
+      case 3:
+        tagPose = FieldCoordinates::apriltag3;
+        break;
+      case 4:
+        tagPose = FieldCoordinates::apriltag4;
+        break;
+      case 5:
+        tagPose = FieldCoordinates::apriltag5;
+        break;
+      case 6:
+        tagPose = FieldCoordinates::apriltag6;
+        break;
+      case 7:
+        tagPose = FieldCoordinates::apriltag7;
+        break;
+      case 8:
+        tagPose = FieldCoordinates::apriltag8;
+        break;
+      default:
+        std::cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\nInvalid tag ID in swerve!!!!\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+    }
+
+    // Since translation matrix effectively gives x and y distances, we can subtract from a known pose to estimate the robot's pose
+    frc::Pose2d pose{
+      tagPose.X() - units::meter_t{data.translationMatrix[0]},
+      tagPose.Y() - units::meter_t{data.translationMatrix[1]},
+      m_pigeon.GetRotation2d()
+    };
+
+    m_poseEstimator.AddVisionMeasurement(pose, frc::Timer::GetFPGATimestamp(), stdDevArray);
+  }
 }
 
 void SwerveDrive::SetCurrentPose(frc::Pose2d pose) {
@@ -264,51 +390,6 @@ void SwerveDrive::SetCurrentPose(frc::Pose2d pose) {
   m_poseEstimator.ResetPosition(m_pigeon.GetRotation2d(),
                            m_modulePositions,
                            pose);
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
-// SHOULD CHANGE VISION STD DEVS TO REFLECT DISTANCE
 }
 
 double SwerveDrive::Calculate(double measurement, double setpoint) {

@@ -150,24 +150,96 @@ namespace AutoConstants {
 };
 
 namespace VisionConstants {
-    const frc::Transform3d cameraToRobotTransform{frc::Translation3d{0.0_m, 0.0_m, 0.0_m}, frc::Rotation3d{}};
+    // TODOOOOOOOOOOOOOOOOOOOOO 
+    // Don't forget to measure camera to robot center translation 
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+    
+    constexpr double cameraXOffset {0.0};
+    constexpr double cameraYOffset {0.0};
     // Allowed standard deviations for pose estimation, or "trust/confidence score"
     // Higher means you trust the data less and it is less factored into the estimation
     const wpi::array<double, 3> stateStdDevs {0.1, 0.1, 0.1};
-    // Should be changed to reflect distance instead of being constant
-    const wpi::array<double, 3> visionStdDevs {0.9, 0.9, 0.9};
     constexpr bool shouldUseVision {false};
+    const wpi::array<double, 3> visionStdDevs {0.5, 0.5, 0.0};
 }
 
 namespace FieldCoordinates {
-    const frc::Pose3d apriltag1{15.51_m, 1.07_m, 0.46_m, frc::Rotation3d{}};
-    const frc::Pose3d apriltag2{15.51_m, 2.75_m, 0.46_m, frc::Rotation3d{}};
-    const frc::Pose3d apriltag3{15.51_m, 4.42_m, 0.46_m, frc::Rotation3d{}};
-    const frc::Pose3d apriltag4{16.18_m, 6.75_m, 0.46_m, frc::Rotation3d{}};
-    const frc::Pose3d apriltag5{0.36_m, 6.75_m, 0.46_m, frc::Rotation3d{}};
-    const frc::Pose3d apriltag6{1.03_m, 4.42_m, 0.46_m, frc::Rotation3d{}};
-    const frc::Pose3d apriltag7{1.03_m, 2.75_m, 0.46_m, frc::Rotation3d{}};
-    const frc::Pose3d apriltag8{1.03_m, 1.07_m, 0.46_m, frc::Rotation3d{}};
+    const frc::Pose2d apriltag1{15.51_m, 1.07_m, frc::Rotation2d{}};
+    const frc::Pose2d apriltag2{15.51_m, 2.75_m, frc::Rotation2d{}};
+    const frc::Pose2d apriltag3{15.51_m, 4.42_m, frc::Rotation2d{}};
+    const frc::Pose2d apriltag4{16.18_m, 6.75_m, frc::Rotation2d{}};
+    const frc::Pose2d apriltag5{0.36_m, 6.75_m, frc::Rotation2d{}};
+    const frc::Pose2d apriltag6{1.03_m, 4.42_m, frc::Rotation2d{}};
+    const frc::Pose2d apriltag7{1.03_m, 2.75_m, frc::Rotation2d{}};
+    const frc::Pose2d apriltag8{1.03_m, 1.07_m, frc::Rotation2d{}};
     const frc::Translation2d chargeStationCenter{3.85_m, 2.75_m};
 }
 
@@ -196,7 +268,53 @@ namespace FieldCoordinates {
 #define PS5_AXIS_LTRIGGER 3 // -1 is untouched, fully pressed is 1
 #define PS5_AXIS_RTRIGGER 4 // -1 is untouched, fully pressed is 1
 #define PS5_AXIS_RSTICK_Y 5 // up is -1 , down is 1
-
+ 
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+     
+    // Don't forget to measure camera to robot center translation
+    
 // Need to get IDs
 #define INTAKE_PISTON_IN 0
 #define INTAKE_PISTON_OUT 1
