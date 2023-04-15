@@ -32,10 +32,17 @@ void Robot::RobotPeriodic() {
  * robot is disabled.
  */
 void Robot::DisabledInit() {
+  m_wheelBrakeTimer.Reset();
+  m_wheelBrakeTimer.Start();
 }
 
 void Robot::DisabledPeriodic() {
   m_container.Sync();
+  // Set swerve to coast mode 15 seconds after disabled for easier moving
+  if (m_wheelBrakeTimer.HasElapsed(15.0_s)) {
+    m_container.SetSwerveCoast();
+    m_wheelBrakeTimer.Stop();
+  }
 }
 
 /**
@@ -43,6 +50,8 @@ void Robot::DisabledPeriodic() {
  * RobotContainer} class.
  */
 void Robot::AutonomousInit() {
+  // Set swerve wheels to brake again once enabled
+  m_container.SetSwerveBrake();
   m_autonomousCommand = m_container.GetAutonomousCommand();
   m_container.ResetGyroscope();
 
@@ -57,6 +66,8 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
+  // Set swerve wheels to brake again once enabled
+  m_container.SetSwerveBrake();
   // This makes sure that the autonomous stops running when
   // teleop starts running. If you want the autonomous to
   // continue until interrupted by another command, remove

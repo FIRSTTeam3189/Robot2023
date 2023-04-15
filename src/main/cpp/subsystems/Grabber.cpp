@@ -23,17 +23,22 @@ void Grabber::Periodic() {
     // If the motor is trying to spin but isn't spinning, it is meeting resistance
     // Most likely, this means it is stuck (hopefully not) or a piece is successfully in the grabber
     // Then, the grabber will stop
-    if (abs(m_motor.GetAppliedOutput()) > 0.1) {
+    if (abs(m_motor.GetAppliedOutput()) > 0.05) {
         m_timer.Start();
-        if (abs(m_encoderVelocity) < 100 && m_timer.HasElapsed(0.25_s)) {
-            // frc::SmartDashboard::PutNumber("Grabber applied output", m_motor.GetAppliedOutput());
+        if (abs(m_encoderVelocity) < GRABBER_GRABBED_RPM && m_timer.HasElapsed(GRABBER_MINIMUM_SPIN_TIME)) {
             m_pieceGrabbed = true;
+            m_timer.Stop();
+            m_timer.Reset();
+        // If 
         } else {
             m_pieceGrabbed = false;
-            m_timer.Reset();
         }
     }
-    
+    // Once motor doesn't get any power, reset timer so next time it will still run at least 0.25s
+    else if (m_motor.GetAppliedOutput() == 0.0) {
+        m_timer.Stop();
+        m_timer.Reset();
+    }
     frc::SmartDashboard::PutBoolean("Piece Grabbed", m_pieceGrabbed);
 }
 

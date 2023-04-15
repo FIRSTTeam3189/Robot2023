@@ -517,6 +517,20 @@ void SwerveDrive::LogModuleStates(SwerveModuleTelemetry telemetryArray[]) {
   frc::SmartDashboard::PutNumberArray("AdvantageScope Measured States", AdvantageScopeMeasuredStates);
 }
 
+void SwerveDrive::SetModulesBrake() {
+  m_SM.m_frontLeft.SetMotorsToBrake();
+  m_SM.m_frontRight.SetMotorsToBrake();
+  m_SM.m_backLeft.SetMotorsToBrake();
+  m_SM.m_backRight.SetMotorsToBrake();
+}
+
+void SwerveDrive::SetModulesCoast() {
+  m_SM.m_frontLeft.SetMotorsToCoast();
+  m_SM.m_frontRight.SetMotorsToCoast();
+  m_SM.m_backLeft.SetMotorsToCoast();
+  m_SM.m_backRight.SetMotorsToCoast();
+}
+
 void SwerveDrive::UpdatePIDValues() {
   // AutoParameters::thetaPIDController.SetP(GetEntryRotationP());
   // AutoParameters::thetaPIDController.SetI(GetEntryRotationI());

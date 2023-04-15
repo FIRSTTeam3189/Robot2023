@@ -68,6 +68,8 @@ class SwerveModule {
   double GetVelocity();
   frc::SwerveModulePosition GetSwerveModulePosition();
 
+  void SetMotorsToBrake();
+  void SetMotorsToCoast();
   void UpdateModulePosition();
   SwerveModuleTelemetry GetTelemetry();
   void ResetSpeedEncoder();

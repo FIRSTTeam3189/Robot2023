@@ -42,6 +42,7 @@
 #include "Autos/TwoScoreHighConeCubePickup.h"
 #include "Autos/TwoScoreHighMidCubeBump.h"
 #include "Autos/TwoScoreWideSweepHighMidCubeAuto.h"
+#include "Autos/ThreeScore.h"
 
 #include "commands/SingleModTest.h"
 #include "commands/OISwerveDrive.h"
@@ -87,6 +88,8 @@ class RobotContainer {
   frc2::Command* GetAutonomousCommand();
   void Sync();
   void ResetGyroscope();
+  void SetSwerveBrake();
+  void SetSwerveCoast();
 
  private:
   // The robot's subsystems and commands are defined here...

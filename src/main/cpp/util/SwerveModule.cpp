@@ -65,6 +65,16 @@ m_absoluteEncoder(SI.CANCoderID, "Swerve")
     ResetAngleToAbsolute();
 }
 
+void SwerveModule::SetMotorsToBrake() {
+    m_speedMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+    m_angleMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+}
+
+void SwerveModule::SetMotorsToCoast() {
+    m_speedMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
+    m_angleMotor.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
+}
+
 void SwerveModule::Stop() {
     m_speedMotor.StopMotor();
     m_angleMotor.StopMotor();

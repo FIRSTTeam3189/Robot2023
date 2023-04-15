@@ -609,15 +609,16 @@ void RobotContainer::CreateAutoPaths() {
   m_chooser.AddOption("Test - Balance", new TestBalance(m_autoBuilder, "Test - Balance"));
   m_chooser.AddOption("Special", new SpecialAuto(m_autoBuilder, "Special"));
   m_chooser.AddOption("Figure Eight", new FigureEightAuto(m_autoBuilder, "Figure Eight"));
-  m_chooser.AddOption("Two Score: High/Mid Cubes + Pickup", new TwoScoreHighMidCubeAuto(m_autoBuilder, "Two Score High-Mid Cube + Pickup"));
-  m_chooser.AddOption("Two Score: High Cone + High Cube + Pickup", new TwoScoreHighConeCubePickup(m_autoBuilder, "Two Score Cone + Cube + Pickup"));
   m_chooser.AddOption("One Score: High Cube + Taxi", new OneScoreHighCubeTaxiAuto(m_autoBuilder, "One Score + Taxi"));
   m_chooser.AddOption("One Score: High Cone + Taxi", new OneScoreTaxiCone(m_autoBuilder, "One Score + Taxi Cone"));
   m_chooser.AddOption("One Score: High Cube + Balance", new OneScoreHighCubeBalanceAuto(m_autoBuilder, "One Score + Balance"));
   m_chooser.AddOption("One Score: High Cube + Pickup Bump Side", new OneScoreCubeBump(m_autoBuilder, "One Score + Pickup Bump"));
+  m_chooser.AddOption("Two Score: High/Mid Cubes + Pickup", new TwoScoreHighMidCubeAuto(m_autoBuilder, "Two Score High-Mid Cube + Pickup"));
+  m_chooser.AddOption("Two Score: High Cone + High Cube + Pickup", new TwoScoreHighConeCubePickup(m_autoBuilder, "Two Score Cone + Cube + Pickup"));
   m_chooser.AddOption("Two Score: High/Mid Cubes Bump Side", new TwoScoreHighMidCubeBump(m_autoBuilder, "Two Score High-Mid Cube Bump"));
   m_chooser.AddOption("Two Score: High Cube + Balance + Ultrashoot", new TwoScoreHighCubeUltrashootAuto(m_autoBuilder, "One Score + Pickup + Balance + Ultrashoot"));
   m_chooser.AddOption("Two Score: Wide Sweep High/Mid Cubes", new TwoScoreWideSweepHighMidCubeAuto(m_autoBuilder, "Two Score Wide Sweep"));
+  m_chooser.AddOption("Three Score: Ultrashoot", new ThreeScore(m_autoBuilder, "Three Score"));
   m_chooser.AddOption("Five Score", new FiveScoreAuto(m_autoBuilder, "Five Score"));
 }
 
@@ -634,4 +635,12 @@ void RobotContainer::Sync() {
 void RobotContainer::ResetGyroscope() {
   m_swerve->ResetGyro();
   m_swerve->SetCurrentPose(frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{0.0_deg}});
+}
+
+void RobotContainer::SetSwerveBrake() {
+  m_swerve->SetModulesBrake();
+}
+
+void RobotContainer::SetSwerveCoast() {
+  m_swerve->SetModulesCoast();
 }

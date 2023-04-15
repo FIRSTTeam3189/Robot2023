@@ -44,14 +44,16 @@ void RunGrabber::Execute() {
 // Called once the command ends or is interrupted.
 void RunGrabber::End(bool interrupted) {
   m_grabber->SetSpeed(0);
+  m_timer.Stop();
+  m_timer.Reset();
 }
 
 // Returns true when the command should end.
 bool RunGrabber::IsFinished() {
-  if (!m_isConeMode && m_grabber->IsPieceGrabbed() && m_power < 0 && m_timer.HasElapsed(0.25_s)) {
+  if (!m_isConeMode && m_grabber->IsPieceGrabbed() && m_power < 0 && m_timer.HasElapsed(GRABBER_MINIMUM_SPIN_TIME)) {
     return true;
   }
-  else if (m_isConeMode && m_grabber->IsPieceGrabbed() && m_power > 0 && m_timer.HasElapsed(0.25_s)) {
+  else if (m_isConeMode && m_grabber->IsPieceGrabbed() && m_power > 0 && m_timer.HasElapsed(GRABBER_MINIMUM_SPIN_TIME)) {
     return true;
   }
   else {

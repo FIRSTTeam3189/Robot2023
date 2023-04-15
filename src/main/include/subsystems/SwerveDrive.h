@@ -65,6 +65,8 @@ class SwerveDrive : public frc2::SubsystemBase {
   void InitSmartDashboard();
   void SyncSmartdashBoardValues();
   void UpdatePIDValues();
+  void SetModulesCoast();
+  void SetModulesBrake();
   void LogModuleStates(SwerveModuleTelemetry telemetryArray[]);
   void Log2DField();
   void ManualModuleSpeed(SwerveModuleLocation location, double speed);
@@ -105,7 +107,7 @@ class SwerveDrive : public frc2::SubsystemBase {
  private:
   // Vision pointer to get vision data from
   Vision *m_vision;
-  
+
   // Declare sensors in struct
   SwerveModules m_SM;
   

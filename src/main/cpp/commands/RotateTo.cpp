@@ -45,6 +45,7 @@ void RotateTo::Execute() {
 
 // Called once the command ends or is interrupted.
 void RotateTo::End(bool interrupted) {
+  m_timer.Stop();
   m_timer.Reset();
 }
 
