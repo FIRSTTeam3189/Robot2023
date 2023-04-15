@@ -24,7 +24,7 @@ void PathPlannerAutoBalance::Initialize() {
   startpoint = startpoint.withControlLengths(0.000001_m, 0.000001_m);
 
   // Get the center of the charge station (accounting for robot center of balance)
-  pathplanner::PathPoint endpoint{m_targetPose};
+  pathplanner::PathPoint endpoint{m_targetPose.Translation(), m_targetPose.Rotation()};
   endpoint = endpoint.withControlLengths(0.000001_m, 0.000001_m);
   
   // Generate trajectory with slow constraints and path points

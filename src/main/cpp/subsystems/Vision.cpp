@@ -31,8 +31,10 @@ void Vision::Periodic() {
             // This translates the camera as if it were at the center of the robot
             // Which is what the vision alignment should be based off of
             m_data.translationMatrix = m_TranslationMatrixTopic.Subscribe(s).Get();
-            m_data.translationMatrix[0] -= VisionConstants::cameraXOffset;
-            m_data.translationMatrix[1] -= VisionConstants::cameraYOffset;
+            m_data.translationMatrix[0] += VisionConstants::cameraXOffset;
+            m_data.translationMatrix[1] += VisionConstants::cameraYOffset;
+            frc::SmartDashboard::PutNumber("Vision X distance", m_data.translationMatrix[0]);
+            frc::SmartDashboard::PutNumber("Vision Y distance", m_data.translationMatrix[1]);
         }
         else if (detection == 2) {
             m_data.detectionID = DetectionType::Contours;

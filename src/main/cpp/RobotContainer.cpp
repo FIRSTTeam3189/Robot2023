@@ -579,7 +579,7 @@ void RobotContainer::BuildEventMap() {
       frc2::WaitCommand(5.0_s),
       frc2::RunCommand([this]{m_swerve->LockWheels();},{m_swerve})
     )
-  )
+  );
 
   AutoParameters::eventMap.emplace(
     "set_mode_cube",
