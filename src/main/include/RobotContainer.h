@@ -37,6 +37,7 @@
 #include "Autos/TestLineRotateAuto.h"
 #include "Autos/TestSAuto.h"
 #include "Autos/TestSRotateAuto.h"
+#include "Autos/TwoScoreCenter.h"
 #include "Autos/TwoScoreHighCubeUltrashootAuto.h"
 #include "Autos/TwoScoreHighMidCubeAuto.h"
 #include "Autos/TwoScoreHighConeCubePickup.h"

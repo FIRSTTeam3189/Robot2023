@@ -64,6 +64,7 @@ void Elevator::GoToPosition(double target) {
       (frc::Timer::GetFPGATimestamp() - m_lastTime);
     units::volt_t ffValue = ff.Calculate(m_controller.GetSetpoint().velocity, acceleration);
 
+    // Don't forget to remove limiter that sets it to 8 volts max and less PID for 0 position in ElevatorPID.cpp
     // Limit the applied voltage to 12
     m_motor.SetVoltage(std::clamp((pidValue + ffValue), -12.0_V, 12.0_V) / 1.5);
     m_lastSpeed = m_controller.GetSetpoint().velocity;

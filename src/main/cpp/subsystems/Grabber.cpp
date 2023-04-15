@@ -29,7 +29,6 @@ void Grabber::Periodic() {
             m_pieceGrabbed = true;
             m_timer.Stop();
             m_timer.Reset();
-        // If 
         } else {
             m_pieceGrabbed = false;
         }

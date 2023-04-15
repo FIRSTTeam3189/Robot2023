@@ -337,9 +337,11 @@ void SwerveDrive::UpdateEstimator() {
     // It is also scaled based on distance to the vision target it picks up, so it trusts closer targets more 
     // Calculate distance to target
     float distance = sqrt(pow(data.translationMatrix[0], 2.0f) + pow(data.translationMatrix[0], 2.0f));
+    std::cout << "Distance to target in meters: " << distance << "\n";
     // Update trust before inputting vision measurements
     // Starts at std dev of 0.5m and increases by .1 for every meter away from the target
     double stdDev = 0.5 + ((double)distance * 0.1);
+    std::cout << "Std dev trust rating: " << stdDev << "\n";
     // Rot trust is 100% because we're just using the gyro (not using vision rotation measurement)
     wpi::array<double, 3> stdDevArray{stdDev, stdDev, 0.0};
     // Calculate pose from vision and add to estimator
@@ -380,7 +382,9 @@ void SwerveDrive::UpdateEstimator() {
       tagPose.Y() - units::meter_t{data.translationMatrix[1]},
       m_pigeon.GetRotation2d()
     };
-
+    
+    frc::SmartDashboard::PutNumber("Robot (vision) x", pose.X().value());
+    frc::SmartDashboard::PutNumber("Robot (vision) y", pose.Y().value());
     m_poseEstimator.AddVisionMeasurement(pose, frc::Timer::GetFPGATimestamp(), stdDevArray);
   }
 }

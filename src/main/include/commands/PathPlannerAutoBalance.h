@@ -24,7 +24,7 @@
 class PathPlannerAutoBalance
     : public frc2::CommandHelper<frc2::CommandBase, PathPlannerAutoBalance> {
  public:
-  PathPlannerAutoBalance(SwerveDrive *swerveDrive);
+  PathPlannerAutoBalance(SwerveDrive *swerveDrive, frc::Pose2d targetPose);
 
   void Initialize() override;
 
@@ -40,4 +40,5 @@ class PathPlannerAutoBalance
   frc2::PIDController m_yController;
   frc2::PIDController m_rotController;
   int m_withinThresholdLoops;
+  frc::Pose2d m_targetPose;
 };

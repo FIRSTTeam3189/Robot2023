@@ -141,10 +141,10 @@ namespace AutoConstants {
     constexpr double autoKD {0.1};
 
     // PID constants for auto balance PID controllers
-    constexpr double balanceKP {0.0};                                              
+    constexpr double balanceKP {0.5};                                              
     constexpr double balanceKI {0.0};                                              
-    constexpr double balanceKD {0.0};                                              
-    constexpr double balanceRotKP {0.0};                                              
+    constexpr double balanceKD {0.075};                                              
+    constexpr double balanceRotKP {5.0};                                              
     constexpr double balanceRotKI {0.0};                                              
     constexpr double balanceRotKD {0.0};                                              
 };

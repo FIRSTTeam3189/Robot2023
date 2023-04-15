@@ -4,12 +4,13 @@
 
 #include "commands/PathPlannerAutoBalance.h"
 
-PathPlannerAutoBalance::PathPlannerAutoBalance(SwerveDrive *swerveDrive)
+PathPlannerAutoBalance::PathPlannerAutoBalance(SwerveDrive *swerveDrive, frc::Pose2d targetPose)
 : m_swerve(swerveDrive),
   m_xController(AutoConstants::balanceKP, AutoConstants::balanceKI, AutoConstants::balanceKD),
   m_yController(AutoConstants::balanceKP, AutoConstants::balanceKI, AutoConstants::balanceKD),
   m_rotController(AutoConstants::balanceRotKP, AutoConstants::balanceRotKI, AutoConstants::balanceRotKD),
-  m_withinThresholdLoops(0) {
+  m_withinThresholdLoops(0),
+  m_targetPose(targetPose) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(swerveDrive);
 }
@@ -23,7 +24,7 @@ void PathPlannerAutoBalance::Initialize() {
   startpoint = startpoint.withControlLengths(0.000001_m, 0.000001_m);
 
   // Get the center of the charge station (accounting for robot center of balance)
-  pathplanner::PathPoint endpoint{FieldCoordinates::chargeStationCenter, frc::Rotation2d{}};
+  pathplanner::PathPoint endpoint{m_targetPose};
   endpoint = endpoint.withControlLengths(0.000001_m, 0.000001_m);
   
   // Generate trajectory with slow constraints and path points
@@ -31,6 +32,8 @@ void PathPlannerAutoBalance::Initialize() {
     pathplanner::PathConstraints(2_mps, 3_mps_sq),
     startpoint, endpoint
   );
+  // Set swerve's active trajectory to this on-the-fly trajectory for visualization
+  m_swerve->SetActiveTrajectory(balanceTrajectory.asWPILibTrajectory());
   
   // Create swerve command
   pathplanner::PPSwerveControllerCommand command{
@@ -62,7 +65,9 @@ void PathPlannerAutoBalance::Execute() {
 }
 
 // Called once the command ends or is interrupted.
-void PathPlannerAutoBalance::End(bool interrupted) {}
+void PathPlannerAutoBalance::End(bool interrupted) {
+  m_swerve->LockWheels();
+}
 
 // Returns true when the command should end.
 bool PathPlannerAutoBalance::IsFinished() {

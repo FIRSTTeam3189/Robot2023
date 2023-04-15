@@ -84,13 +84,9 @@ void RobotContainer::ConfigureButtonBindings() {
   // m_Trigger.OnTrue/WhileTrue(frc2::Command);
   // ------------------------------------------------------------------------------------------------------------------------------------------------
 
-  // Slowly strafe to the left while held
-  frc2::Trigger translateLeftButton{m_bill.Button(PS5_BUTTON_SQR)};
-  translateLeftButton.WhileTrue(SlowTranslate(m_swerve, 0.0_mps, SwerveDriveConstants::leftTranslateSpeed).ToPtr());
-
-  // Slowly strafe to the right while held
-  frc2::Trigger translateRightButton{m_bill.Button(PS5_BUTTON_O)};
-  translateRightButton.WhileTrue(SlowTranslate(m_swerve, 0.0_mps, SwerveDriveConstants::rightTranslateSpeed).ToPtr());
+  frc2::Trigger BalanceAt0Button{m_bill.Button(PS5_BUTTON_SQR)};
+  BalanceAt0Button.WhileTrue(PathPlannerAutoBalance(m_swerve, frc::Pose2d{0.0_m, 0.0_m, frc::Rotation2d{}}).ToPtr());
+  BalanceAt0Button.OnFalse(frc2::InstantCommand([this]{m_swerve->PercentDrive(0_mps, 0_mps, 0_rad / 1_s, true);},{m_swerve}).ToPtr());
 
   // Point the robot down the field (0 deg) when pressed 
   frc2::Trigger rotateTo0Button{m_bill.Button(PS5_BUTTON_TRI)};
@@ -108,7 +104,8 @@ void RobotContainer::ConfigureButtonBindings() {
     frc2::SequentialCommandGroup(
       SetCurrentPose(m_swerve, frc::Pose2d{0.0_m, 0.0_m, {0.0_deg}}),
       frc2::InstantCommand([this]{m_swerve->SetRobotYaw(0.0);},{m_swerve})
-    ).ToPtr());
+    ).ToPtr()
+  );
 
   // Toggle drive interface between using setpoints for rotation and using constant rotation
   // By default, right joystick controls holonomic rotation of the robot, where the angle of the joystick
@@ -135,7 +132,7 @@ void RobotContainer::ConfigureButtonBindings() {
 
   // Auto balances the robot with pathplanner trajectory while held -- locks wheels at the end
   frc2::Trigger PPAutoBalanceButton{m_bill.POVLeft(frc2::CommandScheduler::GetInstance().GetDefaultButtonLoop())};
-  PPAutoBalanceButton.WhileTrue(PathPlannerAutoBalance(m_swerve).ToPtr());
+  PPAutoBalanceButton.WhileTrue(PathPlannerAutoBalance(m_swerve, FieldCoordinates::chargeStationCenter).ToPtr());
   PPAutoBalanceButton.OnFalse(frc2::InstantCommand([this]{m_swerve->PercentDrive(0_mps, 0_mps, 0_rad / 1_s, true);},{m_swerve}).ToPtr());
 
   // Auto balances the robot while held -- locks wheels at the end
@@ -174,15 +171,20 @@ void RobotContainer::ConfigureButtonBindings() {
         frc2::WaitCommand(0.5_s),
         RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER)
       ),
-      ElevatorPID(m_elevator, ElevatorLevel::Low, false)).ToPtr());
-  elevatorLowLevelButton.OnFalse(frc2::SequentialCommandGroup( 
-    frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(.25_s), 
-      RunGrabber(m_grabber, GrabberAction::Shoot)),
-    frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
-    ElevatorPID(m_elevator, 0, false),
-    frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
-  ).ToPtr());
+      ElevatorPID(m_elevator, ElevatorLevel::Low, false)
+    ).ToPtr()
+  );
+  elevatorLowLevelButton.OnFalse(
+    frc2::SequentialCommandGroup( 
+      frc2::ParallelDeadlineGroup(
+        frc2::WaitCommand(.25_s), 
+        RunGrabber(m_grabber, GrabberAction::Shoot)
+      ),
+      frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
+      ElevatorPID(m_elevator, 0, false),
+      frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
+    ).ToPtr()
+  );
   
   // Hold to move elevator to mid target, release to shoot
   frc2::Trigger elevatorMidLevelButton{m_ted.Button(PS5_BUTTON_O)};
@@ -190,18 +192,23 @@ void RobotContainer::ConfigureButtonBindings() {
     frc2::SequentialCommandGroup(
         frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
         frc2::ParallelDeadlineGroup(
-        frc2::WaitCommand(0.5_s),
-        RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER)
+          frc2::WaitCommand(0.5_s),
+          RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER)
+        ),
+        ElevatorPID(m_elevator, ElevatorLevel::Mid, false)
+    ).ToPtr()
+  );
+  elevatorMidLevelButton.OnFalse(
+    frc2::SequentialCommandGroup( 
+      frc2::ParallelDeadlineGroup(
+        frc2::WaitCommand(.25_s), 
+        RunGrabber(m_grabber, GrabberAction::Shoot)
       ),
-      ElevatorPID(m_elevator, ElevatorLevel::Mid, false)).ToPtr());
-  elevatorMidLevelButton.OnFalse(frc2::SequentialCommandGroup( 
-    frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(.25_s), 
-      RunGrabber(m_grabber, GrabberAction::Shoot)),
-    frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
-    ElevatorPID(m_elevator, 0, false),
-    frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
-  ).ToPtr());
+      frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
+      ElevatorPID(m_elevator, 0, false),
+      frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
+    ).ToPtr()
+  );
 
   // Hold to move elevator to high target, release to shoot
   frc2::Trigger elevatorHighLevelButton{m_ted.Button(PS5_BUTTON_TRI)};
@@ -209,18 +216,23 @@ void RobotContainer::ConfigureButtonBindings() {
     frc2::SequentialCommandGroup(
         frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
         frc2::ParallelDeadlineGroup(
-        frc2::WaitCommand(0.5_s),
-        RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER)
+          frc2::WaitCommand(0.5_s),
+          RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER)
+        ),
+        ElevatorPID(m_elevator, ElevatorLevel::High, false)
+    ).ToPtr()
+  );
+  elevatorHighLevelButton.OnFalse(
+    frc2::SequentialCommandGroup( 
+      frc2::ParallelDeadlineGroup(
+        frc2::WaitCommand(.25_s), 
+        RunGrabber(m_grabber, GrabberAction::Shoot)
       ),
-        ElevatorPID(m_elevator, ElevatorLevel::High, false)).ToPtr());
-  elevatorHighLevelButton.OnFalse(frc2::SequentialCommandGroup( 
-    frc2::ParallelDeadlineGroup(
-      frc2::WaitCommand(.25_s), 
-      RunGrabber(m_grabber, GrabberAction::Shoot)),
-    frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
-    ElevatorPID(m_elevator, 0, false),
-    frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
-  ).ToPtr());
+      frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
+      ElevatorPID(m_elevator, 0, false),
+      frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false);},{m_intake})
+    ).ToPtr()
+  );
 
   // Hold to move elevator to double substation target and grab with grabber,
   // release to send elevator back to bottom
@@ -240,8 +252,9 @@ void RobotContainer::ConfigureButtonBindings() {
   );
   grabDoubleStationButton.OnFalse(
     frc2::SequentialCommandGroup(
+      frc2::InstantCommand([this]{ m_grabber->SetSpeed(0); },{m_grabber}),
       ElevatorPID(m_elevator, 0, false),
-      frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false); m_grabber->SetSpeed(GRABBER_CARRY_SPEED); },{m_intake})
+      frc2::InstantCommand([this]{ m_intake->SetPistonExtension(false); },{m_intake})
     ).ToPtr()
   );
 
@@ -532,10 +545,11 @@ void RobotContainer::BuildEventMap() {
         frc2::ParallelDeadlineGroup(
           ElevatorPID(m_elevator, ELEVATOR_ULTRA_SHOOT_TARGET, false),
           frc2::RunCommand([this]{
+            m_swerve->LockWheels();
             if (m_elevator->GetPosition() > ELEVATOR_ULTRA_SHOOT_RELEASE_POINT) {
               m_grabber->SetSpeed(ELEVATOR_ULTRA_SHOOT_POWER);
             }
-          },{m_grabber})
+          },{m_swerve, m_grabber})
         ),
         frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber})
       )
@@ -553,11 +567,19 @@ void RobotContainer::BuildEventMap() {
     "balance",
     std::make_shared<frc2::ParallelRaceGroup>(
       frc2::ParallelRaceGroup(
-        // Balances for maximum 5 seconds, ends if it balances before that
-        PathPlannerAutoBalance(m_swerve)
+        frc2::WaitCommand(5.0_s),
+        PathPlannerAutoBalance(m_swerve, FieldCoordinates::chargeStationCenter)
       )
     )
   );
+
+  AutoParameters::eventMap.emplace(
+    "lock_wheels",
+    std::make_shared<frc2::ParallelDeadlineGroup>(
+      frc2::WaitCommand(5.0_s),
+      frc2::RunCommand([this]{m_swerve->LockWheels();},{m_swerve})
+    )
+  )
 
   AutoParameters::eventMap.emplace(
     "set_mode_cube",
@@ -613,6 +635,7 @@ void RobotContainer::CreateAutoPaths() {
   m_chooser.AddOption("One Score: High Cone + Taxi", new OneScoreTaxiCone(m_autoBuilder, "One Score + Taxi Cone"));
   m_chooser.AddOption("One Score: High Cube + Balance", new OneScoreHighCubeBalanceAuto(m_autoBuilder, "One Score + Balance"));
   m_chooser.AddOption("One Score: High Cube + Pickup Bump Side", new OneScoreCubeBump(m_autoBuilder, "One Score + Pickup Bump"));
+  m_chooser.AddOption("Two Score: Center Cubes + Ultrashoot", new TwoScoreCenter(m_autoBuilder, "Two Score Center Balance + Ultrashoot"));
   m_chooser.AddOption("Two Score: High/Mid Cubes + Pickup", new TwoScoreHighMidCubeAuto(m_autoBuilder, "Two Score High-Mid Cube + Pickup"));
   m_chooser.AddOption("Two Score: High Cone + High Cube + Pickup", new TwoScoreHighConeCubePickup(m_autoBuilder, "Two Score Cone + Cube + Pickup"));
   m_chooser.AddOption("Two Score: High/Mid Cubes Bump Side", new TwoScoreHighMidCubeBump(m_autoBuilder, "Two Score High-Mid Cube Bump"));
