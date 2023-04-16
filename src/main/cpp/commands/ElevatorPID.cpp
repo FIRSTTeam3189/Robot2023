@@ -45,9 +45,9 @@ void ElevatorPID::Initialize() {
 
   // Go slower on the way down, or else go normal speed
   if (m_target == 0.0) {
-    m_elevator->SetPID(50.0, 0.0, 0.0);
+    // m_elevator->SetPID(50.0, 0.0, 0.0);
   } else {
-    m_elevator->SetPID(ELEVATOR_P + 200.0, ELEVATOR_I, ELEVATOR_D);
+    m_elevator->SetPID(ELEVATOR_P, ELEVATOR_I, ELEVATOR_D);
   }
 }
 
@@ -67,13 +67,22 @@ void ElevatorPID::Execute() {
 }
 
 // Called once the command ends or is interrupted.
-void ElevatorPID::End(bool interrupted) {}
+void ElevatorPID::End(bool interrupted) {
+  // If elevator is close to bottom and lower limit switch isn't hit, slowly move it down
+  if (!m_elevator->LowerLimitSwitchHit() && ((0 < m_elevator->GetPosition()) && (m_elevator->GetPosition() < 500)) && m_target == 0.0) {
+      m_elevator->Drive(-0.1);
+  }
+}
 
 // Returns true when the command should end.
 // Ends command when elevator is close to its target for a certain amount of time
 bool ElevatorPID::IsFinished() {
   // Ends if elevator is close to target for a while
-  if (m_withinThresholdLoops >= ELEVATOR_SETTLE_LOOPS && m_shouldFinish) {
+  // if (m_withinThresholdLoops >= ELEVATOR_SETTLE_LOOPS && m_shouldFinish) {
+  // if (m_shouldFinish) {
+  //   return true;
+  // }
+  if (abs(m_target - m_elevator->GetPosition()) < ELEVATOR_STOP_DISTANCE) {
     return true;
   }
   return false;

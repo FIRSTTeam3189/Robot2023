@@ -33,8 +33,35 @@
         "y": 4.633803515056011
       },
       "prevControl": {
-        "x": 3.706642291473358,
-        "y": 4.633803515056011
+        "x": 3.7068344698166418,
+        "y": 4.614199440121644
+      },
+      "nextControl": {
+        "x": 4.711685934851461,
+        "y": 4.633902410024208
+      },
+      "holonomicAngle": 0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "intake_pistons_in"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 4.71,
+        "y": 4.63
+      },
+      "prevControl": {
+        "x": 4.6959216816647915,
+        "y": 4.632814565374029
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -53,5 +80,24 @@
   "maxVelocity": 3.0,
   "maxAcceleration": 2.0,
   "isReversed": null,
-  "markers": []
+  "markers": [
+    {
+      "position": 0.47443181818181834,
+      "names": [
+        "intake_pistons_out"
+      ]
+    },
+    {
+      "position": 0.6514204545454542,
+      "names": [
+        "run_intake_in"
+      ]
+    },
+    {
+      "position": 0.7964488636363636,
+      "names": [
+        "stop_intake"
+      ]
+    }
+  ]
 }

@@ -17,7 +17,6 @@ RobotContainer::RobotContainer() {
 
   // Joystick operated by DEFAULT
   m_swerve->SetDefaultCommand(OISwerveDrive(&m_bill, m_swerve, false, RotationMode::normal));
-
   frc::SmartDashboard::PutData("Auto Routines", &m_chooser);
   AutoParameters::thetaPIDController.EnableContinuousInput(units::radian_t{-pi}, units::radian_t{pi});
   AutoParameters::thetaPIDController.SetTolerance(units::radian_t{1.0 / 30.0});
@@ -240,14 +239,12 @@ void RobotContainer::ConfigureButtonBindings() {
   grabDoubleStationButton.OnTrue(
     frc2::SequentialCommandGroup(
       frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
-      frc2::ParallelDeadlineGroup(
-        frc2::WaitCommand(0.5_s),
-        RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER)
-      ),
-      frc2::ParallelCommandGroup(
-        ElevatorPID(m_elevator, ElevatorLevel::DoubleSubstation, false),
-        RunGrabber(m_grabber, GrabberAction::Grab)
-      )
+        frc2::ParallelDeadlineGroup(
+          frc2::WaitCommand(0.5_s),
+          RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER)
+        ),
+      ElevatorPID(m_elevator, ElevatorLevel::DoubleSubstation, false)
+      // RunGrabber(m_grabber, GrabberAction::Grab)
     ).ToPtr()
   );
   grabDoubleStationButton.OnFalse(
@@ -495,8 +492,8 @@ void RobotContainer::BuildEventMap() {
   
   AutoParameters::eventMap.emplace(
     "elevator_to_0", 
-    std::make_shared<frc2::ParallelDeadlineGroup>(
-      frc2::WaitCommand(2.0_s),
+    std::make_shared<frc2::ParallelRaceGroup>(
+      frc2::WaitCommand(1.0_s),
       ElevatorPID(m_elevator, 0, false)
     )
   );
@@ -568,7 +565,7 @@ void RobotContainer::BuildEventMap() {
     std::make_shared<frc2::ParallelRaceGroup>(
       frc2::ParallelRaceGroup(
         frc2::WaitCommand(5.0_s),
-        PathPlannerAutoBalance(m_swerve, FieldCoordinates::chargeStationCenter)
+        PIDAutoBalance(m_swerve)
       )
     )
   );
@@ -634,6 +631,7 @@ void RobotContainer::CreateAutoPaths() {
   m_chooser.AddOption("One Score: High Cube + Taxi", new OneScoreHighCubeTaxiAuto(m_autoBuilder, "One Score + Taxi"));
   m_chooser.AddOption("One Score: High Cone + Taxi", new OneScoreTaxiCone(m_autoBuilder, "One Score + Taxi Cone"));
   m_chooser.AddOption("One Score: High Cube + Balance", new OneScoreHighCubeBalanceAuto(m_autoBuilder, "One Score + Balance"));
+  m_chooser.AddOption("One Score: High Cube + Pickup", new OneScorePickupCube(m_autoBuilder, "One Score + Pickup"));
   m_chooser.AddOption("One Score: High Cube + Pickup Bump Side", new OneScoreCubeBump(m_autoBuilder, "One Score + Pickup Bump"));
   m_chooser.AddOption("Two Score: Center Cubes + Ultrashoot", new TwoScoreCenter(m_autoBuilder, "Two Score Center Balance + Ultrashoot"));
   m_chooser.AddOption("Two Score: High/Mid Cubes + Pickup", new TwoScoreHighMidCubeAuto(m_autoBuilder, "Two Score High-Mid Cube + Pickup"));

@@ -10,7 +10,15 @@ PathPlannerAutoBalance::PathPlannerAutoBalance(SwerveDrive *swerveDrive, frc::Po
   m_yController(AutoConstants::balanceKP, AutoConstants::balanceKI, AutoConstants::balanceKD),
   m_rotController(AutoConstants::balanceRotKP, AutoConstants::balanceRotKI, AutoConstants::balanceRotKD),
   m_withinThresholdLoops(0),
-  m_targetPose(targetPose) {
+  m_targetPose(targetPose),
+  m_command(
+    pathplanner::PathPlannerTrajectory(),[this] { return m_swerve->GetEstimatedPose(); }, // a function supplying the robot's current pose
+    m_xController, // PID controllers to correct for robot position during the trajectory
+    m_yController,
+    m_rotController,
+    [this](auto speeds) { m_swerve->PercentDrive(speeds); }, // a function to output chassis speeds
+    {m_swerve}, // the subsystem requirements
+    true) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(swerveDrive);
 }
@@ -47,11 +55,12 @@ void PathPlannerAutoBalance::Initialize() {
     true // boolean -- whether or not the trajectory should be reflected for red/blue alliance (trajectory is created blue-relative)
   };
   
-  command.Schedule();
+  m_command = command;
 }
 
 // Called repeatedly when this Command is scheduled to run
 void PathPlannerAutoBalance::Execute() {
+  m_command.Schedule();
   // Continually check for pitch and roll from pigeon
   // Consider robot balanced if both are close to level
   double pitch = m_swerve->GetPitch();

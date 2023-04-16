@@ -79,23 +79,22 @@
     },
     {
       "anchorPoint": {
-        "x": 3.925635762623566,
-        "y": 2.826234251320544
+        "x": 3.93,
+        "y": 2.83
       },
       "prevControl": {
-        "x": 3.9276795919663265,
-        "y": 2.826728726161535
+        "x": 4.514720123190246,
+        "y": 2.8256408815113554
       },
       "nextControl": null,
-      "holonomicAngle": 160.0,
+      "holonomicAngle": 165.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "balance",
-          "lock_wheels"
+          "balance"
         ],
         "executionBehavior": "sequential",
         "waitBehavior": "none",

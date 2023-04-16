@@ -9,11 +9,12 @@
 #include <frc/Filesystem.h>
 #include <frc/trajectory/TrajectoryUtil.h>
 #include <wpi/fs.h>
+#include <iostream>
 
 void Robot::RobotInit() {
   m_container.ResetGyroscope();
-  // cs::UsbCamera frontCamera = frc::CameraServer::StartAutomaticCapture(0);
-  // cs::UsbCamera interiorCamera = frc::CameraServer::StartAutomaticCapture(1);
+  cs::UsbCamera frontCamera = frc::CameraServer::StartAutomaticCapture(0);
+  // cs::UsbCamera groundCamera = frc::CameraServer::StartAutomaticCapture(1);
 }
 
 /**

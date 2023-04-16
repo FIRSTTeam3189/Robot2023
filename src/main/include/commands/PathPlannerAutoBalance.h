@@ -41,4 +41,5 @@ class PathPlannerAutoBalance
   frc2::PIDController m_rotController;
   int m_withinThresholdLoops;
   frc::Pose2d m_targetPose;
+  pathplanner::PPSwerveControllerCommand m_command;
 };

@@ -16,9 +16,9 @@
 
 #include "Constants.h"
 
-class TwoScoreCenter
+class OneScorePickupCube
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
-                                 TwoScoreCenter> {
+                                 OneScorePickupCube> {
  public:
-  TwoScoreCenter(pathplanner::SwerveAutoBuilder *builder, std::string filePath);
+  OneScorePickupCube(pathplanner::SwerveAutoBuilder *builder, std::string filePath);
 };

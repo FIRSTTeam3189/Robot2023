@@ -26,6 +26,7 @@
 
 #include "Autos/FigureEightAuto.h"
 #include "Autos/FiveScoreAuto.h"
+#include "Autos/OneScorePickupCube.h"
 #include "Autos/OneScoreHighCubeBalanceAuto.h"
 #include "Autos/OneScoreHighCubeTaxiAuto.h"
 #include "Autos/OneScoreTaxiCone.h"

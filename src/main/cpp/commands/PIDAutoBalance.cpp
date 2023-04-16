@@ -6,9 +6,10 @@
 
 PIDAutoBalance::PIDAutoBalance(SwerveDrive *swerveDrive)
 : m_swerve(swerveDrive),
-  m_xController(0.1, 0.0, 0.0),
-  m_yController(0.1, 0.0, 0.0),
-  m_isReversed(false) {
+  m_xController(0.05, 0.0, 0.0),
+  m_yController(0.05, 0.0, 0.0),
+  m_isReversed(false),
+  m_shouldEndEarly(false) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(swerveDrive);
 }
@@ -26,8 +27,8 @@ void PIDAutoBalance::Execute() {
   // Uses robot relative PID and checking for whether robot is facing forward or backward
   // Since pitch/roll will have the opposite sign if the robot is backward compared to forward,
   // Invert the sensor measurements if the robot is backwards (i.e. > 90 or < -90)
-  double pitch = m_isReversed ? -m_swerve->GetPitch() : m_swerve->GetPitch();
-  double roll = m_isReversed ? -m_swerve->GetRoll() : m_swerve->GetRoll();
+  double pitch = m_isReversed ? m_swerve->GetPitch() : -m_swerve->GetPitch();
+  double roll = m_isReversed ? m_swerve->GetRoll() : -m_swerve->GetRoll();
   auto xOutput = m_xController.Calculate(pitch, 0.0);
   auto yOutput = m_yController.Calculate(roll, 0.0);
 
@@ -37,6 +38,14 @@ void PIDAutoBalance::Execute() {
     m_withinThresholdLoops++;
   } else {
     m_withinThresholdLoops = 0;
+  }
+  
+  if (abs(pitch) > 4.5 || abs(roll) > 4.5) {
+    if ((abs(pitch - m_lastPitch) > 0.1) || abs(roll - m_lastRoll) > 0.1) {
+      m_shouldEndEarly = true;
+    } else {
+      m_shouldEndEarly = false;
+    }
   }
 
   m_lastPitch = pitch;
@@ -50,7 +59,7 @@ void PIDAutoBalance::End(bool interrupted) {}
 // Returns true when the command should end.
 bool PIDAutoBalance::IsFinished() {
   // Ends balance command if robot is level for a while
-  if (m_withinThresholdLoops >= AutoConstants::autoBalanceSettleLoops) {
+  if ((m_withinThresholdLoops >= AutoConstants::autoBalanceSettleLoops) || m_shouldEndEarly) {
     // Turn wheels in x shape to lock on charge station
     m_swerve->LockWheels();
     return true;

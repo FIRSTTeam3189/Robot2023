@@ -56,8 +56,8 @@ namespace SwerveDriveConstants {
     constexpr auto ka {3.409 * 1_V * 1_s * 1_s / 1_m};
 
     // Robot maxes - approximated and varies by robot
-    constexpr auto kMaxSpeed {4.0_mps};
-    constexpr auto kMaxAcceleration {3.0_mps_sq};
+    constexpr auto kMaxSpeed {3.0_mps};
+    constexpr auto kMaxAcceleration {2.0_mps_sq};
     constexpr units::radians_per_second_t maxAngularVelocity {pi};
     constexpr units::radians_per_second_squared_t maxAngularAcceleration {pi / 2};
 
@@ -136,9 +136,9 @@ namespace AutoConstants {
 
     // Y and rotation are inverted
     // PID Controllers for x and y movement in auto mode -- theta controller is part of drive object
-    constexpr double autoKP {0.75};
+    constexpr double autoKP {2.0};
     constexpr double autoKI {0.0};
-    constexpr double autoKD {0.1};
+    constexpr double autoKD {0.25};
 
     // PID constants for auto balance PID controllers
     constexpr double balanceKP {0.5};                                              
@@ -205,7 +205,7 @@ namespace FieldCoordinates {
 #define INTAKE_L_CONE_CORRECT_MOTOR_ID 15
 #define INTAKE_R_CONE_CORRECT_MOTOR_ID 16
 #define INTAKE_ROLLER_POWER 1.00
-#define INTAKE_CONVEYOR_POWER 0.25
+#define INTAKE_CONVEYOR_POWER 0.75
 #define INTAKE_CONE_CORRECT_POWER 0.1
 #define OUTTAKE_ROLLER_POWER -0.5
 #define OUTTAKE_CONVEYOR_POWER -0.5
@@ -215,7 +215,7 @@ namespace FieldCoordinates {
 #define ELEVATOR_SLOW_P 0.000025
 #define ELEVATOR_I 0
 #define ELEVATOR_D 17.493
-#define ELEVATOR_SETTLE_LOOPS 10
+#define ELEVATOR_SETTLE_LOOPS 5
 #define ELEVATOR_ULTRA_SHOOT_P 0.1
 #define ELEVATOR_ULTRA_SHOOT_POWER 1.0
 #define ELEVATOR_MAX_SPEED 3.0_mps
@@ -224,7 +224,7 @@ namespace FieldCoordinates {
 #define ELEVATOR_OUTPUT_CIRCUMFERENCE (pi* 0.04552)
 // Elevator feedforward constants
 #define ELEVATOR_KS 0.17186_V
-#define ELEVATOR_KG 0.41493_V
+#define ELEVATOR_KG 0.31493_V
 #define ELEVATOR_KV 20.578_V * 1_s / 1_m
 #define ELEVATOR_KA 0.67322_V * 1_s * 1_s / 1_m
 // Values in encoder ticks
@@ -239,11 +239,12 @@ namespace FieldCoordinates {
 #define ELEVATOR_HIGH_CONE_TARGET 2800
 #define ELEVATOR_DOUBLE_SUBSTATION_CUBE_TARGET 1800
 #define ELEVATOR_DOUBLE_SUBSTATION_CONE_TARGET 2000
-#define ELEVATOR_STOP_DISTANCE 100
+#define ELEVATOR_STOP_DISTANCE 150
+#define ELEVATOR_SLOW_DISTANCE 250
 #define ELEVATOR_INTERIOR_GRAB_TARGET 200
 #define ELEVATOR_LOWER_LIMIT_SWITCH_ID 0 
 #define ELEVATOR_UPPER_LIMIT_SWITCH_ID 1
-#define ELEVATOR_ULTRA_SHOOT_TARGET 2900
+#define ELEVATOR_ULTRA_SHOOT_TARGET 2800
 #define ELEVATOR_ULTRA_SHOOT_RELEASE_POINT 2200
 
 // Target distances are in meters
@@ -254,7 +255,7 @@ namespace FieldCoordinates {
 
 // #define GRABBER_MOTOR_ID 0
 #define GRABBER_MOTOR_ID 18
-#define GRABBER_CUBE_SHOOT_SPEED 0.75
+#define GRABBER_CUBE_SHOOT_SPEED 1.0
 #define GRABBER_CONE_SHOOT_SPEED -1.0
 #define GRABBER_INTERIOR_GRAB_SPEED -0.25
 #define GRABBER_CUBE_GRAB_SPEED -0.75

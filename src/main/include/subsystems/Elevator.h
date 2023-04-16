@@ -27,6 +27,7 @@ class Elevator : public frc2::SubsystemBase {
   void Drive(double power);
   void GoToPosition(double target);
   bool AtSetpoint();
+  bool LowerLimitSwitchHit();
   void SetPID(double kP, double kI, double kD);
   double ElevatorTicksToMeters(double encoderTicks);
 

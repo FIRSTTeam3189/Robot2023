@@ -14,6 +14,8 @@ m_upperLimitSwitch(m_motor.GetForwardLimitSwitch(rev::SparkMaxLimitSwitch::Type:
     m_motor.RestoreFactoryDefaults();
     m_motor.SetInverted(true);
     m_motor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+    m_motor.SetClosedLoopRampRate(0.0);
+    m_motor.SetOpenLoopRampRate(0.0);
     m_upperLimitSwitch.EnableLimitSwitch(true);
     m_lowerLimitSwitch.EnableLimitSwitch(true);
     // Makes the encoder return encoder counts instead of rotations
@@ -66,7 +68,12 @@ void Elevator::GoToPosition(double target) {
 
     // Don't forget to remove limiter that sets it to 8 volts max and less PID for 0 position in ElevatorPID.cpp
     // Limit the applied voltage to 12
-    m_motor.SetVoltage(std::clamp((pidValue + ffValue), -12.0_V, 12.0_V) / 1.5);
+    if (abs(m_target - m_encoder.GetPosition()) < ELEVATOR_SLOW_DISTANCE) {
+        m_motor.SetVoltage(std::clamp((pidValue + ffValue), -12.0_V, 12.0_V) / 2.5);
+    } else {
+        m_motor.SetVoltage(std::clamp((pidValue + ffValue), -12.0_V, 12.0_V));
+    }
+
     m_lastSpeed = m_controller.GetSetpoint().velocity;
     m_lastTime = frc::Timer::GetFPGATimestamp();
     m_target = target;
@@ -81,4 +88,8 @@ void Elevator::SetPID(double kP, double kI, double kD) {
 bool Elevator::AtSetpoint() {
     // If within stopping distance, elevator will return true
     return abs(m_target - m_encoder.GetPosition()) < ELEVATOR_STOP_DISTANCE;
+}
+
+bool Elevator::LowerLimitSwitchHit() {
+    return m_lowerLimitSwitch.Get();
 }
