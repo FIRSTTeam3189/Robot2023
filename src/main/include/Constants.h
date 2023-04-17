@@ -140,7 +140,11 @@ namespace AutoConstants {
     constexpr double autoKI {0.0};
     constexpr double autoKD {0.25};
 
-    // PID constants for auto balance PID controllers
+    // PID constants for pitch/roll auto balance
+    constexpr double gyroBalanceKP {0.04}; 
+    constexpr int gyroAutoBalanceSettleLoops {10};  
+
+    // PID constants for pathplanner auto balance PID controllers
     constexpr double balanceKP {0.5};                                              
     constexpr double balanceKI {0.0};                                              
     constexpr double balanceKD {0.075};                                              

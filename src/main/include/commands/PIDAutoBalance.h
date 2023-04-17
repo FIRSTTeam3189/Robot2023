@@ -36,6 +36,7 @@ class PIDAutoBalance
   int m_withinThresholdLoops;
   frc::PIDController m_xController;
   frc::PIDController m_yController;
+  frc::PIDController m_rotController;
   bool m_isReversed;
-  bool m_shouldEndEarly;
+  bool m_pauseTimer;
 };

@@ -23,14 +23,12 @@ void SimpleAutoBalance::Execute() {
   if (m_isGoingUpFirstTime)
     speed = 4.0_mps;
   // Signage depends on Pigeon mount orientation
-  if (pitch > 4.0) {
+  if (pitch > 4.0 && abs(pitch - m_lastPitch) < 0.1) {
     speed = 2.5_mps;
-  } else if (pitch < -4.0) {
+  } else if (pitch < -4.0 && abs(pitch - m_lastPitch) < 0.1) {
     speed = -1.5_mps;
     m_isGoingUpFirstTime = false;
-  }
-
-  if (pitch - m_lastPitch < -0.1) {
+  } else if (pitch - m_lastPitch < -0.1) {
     speed = -.25_mps;
     rot = units::angular_velocity::radians_per_second_t{0.25};
   } else if (pitch - m_lastPitch > 0.1) {
