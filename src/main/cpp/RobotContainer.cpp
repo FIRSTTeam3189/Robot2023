@@ -233,18 +233,25 @@ void RobotContainer::ConfigureButtonBindings() {
     ).ToPtr()
   );
 
+  std::vector<std::unique_ptr<frc2::Command>> commands;
+  commands.emplace_back(ElevatorPID(m_elevator, ElevatorLevel::DoubleSubstation, false).Repeatedly().Unwrap());
   // Hold to move elevator to double substation target and grab with grabber,
   // release to send elevator back to bottom
   frc2::Trigger grabDoubleStationButton{m_ted.Button(PS5_BUTTON_SQR)};
   grabDoubleStationButton.OnTrue(
     frc2::SequentialCommandGroup(
+
       frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
         frc2::ParallelDeadlineGroup(
           frc2::WaitCommand(0.5_s),
           RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER)
         ),
-      ElevatorPID(m_elevator, ElevatorLevel::DoubleSubstation, false)
+      ElevatorPID(m_elevator, ElevatorLevel::DoubleSubstation, false),
       // RunGrabber(m_grabber, GrabberAction::Grab)
+      frc2::ParallelCommandGroup(
+        frc2::SequentialCommandGroup(std::move(commands)),
+        RunGrabber(m_grabber, GrabberAction::Grab)
+      )
     ).ToPtr()
   );
   grabDoubleStationButton.OnFalse(
@@ -538,18 +545,18 @@ void RobotContainer::BuildEventMap() {
   AutoParameters::eventMap.emplace(
     "ultra_shoot", 
     std::make_shared<frc2::SequentialCommandGroup>(
-      frc2::SequentialCommandGroup(
-        frc2::ParallelDeadlineGroup(
-          ElevatorPID(m_elevator, ELEVATOR_ULTRA_SHOOT_TARGET, false),
-          frc2::RunCommand([this]{
-            m_swerve->LockWheels();
-            if (m_elevator->GetPosition() > ELEVATOR_ULTRA_SHOOT_RELEASE_POINT) {
-              m_grabber->SetSpeed(ELEVATOR_ULTRA_SHOOT_POWER);
-            }
-          },{m_swerve, m_grabber})
-        ),
-        frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber})
-      )
+      // frc2::SequentialCommandGroup(
+      //   frc2::ParallelDeadlineGroup(
+      //     ElevatorPID(m_elevator, ELEVATOR_ULTRA_SHOOT_TARGET, false),
+      //     frc2::RunCommand([this]{
+      //       m_swerve->LockWheels();
+      //       if (m_elevator->GetPosition() > ELEVATOR_ULTRA_SHOOT_RELEASE_POINT) {
+      //         m_grabber->SetSpeed(ELEVATOR_ULTRA_SHOOT_POWER);
+      //       }
+      //     },{m_swerve, m_grabber})
+      //   ),
+      //   frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber})
+      // )
     )
   );
 
@@ -564,7 +571,6 @@ void RobotContainer::BuildEventMap() {
     "balance",
     std::make_shared<frc2::ParallelRaceGroup>(
       frc2::ParallelRaceGroup(
-        frc2::WaitCommand(5.0_s),
         PIDAutoBalance(m_swerve)
       )
     )

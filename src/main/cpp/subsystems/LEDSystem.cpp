@@ -25,17 +25,17 @@ m_modeShouldChangeColor(true), m_lastMode(true), m_shouldStartup(true), m_startu
     // length 24
     m_ledSections[LEDSection::RUnderGlow] = {62, 86};
     // length 25
-    m_ledSections[LEDSection::LUnderGlow] = {86, 110};
+    m_ledSections[LEDSection::LUnderGlow] = {86, 108};
     // length 19
-    m_ledSections[LEDSection::LBackElevatorStrip] = {110, 130};
+    m_ledSections[LEDSection::LBackElevatorStrip] = {108, 128};
     // length 10
-    m_ledSections[LEDSection::LFrontElevatorStrip] = {130, 140};
+    m_ledSections[LEDSection::LFrontElevatorStrip] = {128, 138};
     // length 13
-    m_ledSections[LEDSection::LFrontStrip] = {140, 153};
+    m_ledSections[LEDSection::LFrontStrip] = {138, 151};
     // length of right side
     m_ledSections[LEDSection::RSide] = {19, 61};
     // length of left side
-    m_ledSections[LEDSection::LSide] = {111, 153};
+    m_ledSections[LEDSection::LSide] = {111, 151};
     // length of back side
     m_ledSections[LEDSection::Backside] = {0, 19};
 }

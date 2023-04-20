@@ -142,7 +142,7 @@ namespace AutoConstants {
 
     // PID constants for pitch/roll auto balance
     constexpr double gyroBalanceKP {0.04}; 
-    constexpr int gyroAutoBalanceSettleLoops {10};  
+    constexpr int gyroAutoBalanceSettleLoops {25};  
 
     // PID constants for pathplanner auto balance PID controllers
     constexpr double balanceKP {0.5};                                              
@@ -239,10 +239,10 @@ namespace FieldCoordinates {
 #define ELEVATOR_MID_CUBE_TARGET 1900
 #define ELEVATOR_HIGH_CUBE_TARGET 2800
 #define ELEVATOR_LOW_CONE_TARGET 1300
-#define ELEVATOR_MID_CONE_TARGET 2000
+#define ELEVATOR_MID_CONE_TARGET 2100
 #define ELEVATOR_HIGH_CONE_TARGET 2800
-#define ELEVATOR_DOUBLE_SUBSTATION_CUBE_TARGET 1800
-#define ELEVATOR_DOUBLE_SUBSTATION_CONE_TARGET 2000
+#define ELEVATOR_DOUBLE_SUBSTATION_CUBE_TARGET 2200
+#define ELEVATOR_DOUBLE_SUBSTATION_CONE_TARGET 2400
 #define ELEVATOR_STOP_DISTANCE 150
 #define ELEVATOR_SLOW_DISTANCE 250
 #define ELEVATOR_INTERIOR_GRAB_TARGET 200

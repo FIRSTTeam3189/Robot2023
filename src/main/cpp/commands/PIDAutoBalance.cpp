@@ -29,7 +29,7 @@ void PIDAutoBalance::Execute() {
   // Uses robot relative PID and checking for whether robot is facing forward or backward
   // Pitch is negative when robot tilts up by default, so the values are inverted
   // This makes an upwards tilt drive the robot forwards with positive PID calculated values
-  double xOutput = 0, yOutput;
+  double xOutput = 0, yOutput = 0;
   units::radians_per_second_t rotOutput;
   // double pitch = m_isReversed ? m_swerve->GetPitch() : -m_swerve->GetPitch();
   double pitch = -m_swerve->GetPitch();
@@ -45,11 +45,12 @@ void PIDAutoBalance::Execute() {
       rotOutput = units::radians_per_second_t{m_rotController.Calculate(m_swerve->GetNormalizedYaw(), 180.0)
                   * SwerveDriveConstants::maxAngularVelocity};
     }
-  } else if (m_withinThresholdLoops > 0) { // Otherwise, robot is balanced, so wait to see if it tips again (don't drive while it's balanced)
-    xOutput = 0;
-    yOutput = 0;
-    rotOutput = 0.0_rad / 1.0_s;
-  }
+  } 
+  // else if (m_withinThresholdLoops > 0) { // Otherwise, robot is balanced, so wait to see if it tips again (don't drive while it's balanced)
+  //   xOutput = 0;
+  //   yOutput = 0;
+  //   rotOutput = 0.0_rad / 1.0_s;
+  // }
   
   // If bridge is balanced, start counting up loops where it's balanced
   // End command after certain amount of time balanced
