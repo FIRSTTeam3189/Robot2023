@@ -98,7 +98,7 @@ void RobotContainer::ConfigureButtonBindings() {
   // Resets the odometry and gyroscope on the fly when pressed
   // Useful for testing or if something is messed up during teleop
   // Robot acts as if it were just turned on and the field is reset
-  frc2::Trigger SetCurrentPoseButton{m_bill.Button(PS5_BUTTON_TOUCHPAD)};
+  frc2::Trigger SetCurrentPoseButton{m_bill.Button(PS5_BUTTON_MIC)};
   SetCurrentPoseButton.OnTrue(
     frc2::SequentialCommandGroup(
       SetCurrentPose(m_swerve, frc::Pose2d{0.0_m, 0.0_m, {0.0_deg}}),
@@ -114,6 +114,14 @@ void RobotContainer::ConfigureButtonBindings() {
     frc2::InstantCommand([this]{
       m_isMagnitudeRot = !m_isMagnitudeRot;
       m_swerve->SetDefaultCommand(OISwerveDrive(&m_bill, m_swerve, m_isMagnitudeRot, RotationMode::normal));
+    },{m_swerve}).ToPtr()
+  );
+
+  frc2::Trigger toggleFieldRelativeDriveButton{m_bill.Button(PS5_BUTTON_LSTICK)};
+  toggleFieldRelativeDriveButton.OnTrue(
+    frc2::InstantCommand([this]{
+      m_isFieldRelative = !m_isFieldRelative;
+      m_swerve->SetDefaultCommand(OISwerveDrive(&m_bill, m_swerve, m_isMagnitudeRot, RotationMode::normal, m_isFieldRelative));
     },{m_swerve}).ToPtr()
   );
   
@@ -176,7 +184,7 @@ void RobotContainer::ConfigureButtonBindings() {
   elevatorLowLevelButton.OnFalse(
     frc2::SequentialCommandGroup( 
       frc2::ParallelDeadlineGroup(
-        frc2::WaitCommand(.25_s), 
+        frc2::WaitCommand(.5_s), 
         RunGrabber(m_grabber, GrabberAction::Shoot)
       ),
       frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
@@ -200,7 +208,7 @@ void RobotContainer::ConfigureButtonBindings() {
   elevatorMidLevelButton.OnFalse(
     frc2::SequentialCommandGroup( 
       frc2::ParallelDeadlineGroup(
-        frc2::WaitCommand(.25_s), 
+        frc2::WaitCommand(.5_s), 
         RunGrabber(m_grabber, GrabberAction::Shoot)
       ),
       frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
@@ -224,7 +232,7 @@ void RobotContainer::ConfigureButtonBindings() {
   elevatorHighLevelButton.OnFalse(
     frc2::SequentialCommandGroup( 
       frc2::ParallelDeadlineGroup(
-        frc2::WaitCommand(.25_s), 
+        frc2::WaitCommand(.5_s), 
         RunGrabber(m_grabber, GrabberAction::Shoot)
       ),
       frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber}),
@@ -442,8 +450,8 @@ void RobotContainer::BuildEventMap() {
     std::make_shared<frc2::SequentialCommandGroup>(
       frc2::InstantCommand([this]{ m_intake->SetPistonExtension(true);},{m_intake}),
       frc2::ParallelDeadlineGroup(
-        frc2::WaitCommand(0.25_s),
-        RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER)
+        frc2::WaitCommand(0.75_s)
+        // RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER)
       )
     )
   );
@@ -461,7 +469,7 @@ void RobotContainer::BuildEventMap() {
       frc2::SequentialCommandGroup(
         ElevatorPID(m_elevator, ElevatorLevel::Low, false),
         frc2::ParallelDeadlineGroup(
-          frc2::WaitCommand(.25_s), 
+          frc2::WaitCommand(.5_s), 
           RunGrabber(m_grabber, GrabberAction::Shoot)
         ),
         frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber})
@@ -475,7 +483,7 @@ void RobotContainer::BuildEventMap() {
       frc2::SequentialCommandGroup(
         ElevatorPID(m_elevator, ElevatorLevel::Mid, false),
         frc2::ParallelDeadlineGroup(
-          frc2::WaitCommand(.25_s), 
+          frc2::WaitCommand(.5_s), 
           RunGrabber(m_grabber, GrabberAction::Shoot)
         ),
         frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber})
@@ -489,7 +497,7 @@ void RobotContainer::BuildEventMap() {
       frc2::SequentialCommandGroup(
         ElevatorPID(m_elevator, ElevatorLevel::High, false),
         frc2::ParallelDeadlineGroup(
-          frc2::WaitCommand(.25_s), 
+          frc2::WaitCommand(.5_s), 
           RunGrabber(m_grabber, GrabberAction::Shoot)
         ),
         frc2::InstantCommand([this]{m_grabber->SetSpeed(0);},{m_grabber})
@@ -511,7 +519,7 @@ void RobotContainer::BuildEventMap() {
       frc2::SequentialCommandGroup(
         frc2::ParallelDeadlineGroup(
           frc2::WaitCommand(2.0_s),
-          RunGrabber(m_grabber, GRABBER_INTERIOR_GRAB_SPEED),
+          RunGrabber(m_grabber, GRABBER_INTERIOR_GRAB_SPEED / 1.75),
           RunIntake(m_intake, 0, INTAKE_CONVEYOR_POWER)
         ),
         frc2::InstantCommand([this]{
@@ -634,6 +642,7 @@ void RobotContainer::CreateAutoPaths() {
   m_chooser.AddOption("Test - Balance", new TestBalance(m_autoBuilder, "Test - Balance"));
   m_chooser.AddOption("Special", new SpecialAuto(m_autoBuilder, "Special"));
   m_chooser.AddOption("Figure Eight", new FigureEightAuto(m_autoBuilder, "Figure Eight"));
+  m_chooser.AddOption("Outtake", new Outtake(m_swerve, m_intake));
   m_chooser.AddOption("One Score: High Cube + Taxi", new OneScoreHighCubeTaxiAuto(m_autoBuilder, "One Score + Taxi"));
   m_chooser.AddOption("One Score: High Cone + Taxi", new OneScoreTaxiCone(m_autoBuilder, "One Score + Taxi Cone"));
   m_chooser.AddOption("One Score: High Cube + Balance", new OneScoreHighCubeBalanceAuto(m_autoBuilder, "One Score + Balance"));

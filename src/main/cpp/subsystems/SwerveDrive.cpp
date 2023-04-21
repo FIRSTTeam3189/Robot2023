@@ -57,6 +57,28 @@ void SwerveDrive::PercentDrive(frc::ChassisSpeeds speeds) {
   m_SM.m_backRight.SetDesiredPercentState(states[3]);
 }
 
+void SwerveDrive::TeleopPercentDrive(
+  units::meters_per_second_t xSpeed,
+  units::meters_per_second_t ySpeed,
+  units::radians_per_second_t rot,
+  bool fieldRelative,
+  frc::Translation2d centerOfRotation) {
+  UpdateEstimator();
+
+  auto states = SwerveDriveParameters::kinematics.ToSwerveModuleStates(
+    (fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
+                        xSpeed, ySpeed, rot, m_pigeon.GetRotation2d())
+                        : frc::ChassisSpeeds{xSpeed, ySpeed, rot}),
+    centerOfRotation);
+
+  SwerveDriveParameters::kinematics.DesaturateWheelSpeeds(&states, SwerveDriveConstants::kMaxSpeed);
+
+  m_SM.m_frontLeft.SetDesiredPercentState(states[0]);
+  m_SM.m_frontRight.SetDesiredPercentState(states[1]);
+  m_SM.m_backLeft.SetDesiredPercentState(states[2]);
+  m_SM.m_backRight.SetDesiredPercentState(states[3]);
+}
+
 void SwerveDrive::PercentDrive(
   units::meters_per_second_t xSpeed,
   units::meters_per_second_t ySpeed,

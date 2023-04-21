@@ -6,6 +6,8 @@
 
 #include <frc/TimedRobot.h>
 #include <frc2/command/Command.h>
+#include <frc/DataLogManager.h>
+#include <frc/DriverStation.h>
 #include <cameraserver/CameraServer.h>
 
 #include <string>

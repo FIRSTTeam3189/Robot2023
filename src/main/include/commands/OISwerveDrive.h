@@ -29,7 +29,7 @@ enum class RotationMode { normal, frontLeftCW, frontLeftCCW, frontRightCW, front
 class OISwerveDrive
     : public frc2::CommandHelper<frc2::CommandBase, OISwerveDrive> {
  public:
-    OISwerveDrive(frc::Joystick *m_bill, SwerveDrive *swerve_drive, bool isMagnitudeRot, RotationMode mode);
+    OISwerveDrive(frc::Joystick *m_bill, SwerveDrive *swerve_drive, bool isMagnitudeRot, RotationMode mode, bool fieldRelative = true);
 
     void Initialize() override;
 
@@ -46,7 +46,7 @@ class OISwerveDrive
     SwerveDrive *m_swerve_drive;
     frc2::PIDController m_rotationPIDController;
     bool m_isMagnitudeRot;
-    bool fieldRelative = true;
+    bool m_fieldRelative;
     RotationMode m_currentMode;
     // Limits rate of change of voltage so it doesn't explode
     frc::SlewRateLimiter<units::scalar> m_xspeedLimiter{1 / 10_ms};

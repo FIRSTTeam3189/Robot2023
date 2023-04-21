@@ -22,6 +22,7 @@ void PIDAutoBalance::Initialize() {
   } else {
     m_isReversed = false;
   }
+  m_timer.Start();
 }
 
 // Called repeatedly when this Command is scheduled to run
@@ -34,8 +35,18 @@ void PIDAutoBalance::Execute() {
   // double pitch = m_isReversed ? m_swerve->GetPitch() : -m_swerve->GetPitch();
   double pitch = -m_swerve->GetPitch();
   double roll = m_isReversed ? m_swerve->GetRoll() : -m_swerve->GetRoll();
+
+  // If bridge is balanced, start counting up loops where it's balanced
+  // End command after certain amount of time balanced
+  if (abs(m_lastPitch) < 3.0) {
+    m_withinThresholdLoops++;
+  } else {
+    m_withinThresholdLoops = 0;
+  }
+
   if (m_withinThresholdLoops == 0) { // If robot is not currently balanced, drive to balance
     xOutput = m_xController.Calculate(pitch, 0.0);
+
     // No y output right now
     // yOutput = m_yController.Calculate(roll, 0.0);
     if (!m_isReversed) {
@@ -46,18 +57,11 @@ void PIDAutoBalance::Execute() {
                   * SwerveDriveConstants::maxAngularVelocity};
     }
   } 
-  // else if (m_withinThresholdLoops > 0) { // Otherwise, robot is balanced, so wait to see if it tips again (don't drive while it's balanced)
-  //   xOutput = 0;
-  //   yOutput = 0;
-  //   rotOutput = 0.0_rad / 1.0_s;
-  // }
   
-  // If bridge is balanced, start counting up loops where it's balanced
-  // End command after certain amount of time balanced
-  if (abs(m_lastPitch) < 2.5 && abs(m_lastRoll) < 2.5) {
-    m_withinThresholdLoops++;
-  } else {
-    m_withinThresholdLoops = 0;
+  if (m_withinThresholdLoops > 0) { // Otherwise, robot is balanced, so wait to see if it tips again (don't drive while it's balanced)
+    xOutput = 0;
+    yOutput = 0;
+    rotOutput = 0.0_rad / 1.0_s;
   }
 
   m_lastPitch = pitch;
@@ -71,7 +75,7 @@ void PIDAutoBalance::End(bool interrupted) {}
 // Returns true when the command should end.
 bool PIDAutoBalance::IsFinished() {
   // Ends balance command if robot is level for a while
-  if ((m_withinThresholdLoops >= AutoConstants::gyroAutoBalanceSettleLoops)) {
+  if ((m_withinThresholdLoops >= AutoConstants::gyroAutoBalanceSettleLoops) && m_timer.HasElapsed(3.0_s)) {
     // Turn wheels in x shape to lock on charge station
     m_swerve->LockWheels();
     return true;

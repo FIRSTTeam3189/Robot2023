@@ -54,6 +54,12 @@ class SwerveDrive : public frc2::SubsystemBase {
    bool fieldRelative,
    frc::Translation2d centerOfRotation = frc::Translation2d{});
 
+  void TeleopPercentDrive(units::meters_per_second_t xSpeed,
+   units::meters_per_second_t ySpeed,
+   units::radians_per_second_t rot,
+   bool fieldRelative,
+   frc::Translation2d centerOfRotation = frc::Translation2d{});
+
   void PercentDrive(frc::ChassisSpeeds speeds);
 
   void Drive(units::meters_per_second_t xSpeed,

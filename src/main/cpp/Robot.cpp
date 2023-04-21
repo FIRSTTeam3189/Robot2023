@@ -12,6 +12,8 @@
 #include <iostream>
 
 void Robot::RobotInit() {
+  frc::DataLogManager::Start();
+  frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
   m_container.ResetGyroscope();
   cs::UsbCamera frontCamera = frc::CameraServer::StartAutomaticCapture(0);
   // cs::UsbCamera groundCamera = frc::CameraServer::StartAutomaticCapture(1);

@@ -45,6 +45,7 @@
 #include "Autos/TwoScoreHighMidCubeBump.h"
 #include "Autos/TwoScoreWideSweepHighMidCubeAuto.h"
 #include "Autos/ThreeScore.h"
+#include "Autos/Outtake.h"
 
 #include "commands/SingleModTest.h"
 #include "commands/OISwerveDrive.h"
@@ -106,6 +107,7 @@ class RobotContainer {
   pathplanner::SwerveAutoBuilder *m_autoBuilder = nullptr;
 
   bool m_isMagnitudeRot = false;
+  bool m_isFieldRelative = true;
   bool m_isConeMode = false;
 
   // Bill controls drivetrain + intake etc. (lower half)

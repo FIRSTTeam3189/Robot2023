@@ -38,5 +38,5 @@ class PIDAutoBalance
   frc::PIDController m_yController;
   frc::PIDController m_rotController;
   bool m_isReversed;
-  bool m_pauseTimer;
+  frc::Timer m_timer{};
 };

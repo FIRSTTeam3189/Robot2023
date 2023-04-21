@@ -3,10 +3,11 @@
 
 #include "commands/OISwerveDrive.h"
 
-OISwerveDrive::OISwerveDrive(frc::Joystick *m_bill, SwerveDrive *swerve_drive, bool isMagnitudeRot, RotationMode mode) 
+OISwerveDrive::OISwerveDrive(frc::Joystick *m_bill, SwerveDrive *swerve_drive, bool isMagnitudeRot, RotationMode mode, bool fieldRelative) 
 :  m_bill(m_bill), m_swerve_drive(swerve_drive),
    m_rotationPIDController(SwerveDriveConstants::rotP, SwerveDriveConstants::rotI, SwerveDriveConstants::rotD),
    m_isMagnitudeRot(isMagnitudeRot),
+   m_fieldRelative(fieldRelative),
    m_currentMode(mode) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements(swerve_drive);
@@ -73,7 +74,7 @@ void OISwerveDrive::Execute() {
                 frc::ApplyDeadband(m_bill->GetRawAxis(PS5_AXIS_RSTICK_X), 0.05)) *
               SwerveDriveConstants::maxAngularVelocity * 2.0;
 
-    m_swerve_drive->Drive(xSpeed, ySpeed, rot, fieldRelative);
+    m_swerve_drive->TeleopPercentDrive(xSpeed, ySpeed, rot, m_fieldRelative);
   } 
   else {
     units::radians_per_second_t rot{};
@@ -122,7 +123,7 @@ void OISwerveDrive::Execute() {
         break;
     }
 
-    m_swerve_drive->PercentDrive(xSpeed, ySpeed, rot, fieldRelative, centerOfRotation);
+    m_swerve_drive->TeleopPercentDrive(xSpeed, ySpeed, rot, m_fieldRelative, centerOfRotation);
   }
 }
 
