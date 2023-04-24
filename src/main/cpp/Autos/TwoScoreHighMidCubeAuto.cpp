@@ -7,7 +7,7 @@
 // NOTE:  Consider using this command inline, rather than writing a subclass.
 // For more information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-TwoScoreHighMidCubeAuto::TwoScoreHighMidCubeAuto(pathplanner::SwerveAutoBuilder *builder, std::string filePath) {
+TwoScoreHighMidCubeAuto::TwoScoreHighMidCubeAuto(SwerveDrive *swerve, pathplanner::SwerveAutoBuilder *builder, std::string filePath) : m_swerve(swerve) {
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
   
@@ -23,6 +23,7 @@ std::vector<pathplanner::PathPlannerTrajectory> twoScoreGroup = pathplanner::Pat
   auto group = SequentialCommandGroup(std::move(commands));
 
   AddCommands(
+    frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
     std::move(group)
   );
 }

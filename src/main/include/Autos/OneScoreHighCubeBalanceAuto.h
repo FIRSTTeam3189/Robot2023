@@ -10,6 +10,7 @@
 
 #include <pathplanner/lib/auto/SwerveAutoBuilder.h>
 #include <pathplanner/lib/PathPlanner.h>
+#include "subsystems/SwerveDrive.h"
 
 #include <string>
 #include <vector>
@@ -20,5 +21,8 @@ class OneScoreHighCubeBalanceAuto
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
                                  OneScoreHighCubeBalanceAuto> {
  public:
-  OneScoreHighCubeBalanceAuto(pathplanner::SwerveAutoBuilder *builder, std::string filePath);
+  OneScoreHighCubeBalanceAuto(SwerveDrive *swerve, pathplanner::SwerveAutoBuilder *builder, std::string filePath);
+
+ private:
+    SwerveDrive *m_swerve;
 };

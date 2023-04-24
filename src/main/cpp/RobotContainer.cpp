@@ -278,7 +278,7 @@ void RobotContainer::ConfigureButtonBindings() {
   interiorGrabButton.WhileTrue(
     frc2::ParallelCommandGroup(
       RunIntake(m_intake, 0, INTAKE_CONVEYOR_POWER),
-      RunGrabber(m_grabber, GRABBER_INTERIOR_GRAB_SPEED)
+      RunGrabber(m_grabber, GRABBER_INTERIOR_GRAB_SPEED * 2.0)
     ).ToPtr()
   );
   interiorGrabButton.OnFalse(frc2::InstantCommand([this]{
@@ -634,28 +634,28 @@ void RobotContainer::CreateAutoPaths() {
   // Creates instances of each auto command
   // Add auto commands to auto chooser
   m_chooser.SetDefaultOption("N/A", nullptr);
-  m_chooser.AddOption("Test: Line", new TestLineAuto(m_autoBuilder, "Test - Line"));
-  m_chooser.AddOption("Test - S", new TestSAuto(m_autoBuilder, "Test - S"));
-  m_chooser.AddOption("Test - Line + Rotate", new TestLineRotateAuto(m_autoBuilder, "Test - Line + Rotate"));
-  m_chooser.AddOption("Test - Line + Intake", new TestLineIntakeAuto(m_autoBuilder, "Test - Line + Intake"));
-  m_chooser.AddOption("Test - S + Rotate", new TestSRotateAuto(m_autoBuilder, "Test - S + Rotate"));
-  m_chooser.AddOption("Test - Balance", new TestBalance(m_autoBuilder, "Test - Balance"));
-  m_chooser.AddOption("Special", new SpecialAuto(m_autoBuilder, "Special"));
-  m_chooser.AddOption("Figure Eight", new FigureEightAuto(m_autoBuilder, "Figure Eight"));
+  m_chooser.AddOption("Test: Line", new TestLineAuto(m_swerve, m_autoBuilder, "Test - Line"));
+  m_chooser.AddOption("Test - S", new TestSAuto(m_swerve, m_autoBuilder, "Test - S"));
+  m_chooser.AddOption("Test - Line + Rotate", new TestLineRotateAuto(m_swerve, m_autoBuilder, "Test - Line + Rotate"));
+  m_chooser.AddOption("Test - Line + Intake", new TestLineIntakeAuto(m_swerve, m_autoBuilder, "Test - Line + Intake"));
+  m_chooser.AddOption("Test - S + Rotate", new TestSRotateAuto(m_swerve, m_autoBuilder, "Test - S + Rotate"));
+  m_chooser.AddOption("Test - Balance", new TestBalance(m_swerve, m_autoBuilder, "Test - Balance"));
+  m_chooser.AddOption("Special", new SpecialAuto(m_swerve, m_autoBuilder, "Special"));
+  m_chooser.AddOption("Figure Eight", new FigureEightAuto(m_swerve, m_autoBuilder, "Figure Eight"));
   m_chooser.AddOption("Outtake", new Outtake(m_swerve, m_intake));
-  m_chooser.AddOption("One Score: High Cube + Taxi", new OneScoreHighCubeTaxiAuto(m_autoBuilder, "One Score + Taxi"));
-  m_chooser.AddOption("One Score: High Cone + Taxi", new OneScoreTaxiCone(m_autoBuilder, "One Score + Taxi Cone"));
-  m_chooser.AddOption("One Score: High Cube + Balance", new OneScoreHighCubeBalanceAuto(m_autoBuilder, "One Score + Balance"));
-  m_chooser.AddOption("One Score: High Cube + Pickup", new OneScorePickupCube(m_autoBuilder, "One Score + Pickup"));
-  m_chooser.AddOption("One Score: High Cube + Pickup Bump Side", new OneScoreCubeBump(m_autoBuilder, "One Score + Pickup Bump"));
-  m_chooser.AddOption("Two Score: Center Cubes + Ultrashoot", new TwoScoreCenter(m_autoBuilder, "Two Score Center Balance + Ultrashoot"));
-  m_chooser.AddOption("Two Score: High/Mid Cubes + Pickup", new TwoScoreHighMidCubeAuto(m_autoBuilder, "Two Score High-Mid Cube + Pickup"));
-  m_chooser.AddOption("Two Score: High Cone + High Cube + Pickup", new TwoScoreHighConeCubePickup(m_autoBuilder, "Two Score Cone + Cube + Pickup"));
-  m_chooser.AddOption("Two Score: High/Mid Cubes Bump Side", new TwoScoreHighMidCubeBump(m_autoBuilder, "Two Score High-Mid Cube Bump"));
-  m_chooser.AddOption("Two Score: High Cube + Balance + Ultrashoot", new TwoScoreHighCubeUltrashootAuto(m_autoBuilder, "One Score + Pickup + Balance + Ultrashoot"));
-  m_chooser.AddOption("Two Score: Wide Sweep High/Mid Cubes", new TwoScoreWideSweepHighMidCubeAuto(m_autoBuilder, "Two Score Wide Sweep"));
-  m_chooser.AddOption("Three Score: Ultrashoot", new ThreeScore(m_autoBuilder, "Three Score"));
-  m_chooser.AddOption("Five Score", new FiveScoreAuto(m_autoBuilder, "Five Score"));
+  m_chooser.AddOption("One Score: High Cube + Taxi", new OneScoreHighCubeTaxiAuto(m_swerve, m_autoBuilder, "One Score + Taxi"));
+  m_chooser.AddOption("One Score: High Cone + Taxi", new OneScoreTaxiCone(m_swerve, m_autoBuilder, "One Score + Taxi Cone"));
+  m_chooser.AddOption("One Score: High Cube + Balance", new OneScoreHighCubeBalanceAuto(m_swerve, m_autoBuilder, "One Score + Balance"));
+  m_chooser.AddOption("One Score: High Cube + Pickup", new OneScorePickupCube(m_swerve, m_autoBuilder, "One Score + Pickup"));
+  m_chooser.AddOption("One Score: High Cube + Pickup Bump Side", new OneScoreCubeBump(m_swerve, m_autoBuilder, "One Score + Pickup Bump"));
+  m_chooser.AddOption("Two Score: Center Cubes + Ultrashoot", new TwoScoreCenter(m_swerve, m_autoBuilder, "Two Score Center Balance + Ultrashoot"));
+  m_chooser.AddOption("Two Score: High/Mid Cubes + Pickup", new TwoScoreHighMidCubeAuto(m_swerve, m_autoBuilder, "Two Score High-Mid Cube + Pickup"));
+  m_chooser.AddOption("Two Score: High Cone + High Cube + Pickup", new TwoScoreHighConeCubePickup(m_swerve, m_autoBuilder, "Two Score Cone + Cube + Pickup"));
+  m_chooser.AddOption("Two Score: High/Mid Cubes Bump Side", new TwoScoreHighMidCubeBump(m_swerve, m_autoBuilder, "Two Score High-Mid Cube Bump"));
+  m_chooser.AddOption("Two Score: High Cube + Balance + Ultrashoot", new TwoScoreHighCubeUltrashootAuto(m_swerve, m_autoBuilder, "One Score + Pickup + Balance + Ultrashoot"));
+  m_chooser.AddOption("Two Score: Wide Sweep High/Mid Cubes", new TwoScoreWideSweepHighMidCubeAuto(m_swerve, m_autoBuilder, "Two Score Wide Sweep"));
+  m_chooser.AddOption("Three Score: Ultrashoot", new ThreeScore(m_swerve, m_autoBuilder, "Three Score"));
+  m_chooser.AddOption("Five Score", new FiveScoreAuto(m_swerve, m_autoBuilder, "Five Score"));
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

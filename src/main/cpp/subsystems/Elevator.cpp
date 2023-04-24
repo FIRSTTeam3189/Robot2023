@@ -69,7 +69,7 @@ void Elevator::GoToPosition(double target) {
     // Don't forget to remove limiter that sets it to 8 volts max and less PID for 0 position in ElevatorPID.cpp
     // Limit the applied voltage to 12
     if (abs(m_target - m_encoder.GetPosition()) < ELEVATOR_SLOW_DISTANCE) {
-        m_motor.SetVoltage(std::clamp((pidValue + ffValue), -12.0_V, 12.0_V) / 2.5);
+        m_motor.SetVoltage(std::clamp((pidValue + ffValue), -12.0_V, 12.0_V) / 2.0);
     } else {
         m_motor.SetVoltage(std::clamp((pidValue + ffValue), -12.0_V, 12.0_V));
     }

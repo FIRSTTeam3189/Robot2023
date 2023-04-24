@@ -7,7 +7,7 @@
 // NOTE:  Consider using this command inline, rather than writing a subclass.
 // For more information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-ThreeScore::ThreeScore(pathplanner::SwerveAutoBuilder *builder, std::string filePath) {
+ThreeScore::ThreeScore(SwerveDrive *swerve, pathplanner::SwerveAutoBuilder *builder, std::string filePath) : m_swerve(swerve) {
   // Add your commands here, e.g.
   // AddCommands(FooCommand{}, BarCommand{});
   std::vector<pathplanner::PathPlannerTrajectory> threeScoreGroup = pathplanner::PathPlanner::loadPathGroup(filePath, {pathplanner::PathConstraints(SwerveDriveConstants::kMaxSpeed, SwerveDriveConstants::kMaxAcceleration)});
@@ -16,6 +16,7 @@ ThreeScore::ThreeScore(pathplanner::SwerveAutoBuilder *builder, std::string file
   auto group = SequentialCommandGroup(std::move(commands));
 
   AddCommands(
+    frc2::InstantCommand([this]{m_swerve->SetRobotYaw(180.0);},{m_swerve}),
     std::move(group)
   );
 }

@@ -10,6 +10,7 @@
 
 #include <pathplanner/lib/auto/SwerveAutoBuilder.h>
 #include <pathplanner/lib/PathPlanner.h>
+#include "subsystems/SwerveDrive.h"
 
 #include <string>
 #include <vector>
@@ -20,5 +21,8 @@ class TestLineRotateAuto
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
                                  TestLineRotateAuto> {
  public:
-  TestLineRotateAuto(pathplanner::SwerveAutoBuilder *builder, std::string filePath);
+  TestLineRotateAuto(SwerveDrive *swerve, pathplanner::SwerveAutoBuilder *builder, std::string filePath);
+
+ private:
+    SwerveDrive *m_swerve;
 };

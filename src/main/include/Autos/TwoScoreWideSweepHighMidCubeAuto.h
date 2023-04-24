@@ -10,6 +10,7 @@
 
 #include <pathplanner/lib/auto/SwerveAutoBuilder.h>
 #include <pathplanner/lib/PathPlanner.h>
+#include "subsystems/SwerveDrive.h"
 
 #include <string>
 #include <vector>
@@ -20,5 +21,8 @@ class TwoScoreWideSweepHighMidCubeAuto
     : public frc2::CommandHelper<frc2::SequentialCommandGroup,
                                  TwoScoreWideSweepHighMidCubeAuto> {
  public:
-  TwoScoreWideSweepHighMidCubeAuto(pathplanner::SwerveAutoBuilder *builder, std::string filePath);
+  TwoScoreWideSweepHighMidCubeAuto(SwerveDrive *swerve, pathplanner::SwerveAutoBuilder *builder, std::string filePath);
+
+ private:
+    SwerveDrive *m_swerve;
 };

@@ -73,6 +73,7 @@
 
 #include <pathplanner/lib/auto/SwerveAutoBuilder.h>
 #include <pathplanner/lib/PathPlanner.h>
+#include "subsystems/SwerveDrive.h"
 
 #include <iostream>
 #include <vector>
