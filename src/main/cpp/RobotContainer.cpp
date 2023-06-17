@@ -231,7 +231,7 @@ void RobotContainer::ConfigureButtonBindings() {
   );
   elevatorHighLevelButton.OnFalse(
     frc2::SequentialCommandGroup( 
-      frc2::ParallelDeadlineGroup(
+      frc2::ParallelDeadlineGroup( 
         frc2::WaitCommand(.5_s), 
         RunGrabber(m_grabber, GrabberAction::Shoot)
       ),

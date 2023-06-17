@@ -17,6 +17,9 @@ m_conveyorMotor(INTAKE_CONVEYOR_MOTOR_ID, rev::CANSparkMax::MotorType::kBrushles
     // Inverts because negative value on robot is intaking by default
     m_rollerMotor.SetInverted(true);
     m_conveyorMotor.SetInverted(true);
+    
+    m_conveyorMotor.SetSmartCurrentLimit(10);
+    m_conveyorMotor.SetSecondaryCurrentLimit(15);
 }
 
 // This method will be called once per scheduler run

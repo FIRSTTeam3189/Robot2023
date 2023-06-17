@@ -55,6 +55,7 @@ class LEDSystem : public frc2::SubsystemBase {
   bool m_lastMode;
   bool m_shouldStartup;
   bool m_startupRunning;
+  bool m_lastEnableState{false};
   frc::Timer m_timer{};
   std::array<int, 3> m_currentModeRGB;
 };

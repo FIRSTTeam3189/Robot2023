@@ -13,6 +13,9 @@ m_encoderVelocity(0.0) {
     m_motor.RestoreFactoryDefaults();
     m_motor.SetClosedLoopRampRate(0);
     m_motor.SetOpenLoopRampRate(0);
+    
+    m_motor.SetSmartCurrentLimit(25);
+    m_motor.SetSecondaryCurrentLimit(30);
 }
 
 // This method will be called once per scheduler run

@@ -11,7 +11,7 @@ m_modeShouldChangeColor(true), m_lastMode(true), m_shouldStartup(true), m_startu
     m_candleControl.ConfigAllSettings(m_candleConfig);
     // Populates the map with the led indexes based on the section
     // The Full Setup
-    m_ledSections[LEDSection::All] = {0, 152};
+    m_ledSections[LEDSection::All] = {0, 150};
     // Candle length 8
     m_ledSections[LEDSection::Candle] = {0, 8};
     // length 11
@@ -23,19 +23,19 @@ m_modeShouldChangeColor(true), m_lastMode(true), m_shouldStartup(true), m_startu
     // length 19
     m_ledSections[LEDSection::RBackElevatorStrip] = {43, 62};
     // length 24
-    m_ledSections[LEDSection::RUnderGlow] = {62, 86};
+    m_ledSections[LEDSection::RUnderGlow] = {62, 84};
     // length 25
-    m_ledSections[LEDSection::LUnderGlow] = {86, 108};
+    m_ledSections[LEDSection::LUnderGlow] = {84, 106};
     // length 19
-    m_ledSections[LEDSection::LBackElevatorStrip] = {108, 128};
+    m_ledSections[LEDSection::LBackElevatorStrip] = {106, 126};
     // length 10
-    m_ledSections[LEDSection::LFrontElevatorStrip] = {128, 138};
+    m_ledSections[LEDSection::LFrontElevatorStrip] = {126, 136};
     // length 13
-    m_ledSections[LEDSection::LFrontStrip] = {138, 151};
+    m_ledSections[LEDSection::LFrontStrip] = {136, 149};
     // length of right side
-    m_ledSections[LEDSection::RSide] = {19, 61};
+    m_ledSections[LEDSection::RSide] = {19, 62};
     // length of left side
-    m_ledSections[LEDSection::LSide] = {111, 151};
+    m_ledSections[LEDSection::LSide] = {111, 149};
     // length of back side
     m_ledSections[LEDSection::Backside] = {0, 19};
 }
@@ -45,7 +45,17 @@ void LEDSystem::Periodic() {
     if (m_shouldStartup) {
         StartingAnimation();
     }
+    else if (!frc::SmartDashboard::GetBoolean("Enabled", false)) {
+        if (m_lastEnableState == true) {
+            SetAnimation(LEDAnimationType::Clear);
+        }
+        SetAnimation(LEDAnimationType::Rainbow, LEDSection::All, 0, 120, 255);
+    }
     else {
+        if (m_lastEnableState == false) {
+            SetAnimation(LEDAnimationType::Clear);
+            m_lastEnableState = true;
+        }
         bool grabbed = frc::SmartDashboard::GetBoolean("Piece Grabbed", false);
         bool isConeMode = frc::SmartDashboard::GetBoolean("Is Cone Mode?", false);
 
@@ -55,6 +65,8 @@ void LEDSystem::Periodic() {
         } else {
             m_currentModeRGB = {150, 0, 150};
         }
+
+// work
 
         // Only change animations when there's a change in mode
         if (isConeMode != m_lastMode) {
@@ -92,6 +104,11 @@ void LEDSystem::Periodic() {
         }
         
         m_lastMode = isConeMode;
+    }
+
+    m_lastEnableState = frc::SmartDashboard::GetBoolean("Enabled", false);
+    if (!m_lastEnableState) {
+        m_modeShouldChangeColor = true;
     }
 }
 

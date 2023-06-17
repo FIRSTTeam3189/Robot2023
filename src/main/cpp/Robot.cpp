@@ -15,7 +15,7 @@ void Robot::RobotInit() {
   frc::DataLogManager::Start();
   frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
   m_container.ResetGyroscope();
-  cs::UsbCamera frontCamera = frc::CameraServer::StartAutomaticCapture(0);
+  // cs::UsbCamera frontCamera = frc::CameraServer::StartAutomaticCapture(0);
   // cs::UsbCamera groundCamera = frc::CameraServer::StartAutomaticCapture(1);
 }
 
@@ -37,6 +37,7 @@ void Robot::RobotPeriodic() {
 void Robot::DisabledInit() {
   m_wheelBrakeTimer.Reset();
   m_wheelBrakeTimer.Start();
+  frc::SmartDashboard::PutBoolean("Enabled", false);
 }
 
 void Robot::DisabledPeriodic() {
@@ -71,6 +72,7 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {
   // Set swerve wheels to brake again once enabled
   m_container.SetSwerveBrake();
+  frc::SmartDashboard::PutBoolean("Enabled", true);
   // This makes sure that the autonomous stops running when
   // teleop starts running. If you want the autonomous to
   // continue until interrupted by another command, remove
@@ -87,6 +89,7 @@ void Robot::TeleopInit() {
  */
 void Robot::TeleopPeriodic() {
   m_container.Sync();
+
 }
 
 /**
