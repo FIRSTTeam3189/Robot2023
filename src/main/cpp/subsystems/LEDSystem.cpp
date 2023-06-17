@@ -106,6 +106,8 @@ void LEDSystem::Periodic() {
         m_lastMode = isConeMode;
     }
 
+    // Just to make the lights update between enable and disable
+    // Might need to change to grabberAnimationRunning and write the else if statement for that above
     m_lastEnableState = frc::SmartDashboard::GetBoolean("Enabled", false);
     if (!m_lastEnableState) {
         m_modeShouldChangeColor = true;
