@@ -40,8 +40,8 @@ m_absoluteEncoder(SI.CANCoderID, "Swerve")
                                             true, SwerveDriveConstants::ampLimit, SwerveDriveConstants::ampLimit + 5.0, 0.1});
     // Baby Mode: Limiting the speed
     // Delete for comp:
-    m_speedMotor.ConfigPeakOutputForward(0.5);
-    m_speedMotor.ConfigPeakOutputReverse(-0.5);
+    // m_speedMotor.ConfigPeakOutputForward(0.5);
+    // m_speedMotor.ConfigPeakOutputReverse(-0.5);
 
     m_angleMotor.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor);
     // Allows PIDController to treat two angles as the same point on a circle

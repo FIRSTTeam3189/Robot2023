@@ -17,9 +17,9 @@ void ElevatorRawDrive::Initialize() {}
 void ElevatorRawDrive::Execute() {
   // Manually drive elevator based on co-driver's left joystick's y-axis
   // Inverts because up is -1.0 on controller
-  if (-m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y) > 0.05) {
+  if (-m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y) > 0.1) {
       m_elevator->Drive((-m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y)));
-  } else if (-m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y) < -0.05) {
+  } else if (-m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y) < -0.1) {
       m_elevator->Drive((-m_ted->GetRawAxis(PS5_AXIS_LSTICK_Y)));
   } else {
     m_elevator->Drive(0);
