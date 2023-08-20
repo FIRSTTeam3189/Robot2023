@@ -229,11 +229,11 @@ namespace FieldCoordinates {
 #define ELEVATOR_ULTRA_SHOOT_POWER 1.0
 // Baby Mode
 // Elevator Original Max Speed: 3.0_mps
-// #define ELEVATOR_MAX_SPEED 0.5_mps
 #define ELEVATOR_MAX_SPEED 3.0_mps
+// #define ELEVATOR_MAX_SPEED 3.0_mps
 // Elevator Original Max Acceleration: 3.0_mps_sq
-// #define ELEVATOR_MAX_ACCELERATION 0.5_mps_sq
 #define ELEVATOR_MAX_ACCELERATION 3.0_mps_sq
+// #define ELEVATOR_MAX_ACCELERATION 3.0_mps_sq
 #define ELEVATOR_GEAR_RATIO 20.0
 #define ELEVATOR_OUTPUT_CIRCUMFERENCE (pi* 0.04552)
 // Elevator feedforward constants
