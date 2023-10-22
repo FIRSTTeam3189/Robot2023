@@ -55,7 +55,8 @@ void RobotContainer::ConfigureButtonBindings() {
     frc2::SequentialCommandGroup(
       frc2::ParallelDeadlineGroup(
         frc2::WaitCommand(0.5_s),
-        RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER)
+        RunIntake(m_intake, -INTAKE_ROLLER_POWER, -INTAKE_CONVEYOR_POWER),
+        RunGrabber(m_grabber, GrabberAction::Grab)
       ),
       RunIntake(m_intake, INTAKE_ROLLER_POWER, INTAKE_CONVEYOR_POWER)
     ).ToPtr());
